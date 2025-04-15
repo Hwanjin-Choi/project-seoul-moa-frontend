@@ -1,6 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import RemoveableTag from "../RemoveableTag/RemoveableTag";
+import Button from "../Button/Button";
+import Typography from "../Typography/Typography";
+import OutlineTag from "../OutlineTag/OutlineTag";
 
+import Ribbon from "../Ribbon/Ribbon";
 const CardWrapper = styled.div`
   width: 100%;
   border-radius: 16px;
@@ -12,18 +17,15 @@ const CardWrapper = styled.div`
 
 const ImageContainer = styled.div`
   position: relative;
-  width: 100%;
-  padding-top: 130%;
-  background-color: #4b4b4b;
+  padding: 5px;
 `;
 
 const Image = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 `;
 
 const BadgeContainer = styled.div`
@@ -42,48 +44,6 @@ const Badge = styled.div`
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
-`;
-
-const Ribbon = styled.div`
-  position: absolute;
-  top: -4px;
-  right: 20px;
-  width: 32px;
-  height: 40px;
-  background-color: #7b61ff;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 13px;
-  z-index: 1;
-  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.2);
-
-  /* Top triangle */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 32px;
-    width: 0;
-    height: 0;
-    border-right: 8px solid #5842cc; /* darker shade for 3D effect */
-    border-top: 4px solid transparent;
-  }
-
-  /* Bottom part */
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -12px;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-left: 16px solid #7b61ff;
-    border-right: 16px solid #7b61ff;
-    border-bottom: 12px solid transparent;
-    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
-  }
 `;
 
 const Content = styled.div`
@@ -137,18 +97,20 @@ const SimpleCard = ({
 }) => {
   return (
     <CardWrapper {...props}>
+      <Ribbon text={count} />
       <ImageContainer>
         <Image src={image} alt={title} />
         <BadgeContainer>{dDay && <Badge>D-{dDay}</Badge>}</BadgeContainer>
-        {count && <Ribbon>{count}</Ribbon>}
       </ImageContainer>
       <Content>
-        <Title>{title}</Title>
-        <Period>{period}</Period>
-        <Address>{address}</Address>
+        <Typography variant="h3">{title}</Typography>
+        <Typography variant="h5">{period}</Typography>
+        <Typography variant="h6">{address}</Typography>
+        <Button>카테고리 추가</Button>
         <TagContainer>
-          {category && <Tag>{category}</Tag>}
-          {location && <Tag>{location}</Tag>}
+          {category && <OutlineTag>{"Text"}</OutlineTag>}
+
+          {category && <RemoveableTag>{"서울생활박물관"}</RemoveableTag>}
         </TagContainer>
       </Content>
     </CardWrapper>

@@ -4,7 +4,9 @@ import Container from "../../components/Layout/Container";
 import Card from "../../components/Card/Card";
 import SimpleCard from "../../components/SimpleCard/SimpleCard";
 import MobileLayout from "../../components/Layout/MobileLayout";
-
+import logo from "../../assets/seoulmoa.svg";
+import Ribbon from "../../components/Ribbon/Ribbon";
+import demoImage from "../../assets/Test.jpeg";
 const Header = styled.header`
   background-color: #fff;
   padding: 16px 0;
@@ -20,10 +22,9 @@ const HeaderContent = styled.div`
   align-items: center;
 `;
 
-const Logo = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
+const Logo = styled.img`
+  width: 30px;
+  height: 30px;
 `;
 
 const SearchIcon = styled.div`
@@ -34,6 +35,9 @@ const SearchIcon = styled.div`
 
 const MainContent = styled.main`
   padding: 16px 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const SectionTitle = styled.div`
@@ -79,7 +83,7 @@ const DateRange = styled.div`
 
 const DemoPage = () => {
   const dummyCardData = {
-    image: "https://via.placeholder.com/300",
+    image: demoImage,
     title: "2024 Seoul Art Exhibition",
     period: "2024.01.01 - 2024.12.31",
     address: "Seoul Museum of Art",
@@ -90,10 +94,10 @@ const DemoPage = () => {
   };
 
   const simpleCardData = {
-    image: "https://via.placeholder.com/300",
-    title: "Title",
-    period: "startday - endday",
-    address: "address",
+    image: demoImage,
+    title: "[서초문화재단] 2025 클래식악기 탐구생활 - 5월 프로그램 신청자 모집",
+    period: "2025-05-10 ~ 2025-05-31",
+    address: "서리풀청년아트센터 및 예술의전당 인근 악기공방",
     dDay: "Day",
     category: "category",
     location: "location",
@@ -105,8 +109,7 @@ const DemoPage = () => {
       <Header>
         <Container>
           <HeaderContent>
-            <Logo>logo</Logo>
-            <SearchIcon>🔍</SearchIcon>
+            <Logo src={logo} alt="logo" />
           </HeaderContent>
         </Container>
       </Header>
@@ -129,6 +132,8 @@ const DemoPage = () => {
             <Title>HOT 문화행사</Title>
             <ViewMore>더보기</ViewMore>
           </SectionTitle>
+
+          <Ribbon text="HOT" />
           <CardGrid>
             {[...Array(4)].map((_, index) => (
               <SimpleCard key={index} {...simpleCardData} />

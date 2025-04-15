@@ -28,6 +28,11 @@ const getVariantStyles = ({ variant }) => {
           background-color: rgba(123, 97, 255, 0.1);
         }
       `;
+    case "text":
+      return css`
+        background-color: transparent;
+        color: #7b61ff;
+      `;
     default:
       return css`
         background-color: #7b61ff;
@@ -39,6 +44,18 @@ const getVariantStyles = ({ variant }) => {
   }
 };
 
+const getButtonWidth = ({ fullWidth }) => {
+  switch (fullWidth) {
+    case true:
+      return css`
+        width: 100%;
+      `;
+    default:
+      return css`
+        width: auto;
+      `;
+  }
+};
 const getSizeStyles = ({ size }) => {
   switch (size) {
     case "small":
@@ -69,7 +86,7 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 8px;
-
+  margin: 3px;
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -77,16 +94,23 @@ const StyledButton = styled.button`
 
   ${getVariantStyles}
   ${getSizeStyles}
+  ${getButtonWidth}
 `;
 
 const Button = ({
   children,
   variant = "primary",
   size = "medium",
+  fullWidth = "auto",
   ...props
 }) => {
   return (
-    <StyledButton variant={variant} size={size} {...props}>
+    <StyledButton
+      variant={variant}
+      size={size}
+      fullWidth={fullWidth}
+      {...props}
+    >
       {children}
     </StyledButton>
   );

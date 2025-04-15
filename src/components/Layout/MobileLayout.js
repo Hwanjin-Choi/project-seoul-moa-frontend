@@ -2,17 +2,24 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const LayoutWrapper = styled.div`
-  max-width: 360px;
-  margin: 0 auto;
-  min-height: 100vh;
+  margin: 0 auto; // Center the layout
+
+  @media (min-width: 768px) {
+    // Adjust this value based on your tablet breakpoint
+    max-width: 720px; // Set the desired width for larger screens
+  }
+
+  @media (min-width: 1024px) {
+    // Optional: Adjust for larger screens
+    max-width: 960px; // Set another width if needed
+  }
+
   position: relative;
   padding-bottom: 60px; /* Height of the navigation bar */
   background: white;
 `;
 
-const Content = styled.div`
-  height: 100%;
-`;
+const Content = styled.div``;
 
 const Navigation = styled.nav`
   position: fixed;
@@ -20,12 +27,23 @@ const Navigation = styled.nav`
   left: 50%;
   transform: translateX(-50%);
   width: 360px;
+  @media (min-width: 768px) {
+    // Adjust this value based on your tablet breakpoint
+    max-width: 720px; // Set the desired width for larger screens
+  }
+
+  @media (min-width: 1024px) {
+    // Optional: Adjust for larger screens
+    max-width: 960px; // Set another width if needed
+  }
   height: 60px;
   background: white;
   display: flex;
   align-items: center;
   border-top: 1px solid #eee;
   z-index: 1000;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const NavItem = styled.div`

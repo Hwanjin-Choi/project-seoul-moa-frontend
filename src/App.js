@@ -1,13 +1,20 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/Login/Login";
 import DemoPage from "./pages/Demo/DemoPage";
 import "./App.css";
-
-function App() {
+import RegistrationPage from "./pages/Registration/RegistrationPage";
+const App = () => {
   return (
-    <div className="App" style={{ background: "#F5F5F5", minHeight: "100vh" }}>
-      <DemoPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login-page" element={<LoginPage />} />
+        <Route path="/registration-page" element={<RegistrationPage />} />
+        <Route path="/demo-page" element={<DemoPage />} />
+        <Route path="/" element={<DemoPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

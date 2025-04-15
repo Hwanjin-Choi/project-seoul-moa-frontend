@@ -1,0 +1,28 @@
+<svg width="208" height="239" viewBox="0 0 208 239" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M123.628 35.1996C125.761 31.709 131.139 33.2935 131.039 37.3833L129.598 96.4232C129.568 97.6792 130.129 98.8767 131.114 99.6567L172.363 132.32C175.186 134.555 173.85 139.089 170.266 139.437L117.897 144.516C116.646 144.637 115.525 145.339 114.87 146.411L84.069 196.8C81.9354 200.291 76.5575 198.706 76.6573 194.617L78.0985 135.577C78.1292 134.321 77.5679 133.123 76.5828 132.343L35.3335 99.6805C32.5109 97.4454 33.847 92.9108 37.4305 92.5632L89.8001 87.4841C91.0506 87.3628 92.1716 86.661 92.8268 85.5889L123.628 35.1996Z" fill="url(#paint0_linear_10_398)"/>
+<ellipse cx="92.3646" cy="110.324" rx="3.42091" ry="5.98659" fill="#312E2C"/>
+<ellipse cx="106.903" cy="110.324" rx="3.42091" ry="5.98659" fill="#312E2C"/>
+<g filter="url(#filter0_f_10_398)">
+<ellipse cx="99" cy="225" rx="48" ry="10" fill="url(#paint1_linear_10_398)"/>
+</g>
+<circle cx="185" cy="71" r="4" fill="#F0E7FF"/>
+<circle cx="172" cy="185" r="3" fill="#FFD6D6"/>
+<circle cx="25.5" cy="176.5" r="5.5" fill="#FFCA42"/>
+<circle cx="10" cy="140" r="10" fill="#8EC9FF"/>
+<circle cx="168.5" cy="50.5" r="5.5" fill="#BCDD91"/>
+<defs>
+<filter id="filter0_f_10_398" x="47" y="211" width="104" height="28" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2" result="effect1_foregroundBlur_10_398"/>
+</filter>
+<linearGradient id="paint0_linear_10_398" x1="88.404" y1="53.9428" x2="151.563" y2="175.802" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E4E1FF"/>
+<stop offset="1" stop-color="#8478FF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_10_398" x1="91.5" y1="201.923" x2="92.5" y2="233" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D9D9D9"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg>
