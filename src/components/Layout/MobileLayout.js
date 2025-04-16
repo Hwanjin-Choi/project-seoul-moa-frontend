@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Color } from '../../styles/colorsheet';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Icons } from "../../assets/icons";
 
 const LayoutWrapper = styled.div`
-  margin: 0 auto; // Center the layout
+  margin: 0 auto;
 
   @media (min-width: 768px) {
-    // Adjust this value based on your tablet breakpoint
-    max-width: 720px; // Set the desired width for larger screens
+    max-width: 720px;
   }
-
   @media (min-width: 1024px) {
-    // Optional: Adjust for larger screens
-    max-width: 960px; // Set another width if needed
+    max-width: 960px;
   }
 
   position: relative;
-  padding-bottom: 60px; /* Height of the navigation bar */
+  padding-bottom: 60px;
   background: white;
 `;
 
@@ -25,25 +25,19 @@ const Content = styled.div``;
 const Navigation = styled.nav`
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 360px;
+  width: 100%;
   @media (min-width: 768px) {
-    // Adjust this value based on your tablet breakpoint
-    max-width: 720px; // Set the desired width for larger screens
+    max-width: 720px;
   }
-
   @media (min-width: 1024px) {
-    // Optional: Adjust for larger screens
-    max-width: 960px; // Set another width if needed
+    max-width: 960px;
   }
-  height: 60px;
+  height: 70px;
   background: white;
+  
   display: flex;
   align-items: center;
-  border-top: 1px solid #eee;
-  z-index: 1000;
-  border-radius: 20px 20px 0 0;
+  border-radius: 15px 15px 0 0;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -53,36 +47,17 @@ const NavItem = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.active ? "#7B61FF" : "#666")};
+  color: ${(props) => (props.active ? Color.MC1 : Color.BC4)};
+  font-weight: bold;
   font-size: 12px;
-  cursor: pointer;
-  padding: 8px 0;
-  gap: 4px;
+  gap: 3px;
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     fill: currentColor;
   }
 `;
-
-const HomeIcon = () => (
-  <svg viewBox="0 0 24 24">
-    <path d="M12 2L1 12h3v9h7v-6h2v6h7v-9h3L12 2zm0 2.41L20.59 12H19v8h-5v-6H10v6H5v-8H3.41L12 4.41z" />
-  </svg>
-);
-
-const MapIcon = () => (
-  <svg viewBox="0 0 24 24">
-    <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z" />
-  </svg>
-);
-
-const ProfileIcon = () => (
-  <svg viewBox="0 0 24 24">
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-  </svg>
-);
 
 const MobileLayout = ({ children }) => {
   const navigate = useNavigate();
@@ -106,7 +81,7 @@ const MobileLayout = ({ children }) => {
             navigate("/");
           }}
         >
-          <HomeIcon />
+          <FontAwesomeIcon icon={Icons.home} />
           <span>홈</span>
         </NavItem>
 
@@ -117,7 +92,7 @@ const MobileLayout = ({ children }) => {
             navigate("/map");
           }}
         >
-          <MapIcon />
+          <FontAwesomeIcon icon={Icons.map} />
           <span>지도</span>
         </NavItem>
 
@@ -128,7 +103,7 @@ const MobileLayout = ({ children }) => {
             navigate("/my-page");
           }}
         >
-          <ProfileIcon />
+           <FontAwesomeIcon icon={Icons.user} />
           <span>마이페이지</span>
         </NavItem>
       </Navigation>

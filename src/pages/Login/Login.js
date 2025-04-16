@@ -58,9 +58,6 @@ const loginFields = [
 ];
 
 const handleLogin = async (credentials) => {
-  const { username, password } = credentials;
-
-  const url = "";
 
   try {
     console.log(credentials);

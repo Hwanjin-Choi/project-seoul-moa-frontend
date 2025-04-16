@@ -6,6 +6,7 @@ import Mypage from "./pages/Mypage/Mypage.js";
 import Map from "./pages/Map/Map.js";
 import "./App.css";
 import RegistrationPage from "./pages/Registration/RegistrationPage";
+
 const App = () => {
   return (
     <Router>
