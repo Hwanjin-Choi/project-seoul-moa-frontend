@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const LayoutWrapper = styled.div`
   margin: 0 auto; // Center the layout
@@ -84,7 +85,15 @@ const ProfileIcon = () => (
 );
 
 const MobileLayout = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("home");
+
+  useEffect(() => {
+    if (location.pathname === "/") setActiveTab("home");
+    else if (location.pathname === "/map") setActiveTab("map");
+    else if (location.pathname === "/my-page") setActiveTab("profile");
+  }, [location.pathname]);
 
   return (
     <LayoutWrapper>
@@ -92,21 +101,32 @@ const MobileLayout = ({ children }) => {
       <Navigation>
         <NavItem
           active={activeTab === "home"}
-          onClick={() => setActiveTab("home")}
+          onClick={() => {
+            setActiveTab("home");
+            navigate("/");
+          }}
         >
           <HomeIcon />
           <span>홈</span>
         </NavItem>
+
         <NavItem
           active={activeTab === "map"}
-          onClick={() => setActiveTab("map")}
+          onClick={() => {
+            setActiveTab("map");
+            navigate("/map");
+          }}
         >
           <MapIcon />
           <span>지도</span>
         </NavItem>
+
         <NavItem
           active={activeTab === "profile"}
-          onClick={() => setActiveTab("profile")}
+          onClick={() => {
+            setActiveTab("profile");
+            navigate("/my-page");
+          }}
         >
           <ProfileIcon />
           <span>마이페이지</span>
