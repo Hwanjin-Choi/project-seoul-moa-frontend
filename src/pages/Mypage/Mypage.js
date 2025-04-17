@@ -131,15 +131,37 @@ const SlideModal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  padding: 5px;
   max-height: 50vh;
   overflow-y: auto;
-  scrollbar-width: none; 
+  padding-right: 5px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  color: ${Color.MC1};
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 `;
 
 const Mypage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   return (
     <MobileLayout>
@@ -200,19 +222,21 @@ const Mypage = () => {
         <Section>
           <Header>
             <Typography variant="h3">{userData.userName}님의 리뷰</Typography>
-            <Iconstyle icon={Icons.more} />
-          </Header>
-          {reviewData.map((review, idx) => (
-            <ReviewCard
-              key={idx}
-              calenderDay={review.calenderDay}
-              eventTitle={review.eventTitle}
-              reviewContent={review.reviewContent}
-              imageUrl={review.eventImageurl}
+            <Iconstyle
+              icon={Icons.more}
+              onClick={() => setIsReviewModalOpen(true)}
+              style={{ cursor: "pointer" }}
             />
-          ))}
+          </Header>
 
+          <ReviewCard
+            calenderDay={reviewData[0].calenderDay}
+            eventTitle={reviewData[0].eventTitle}
+            reviewContent={reviewData[0].reviewContent}
+            imageUrl={reviewData[0].eventImageurl}
+          />
         </Section>
+
 
         {isModalOpen && (
           <Backdrop onClick={() => setIsModalOpen(false)}>
@@ -235,6 +259,28 @@ const Mypage = () => {
           </Backdrop>
         )}
       </Container>
+      {isReviewModalOpen && (
+        <Backdrop onClick={() => setIsReviewModalOpen(false)}>
+          <SlideModal onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <Typography variant="h3">전체 리뷰</Typography>
+              <CloseButton onClick={() => setIsReviewModalOpen(false)}>닫기</CloseButton>
+            </ModalHeader>
+            <ModalContent>
+              {reviewData.map((review, idx) => (
+                <ReviewCard
+                  key={idx}
+                  calenderDay={review.calenderDay}
+                  eventTitle={review.eventTitle}
+                  reviewContent={review.reviewContent}
+                  imageUrl={review.eventImageurl}
+                />
+              ))}
+            </ModalContent>
+          </SlideModal>
+        </Backdrop>
+      )}
+
     </MobileLayout>
   );
 };

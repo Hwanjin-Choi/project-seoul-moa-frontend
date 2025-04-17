@@ -16,6 +16,14 @@ import {
 } from "./data";
 
 import { useState } from "react";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    Cell,
+    Tooltip,
+    ResponsiveContainer,
+} from "recharts";
 
 const InfoBox = styled.div`
     display: flex;
@@ -76,18 +84,14 @@ const LocationBox = styled.div`
 const ChartBox = styled.div`
     width: 100%;
     height: 100px;
-    background-color: ${Color.BC3};
-    border-radius: 12px;
-    margin: 16px 0;
+    margin: 15px 0;
 `;
 
 const Tag = styled.span`
     background-color: ${Color.MC1};
     color: white;
     padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    margin-left: 4px;
+    border-radius: 10px;
 `;
 
 const BottomButton = styled(Button)`
@@ -166,11 +170,11 @@ const ModalContent = styled.div`
   max-height: 50vh;
   overflow-y: auto;
   padding-right: 5px;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none;
   }
 `;
 
@@ -193,6 +197,29 @@ const CloseButton = styled.button`
 
 const ViewDetail = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const currentHour = new Date().getHours();
+    const subwayChartData = Object.entries(subwayData).map(([key, value]) => {
+        const hour = Number(key.replace("Timedata", ""));
+        return {
+            time: `${hour}시`,
+            hour,
+            count: Number(value),
+        };
+    });
+
+    const top3 = [...subwayChartData]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 3)
+        .map((item) => item.hour);
+
+    const subwayChartWithColor = subwayChartData.map((item) => {
+        let color = Color.MC5;
+        if (item.hour === currentHour) color = Color.MC1;
+        else if (top3.includes(item.hour)) color = "rgba(132, 120, 255, 0.4)";
+
+        return { ...item, fill: color };
+    });
+
 
     return (
         <MobileLayout>
@@ -253,11 +280,40 @@ const ViewDetail = () => {
                     <Typography variant="h3" color={Color.MC1}>station</Typography>
                 </LocationBox>
 
-                <ChartBox />
+                <ChartBox>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={subwayChartWithColor}>
+                            <XAxis
+                                dataKey="time"
+                                tick={({ x, y, payload }) => (
+                                    <text
+                                        x={x}
+                                        y={y + 10}
+                                        textAnchor="middle"
+                                        fontSize="12"
+                                        fill={Color.BC3}
+                                        fontFamily="'Noto Sans', sans-serif"
+                                    >
+                                        {payload.value}
+                                    </text>
+                                )}
+                            />
+
+                            <Tooltip />
+                            <Bar dataKey="count" radius={[10, 10, 0, 0]}>
+                                {subwayChartWithColor.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ))}
+                            </Bar>
+
+                        </BarChart>
+                    </ResponsiveContainer>
+                </ChartBox>
 
                 <Typography variant="h5" style={{ textAlign: "center" }}>
-                    currentTime 의 station2 는 <Tag>state</Tag> 단계입니다
+                    {currentHour}시 의 {subwayData.subwayName} 는 <Tag>{subwayData.state}</Tag> 단계입니다
                 </Typography>
+
 
                 <BottomButton>예약하기</BottomButton>
             </ViewDetailLayout>
