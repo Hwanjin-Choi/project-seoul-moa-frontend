@@ -3,18 +3,25 @@ import MobileLayout from "../../components/Layout/MobileLayout";
 import styled from "styled-components";
 import RegiForm from "../../components/RegiForm/RegiForm";
 import CategoryButton from "../../components/CategoryButton/CategoryButton";
+
 const RegistrationContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 100vh;
 `;
 const RegistrationTitle = styled.h1`
   font-size: 24px;
   font-weight: 600;
+  @media (max-width: 768px) {
+    font-size: 18px;
+    font-weight: 600;
+  }
 `;
 const RegistrationTitleContainer = styled.div`
-  margin-top: 100px;
+  padding: 15px;
+  text-align: center;
 `;
 const RegistrationForm = styled.div`
   display: flex;
@@ -26,38 +33,88 @@ const RegistrationForm = styled.div`
   margin-top: 20px;
 `;
 const RegistrationButtonGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 24px;
+    /*     max-height: 200px; */
+    overflow-y: auto;
+  }
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 24px;
+    /*     max-height: 200px; */
+    overflow-y: auto;
+  }
 `;
 const registrationFields = [
-  { name: "name", type: "text", placeholder: "이름", required: true },
-  { name: "email", type: "email", placeholder: "이메일", required: true },
+  { name: "userId", type: "text", placeholder: "아이디", required: true },
   {
     name: "password",
     type: "password",
     placeholder: "비밀번호",
     required: true,
   },
+  {
+    name: "nickname",
+    type: "text",
+    placeholder: "닉네임",
+    required: true,
+  },
+  {
+    name: "age",
+    type: "number",
+    placeholder: "나이",
+    required: true,
+  },
 ];
-const categoryFields = [
-  { category: "cat1", isClicked: false },
-  { category: "cat2", isClicked: false },
-  { category: "cat3", isClicked: false },
-  { category: "cat4", isClicked: false },
-  { category: "cat5", isClicked: false },
+
+const categoryFieldsData = [
+  { category: "교육/체험", isClicked: false },
+  { category: "독주/독창회", isClicked: false },
+  { category: "콘서트", isClicked: false },
+  { category: "전시/미술", isClicked: false },
+  { category: "클래식", isClicked: false },
+  { category: "무용", isClicked: false },
+  { category: "뮤지컬/오페라", isClicked: false },
+  { category: "연극", isClicked: false },
+  { category: "영화", isClicked: false },
+  { category: "기타", isClicked: false },
+  { category: "축제", isClicked: false },
+  { category: "국악", isClicked: false },
 ];
-const handleRegistration = (credentials, setErrors) => {
-  const { username, password } = credentials;
-  try {
-    console.log(credentials);
-    /* if (response.status === 200) {
-    } */
-  } catch (error) {}
-};
 
 const RegistrationPage = () => {
+  const [categoryFields, setCategoryFields] = useState(categoryFieldsData);
+  const handleCategoryClick = (category) => {
+    setCategoryFields(
+      categoryFields.map((item) =>
+        item.category === category
+          ? { ...item, isClicked: !item.isClicked }
+          : item
+      )
+    );
+  };
+  const handleRegistration = (credentials, setErrors) => {
+    const { userId, password, nickname, age, gender } = credentials;
+
+    try {
+      const formData = {
+        userId: userId,
+        password: password,
+        nickname: nickname,
+        age: age,
+        gender: gender,
+        category: categoryFields
+          .filter((item) => item.isClicked)
+          .map((item) => item.category),
+      };
+      console.log(formData);
+      /* if (response.status === 200) {
+    } */
+    } catch (error) {}
+  };
   return (
     <MobileLayout>
       <RegistrationContainer>
@@ -81,6 +138,7 @@ const RegistrationPage = () => {
               key={item.category}
               category={item.category}
               isClicked={item.isClicked}
+              onClick={() => handleCategoryClick(item.category)}
             />
           ))}
         </RegistrationButtonGrid>

@@ -7,6 +7,7 @@ import MobileLayout from "../../components/Layout/MobileLayout";
 import logo from "../../assets/seoulmoa.svg";
 import Ribbon from "../../components/Ribbon/Ribbon";
 import demoImage from "../../assets/Test.jpeg";
+import Navigation from "../../components/Navigation/Navigation";
 const Header = styled.header`
   background-color: #fff;
   padding: 16px 0;
@@ -141,6 +142,7 @@ const DemoPage = () => {
           </CardGrid>
         </Container>
       </MainContent>
+      <Navigation />
     </MobileLayout>
   );
 };

@@ -55,14 +55,14 @@ const Text = styled.p`
 
 const CategoryButton = (props) => {
   const [isClicked, setIsClicked] = useState(props.isClicked);
-  const handleClick = () => {
+  /* const handleClick = () => {
     setIsClicked(!isClicked);
-  };
+  }; */
 
   return (
-    <StyledCategoryButton onClick={handleClick} isClicked={isClicked}>
-      <Icon isClicked={isClicked} icon={faBookmark} />
-      <Text isClicked={isClicked}>{props.category}</Text>
+    <StyledCategoryButton onClick={props.onClick} isClicked={props.isClicked}>
+      <Icon isClicked={props.isClicked} icon={faBookmark} />
+      <Text isClicked={props.isClicked}>{props.category}</Text>
     </StyledCategoryButton>
   );
 };
