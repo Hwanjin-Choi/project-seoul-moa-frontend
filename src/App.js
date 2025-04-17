@@ -4,6 +4,7 @@ import LoginPage from "./pages/Login/Login";
 import DemoPage from "./pages/Demo/DemoPage";
 import Mypage from "./pages/Mypage/Mypage.js";
 import Map from "./pages/Map/Map.js";
+import ViewDetail from "./pages/ViewDetail/ViewDetail.js";
 import "./App.css";
 import RegistrationPage from "./pages/Registration/RegistrationPage";
 
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/demo-page" element={<DemoPage />} />
         <Route path="/my-page" element={<Mypage />} />
         <Route path="/map" element={<Map />} />
+        <Route path="/viewdetail-page" element={<ViewDetail />} />
         <Route path="/" element={<DemoPage />} />
       </Routes>
     </Router>

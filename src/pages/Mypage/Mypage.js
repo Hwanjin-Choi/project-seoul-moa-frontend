@@ -10,6 +10,7 @@ import Banner from "../../assets/img/Mypage_View1.png";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import Container from "../../components/Layout/Container";
 import Button from "../../components/Button/Button";
+import ReviewCard from "../../components/Card/ReviewCard";
 
 import { userData, reviewCreateData, reviewData } from "./data.js";
 
@@ -95,29 +96,6 @@ const CarouselItem = styled.div`
   display: flex;
 `;
 
-
-const ReviewListBox = styled.div`
-  background-color: ${Color.MC5};
-  border-radius: 12px;
-  padding: 15px;
-  margin-top: 12px;
-  display: flex;
-  width: 100%;
-  height: 100%;
-`;
-
-const ReviewText = styled.div`
-  flex: 1;
-`;
-
-const ReviewImage = styled.img`
-  width: 70px;
-  height: 90px;
-  border-radius: 12px;
-  object-fit: cover;
-  margin-left: 12px;
-`;
-
 const Section = styled.div`
   margin-bottom: 20px;
 `;
@@ -160,106 +138,105 @@ const ModalContent = styled.div`
 `;
 
 const Mypage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isClicked, setIsClicked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
-    return (
-        <MobileLayout>
-            <BannerImg src={Banner} />
+  return (
+    <MobileLayout>
+      <BannerImg src={Banner} />
 
-            <Container>
-                <Section>
-                    <Header>
-                        <Typography variant="h3">{userData.userName}님의 관심사</Typography>
-                        <Iconstyle
-                            icon={Icons.pen}
-                            onClick={() => {
-                                setIsModalOpen(true);
-                                setIsClicked(true);
-                            }}
-                            color={isClicked ? Color.MC1 : Color.BC4}
-                        />
-                    </Header>
+      <Container>
+        <Section>
+          <Header>
+            <Typography variant="h3">{userData.userName}님의 관심사</Typography>
+            <Iconstyle
+              icon={Icons.pen}
+              onClick={() => {
+                setIsModalOpen(true);
+                setIsClicked(true);
+              }}
+              color={isClicked ? Color.MC1 : Color.BC4}
+            />
+          </Header>
 
-                    <CategoryChipWrapper>
-                        {userData.categoryName.map((cat, idx) => (
-                            <CategoryChip key={idx}>
-                                <Typography variant="h6" color={Color.MC1}>
-                                    {cat}
-                                </Typography>
-                            </CategoryChip>
-                        ))}
-                    </CategoryChipWrapper>
-                </Section>
+          <CategoryChipWrapper>
+            {userData.categoryName.map((cat, idx) => (
+              <CategoryChip key={idx}>
+                <Typography variant="h6" color={Color.MC1}>
+                  {cat}
+                </Typography>
+              </CategoryChip>
+            ))}
+          </CategoryChipWrapper>
+        </Section>
 
-                <Section>
-                    <Typography variant="h3">리뷰 작성하기</Typography>
-                    <CarouselWrapper>
-                        {reviewCreateData.map((event, idx) => (
-                            <CarouselItem key={idx}>
-                                <Thumb src={event.eventImageurl} />
+        <Section>
+          <Typography variant="h3">리뷰 작성하기</Typography>
+          <CarouselWrapper>
+            {reviewCreateData.map((event, idx) => (
+              <CarouselItem key={idx}>
+                <Thumb src={event.eventImageurl} />
 
-                                <ReviewInfoBox>
-                                    <div>
-                                        <Typography variant="h3" color={Color.MC1}>
-                                            {event.calenderDay}
-                                        </Typography>
-                                        <Typography variant="h3">{event.eventTitle}</Typography>
-                                        <Typography variant="h5" color={Color.BC3}>
-                                            {event.eventStartdate} ~ {event.eventEnddate}
-                                        </Typography>
-                                        <Typography variant="h5" color={Color.BC3}>
-                                            {event.eventLocation}
-                                        </Typography>
-                                    </div>
-                                    <ReviewButton>리뷰작성</ReviewButton>
-                                </ReviewInfoBox>
-                            </CarouselItem>
-                        ))}
-                    </CarouselWrapper>
-                </Section>
+                <ReviewInfoBox>
+                  <div>
+                    <Typography variant="h3" color={Color.MC1}>
+                      {event.calenderDay}
+                    </Typography>
+                    <Typography variant="h3">{event.eventTitle}</Typography>
+                    <Typography variant="h5" color={Color.BC3}>
+                      {event.eventStartdate} ~ {event.eventEnddate}
+                    </Typography>
+                    <Typography variant="h5" color={Color.BC3}>
+                      {event.eventLocation}
+                    </Typography>
+                  </div>
+                  <ReviewButton>리뷰작성</ReviewButton>
+                </ReviewInfoBox>
+              </CarouselItem>
+            ))}
+          </CarouselWrapper>
+        </Section>
 
-                <Section>
-                    <Header>
-                        <Typography variant="h3">{userData.userName}님의 리뷰</Typography>
-                        <Iconstyle icon={Icons.more} />
-                    </Header>
+        <Section>
+          <Header>
+            <Typography variant="h3">{userData.userName}님의 리뷰</Typography>
+            <Iconstyle icon={Icons.more} />
+          </Header>
+          {reviewData.map((review, idx) => (
+            <ReviewCard
+              key={idx}
+              calenderDay={review.calenderDay}
+              eventTitle={review.eventTitle}
+              reviewContent={review.reviewContent}
+              imageUrl={review.eventImageurl}
+            />
+          ))}
 
-                    {reviewData.map((review, idx) => (
-                        <ReviewListBox key={idx}>
-                            <ReviewText>
-                                <Typography variant="h5" color={Color.MC1}>{review.calenderDay}</Typography>
-                                <Typography variant="h3">{review.eventTitle}</Typography>
-                                <Typography variant="h6" color={Color.BC3}>{review.reviewContent}</Typography>
-                            </ReviewText>
-                            <ReviewImage src={review.eventImageurl} alt={review.eventTitle} />
-                        </ReviewListBox>
-                    ))}
-                </Section>
+        </Section>
 
-                {isModalOpen && (
-                    <Backdrop onClick={() => setIsModalOpen(false)}>
-                        <SlideModal onClick={(e) => e.stopPropagation()}>
-                            <ModalContent>
-                                <Typography variant="h4">관심사 수정</Typography>
+        {isModalOpen && (
+          <Backdrop onClick={() => setIsModalOpen(false)}>
+            <SlideModal onClick={(e) => e.stopPropagation()}>
+              <ModalContent>
+                <Typography variant="h4">관심사 수정</Typography>
 
-                                <Button
-                                    variant="primary"
-                                    fullWidth={true}
-                                    onClick={() => {
-                                        setIsModalOpen(false);
-                                        setIsClicked(false);
-                                    }}
-                                >
-                                    완료
-                                </Button>
-                            </ModalContent>
-                        </SlideModal>
-                    </Backdrop>
-                )}
-            </Container>
-        </MobileLayout>
-    );
+                <Button
+                  variant="primary"
+                  fullWidth={true}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setIsClicked(false);
+                  }}
+                >
+                  완료
+                </Button>
+              </ModalContent>
+            </SlideModal>
+          </Backdrop>
+        )}
+      </Container>
+    </MobileLayout>
+  );
 };
 
 export default Mypage;

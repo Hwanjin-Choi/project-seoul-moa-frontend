@@ -4,7 +4,8 @@ import {
     faMapLocationDot,
     faPen,
     faChevronRight,
-
+    faChevronLeft,
+    faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const Icons = {
@@ -13,4 +14,6 @@ export const Icons = {
     map: faMapLocationDot,
     pen: faPen,
     more: faChevronRight,
+    back: faChevronLeft,
+    mapPin: faLocationDot,
 };
