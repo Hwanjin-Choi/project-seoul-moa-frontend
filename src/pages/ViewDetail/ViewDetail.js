@@ -14,6 +14,7 @@ import {
     mapData,
     subwayData
 } from "./data";
+import KakaoMap from "../../components/Map/KakaoMap";
 
 import { useState } from "react";
 import {
@@ -273,11 +274,16 @@ const ViewDetail = () => {
 
 
                 <Typography variant="h3" style={{ marginTop: 20 }}>지도</Typography>
-                <MapBox />
+                <MapBox>
+                    <KakaoMap
+                        lat={Number(mapData.latitude)}
+                        lng={Number(mapData.longitude)}
+                    />
+                </MapBox>
 
                 <LocationBox>
                     <FontAwesomeIcon icon={Icons.mapPin} />
-                    <Typography variant="h3" color={Color.MC1}>station</Typography>
+                    <Typography variant="h3" color={Color.MC1}>{subwayData.subwayName}</Typography>
                 </LocationBox>
 
                 <ChartBox>
@@ -311,7 +317,7 @@ const ViewDetail = () => {
                 </ChartBox>
 
                 <Typography variant="h5" style={{ textAlign: "center" }}>
-                    {currentHour}시 의 {subwayData.subwayName} 는 <Tag>{subwayData.state}</Tag> 단계입니다
+                    {currentHour}시의 {subwayData.subwayName}는 <Tag>{subwayData.state}</Tag> 단계입니다
                 </Typography>
 
 
