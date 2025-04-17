@@ -123,7 +123,7 @@ const TopBar = styled.div`
         max-width: 960px;
         padding: 0 70px;
     }
-    z-index: 10000;
+    z-index: 1;
     display: flex;
     align-items: center;
     height: 50px;
@@ -146,23 +146,32 @@ const Backdrop = styled.div`
 const SlideModal = styled.div`
   position: fixed;
   bottom: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
-  max-height: 60vh;
+  max-width: 960px;
+  padding: 24px;
   background-color: #fff;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 24px;
   z-index: 1001;
   animation: slideUp 0.3s ease-out;
 
   @keyframes slideUp {
     from {
-      transform: translateY(100%);
+      transform: translate(-50%, 100%);
     }
     to {
-      transform: translateY(0%);
+      transform: translate(-50%, 0%);
     }
+  }
+
+  @media (min-width: 768px) {
+    padding: 24px 55px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 24px 70px;
   }
 `;
 

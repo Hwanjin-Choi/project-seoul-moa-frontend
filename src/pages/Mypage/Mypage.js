@@ -110,23 +110,32 @@ const Backdrop = styled.div`
 const SlideModal = styled.div`
   position: fixed;
   bottom: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
-  max-height: 60vh;
+  max-width: 960px;
+  padding: 24px;
   background-color: #fff;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 24px;
   z-index: 1001;
   animation: slideUp 0.3s ease-out;
 
   @keyframes slideUp {
     from {
-      transform: translateY(100%);
+      transform: translate(-50%, 100%);
     }
     to {
-      transform: translateY(0%);
+      transform: translate(-50%, 0%);
     }
+  }
+
+  @media (min-width: 768px) {
+    padding: 24px 55px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 24px 70px;
   }
 `;
 
@@ -159,130 +168,216 @@ const CloseButton = styled.button`
 `;
 
 const Mypage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-
-  return (
-    <MobileLayout>
-      <BannerImg src={Banner} />
-
-      <Container>
-        <Section>
-          <Header>
-            <Typography variant="h3">{userData.userName}님의 관심사</Typography>
-            <Iconstyle
-              icon={Icons.pen}
-              onClick={() => {
-                setIsModalOpen(true);
-                setIsClicked(true);
-              }}
-              color={isClicked ? Color.MC1 : Color.BC4}
-            />
-          </Header>
-
-          <CategoryChipWrapper>
-            {userData.categoryName.map((cat, idx) => (
-              <CategoryChip key={idx}>
-                <Typography variant="h6" color={Color.MC1}>
-                  {cat}
-                </Typography>
-              </CategoryChip>
-            ))}
-          </CategoryChipWrapper>
-        </Section>
-
-        <Section>
-          <Typography variant="h3">리뷰 작성하기</Typography>
-          <CarouselWrapper>
-            {reviewCreateData.map((event, idx) => (
-              <CarouselItem key={idx}>
-                <Thumb src={event.eventImageurl} />
-
-                <ReviewInfoBox>
-                  <div>
-                    <Typography variant="h3" color={Color.MC1}>
-                      {event.calenderDay}
-                    </Typography>
-                    <Typography variant="h3">{event.eventTitle}</Typography>
-                    <Typography variant="h5" color={Color.BC3}>
-                      {event.eventStartdate} ~ {event.eventEnddate}
-                    </Typography>
-                    <Typography variant="h5" color={Color.BC3}>
-                      {event.eventLocation}
-                    </Typography>
-                  </div>
-                  <ReviewButton>리뷰작성</ReviewButton>
-                </ReviewInfoBox>
-              </CarouselItem>
-            ))}
-          </CarouselWrapper>
-        </Section>
-
-        <Section>
-          <Header>
-            <Typography variant="h3">{userData.userName}님의 리뷰</Typography>
-            <Iconstyle
-              icon={Icons.more}
-              onClick={() => setIsReviewModalOpen(true)}
-              style={{ cursor: "pointer" }}
-            />
-          </Header>
-
-          <ReviewCard
-            calenderDay={reviewData[0].calenderDay}
-            eventTitle={reviewData[0].eventTitle}
-            reviewContent={reviewData[0].reviewContent}
-            imageUrl={reviewData[0].eventImageurl}
-          />
-        </Section>
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isClicked, setIsClicked] = useState(false);
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedReview, setSelectedReview] = useState(null);
+    const [editedContent, setEditedContent] = useState("");
 
 
-        {isModalOpen && (
-          <Backdrop onClick={() => setIsModalOpen(false)}>
-            <SlideModal onClick={(e) => e.stopPropagation()}>
-              <ModalContent>
-                <Typography variant="h4">관심사 수정</Typography>
+    return (
+        <MobileLayout>
+            <BannerImg src={Banner} />
 
-                <Button
-                  variant="primary"
-                  fullWidth={true}
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    setIsClicked(false);
-                  }}
-                >
-                  완료
-                </Button>
-              </ModalContent>
-            </SlideModal>
-          </Backdrop>
-        )}
-      </Container>
-      {isReviewModalOpen && (
-        <Backdrop onClick={() => setIsReviewModalOpen(false)}>
-          <SlideModal onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              <Typography variant="h3">전체 리뷰</Typography>
-              <CloseButton onClick={() => setIsReviewModalOpen(false)}>닫기</CloseButton>
-            </ModalHeader>
-            <ModalContent>
-              {reviewData.map((review, idx) => (
-                <ReviewCard
-                  key={idx}
-                  calenderDay={review.calenderDay}
-                  eventTitle={review.eventTitle}
-                  reviewContent={review.reviewContent}
-                  imageUrl={review.eventImageurl}
-                />
-              ))}
-            </ModalContent>
-          </SlideModal>
-        </Backdrop>
-      )}
+            <Container>
+                <Section>
+                    <Header>
+                        <Typography variant="h3">{userData.userName}님의 관심사</Typography>
+                        <Iconstyle
+                            icon={Icons.pen}
+                            onClick={() => {
+                                setIsModalOpen(true);
+                                setIsClicked(true);
+                            }}
+                            color={isClicked ? Color.MC1 : Color.BC4}
+                        />
+                    </Header>
 
-    </MobileLayout>
-  );
+                    <CategoryChipWrapper>
+                        {userData.categoryName.map((cat, idx) => (
+                            <CategoryChip key={idx}>
+                                <Typography variant="h6" color={Color.MC1}>
+                                    {cat}
+                                </Typography>
+                            </CategoryChip>
+                        ))}
+                    </CategoryChipWrapper>
+                </Section>
+
+                <Section>
+                    <Typography variant="h3">리뷰 작성하기</Typography>
+                    <CarouselWrapper>
+                        {reviewCreateData.map((event, idx) => (
+                            <CarouselItem key={idx}>
+                                <Thumb src={event.eventImageurl} />
+
+                                <ReviewInfoBox>
+                                    <div>
+                                        <Typography variant="h3" color={Color.MC1}>
+                                            {event.calenderDay}
+                                        </Typography>
+                                        <Typography variant="h3">{event.eventTitle}</Typography>
+                                        <Typography variant="h5" color={Color.BC3}>
+                                            {event.eventStartdate} ~ {event.eventEnddate}
+                                        </Typography>
+                                        <Typography variant="h5" color={Color.BC3}>
+                                            {event.eventLocation}
+                                        </Typography>
+                                    </div>
+                                    <ReviewButton>리뷰작성</ReviewButton>
+                                </ReviewInfoBox>
+                            </CarouselItem>
+                        ))}
+                    </CarouselWrapper>
+                </Section>
+
+                <Section>
+                    <Header>
+                        <Typography variant="h3">{userData.userName}님의 리뷰</Typography>
+                        <Iconstyle
+                            icon={Icons.more}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setIsReviewModalOpen(true)}
+                        />
+                    </Header>
+
+                    <ReviewCard
+                        calenderDay={reviewData[0].calenderDay}
+                        eventTitle={reviewData[0].eventTitle}
+                        reviewContent={reviewData[0].reviewContent}
+                        imageUrl={reviewData[0].eventImageurl}
+                    />
+                </Section>
+            </Container>
+
+            {isModalOpen && (
+                <Backdrop onClick={() => setIsModalOpen(false)}>
+                    <SlideModal onClick={(e) => e.stopPropagation()}>
+                        <ModalContent>
+                            <Typography variant="h4">관심사 수정</Typography>
+
+                            <Button
+                                variant="primary"
+                                fullWidth={true}
+                                onClick={() => {
+                                    setIsModalOpen(false);
+                                    setIsClicked(false);
+                                }}
+                            >
+                                완료
+                            </Button>
+                        </ModalContent>
+                    </SlideModal>
+                </Backdrop>
+            )}
+
+            {isReviewModalOpen && (
+                <Backdrop onClick={() => setIsReviewModalOpen(false)}>
+                    <SlideModal onClick={(e) => e.stopPropagation()}>
+                        <ModalHeader>
+                            <Typography variant="h3">전체 리뷰</Typography>
+                            <CloseButton onClick={() => setIsReviewModalOpen(false)}>닫기</CloseButton>
+                        </ModalHeader>
+
+                        <ModalContent>
+                            {reviewData.map((review, idx) => (
+                                <div key={idx} style={{ position: "relative" }}>
+                                    <ReviewCard
+                                        calenderDay={review.calenderDay}
+                                        eventTitle={review.eventTitle}
+                                        reviewContent={review.reviewContent}
+                                        imageUrl={review.eventImageurl}
+                                    />
+                                    <FontAwesomeIcon
+                                        icon={Icons.pen}
+                                        style={{
+                                            position: "absolute",
+                                            top: 12,
+                                            right: 12,
+                                            cursor: "pointer",
+                                            color: Color.BC4,
+                                        }}
+                                        onClick={() => {
+                                            setSelectedReview(review);
+                                            setEditedContent(review.reviewContent);
+                                            setIsEditModalOpen(true);
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </ModalContent>
+                    </SlideModal>
+                </Backdrop>
+            )}
+
+            {isEditModalOpen && selectedReview && (
+                <Backdrop onClick={() => setIsEditModalOpen(false)}>
+                    <SlideModal onClick={(e) => e.stopPropagation()}>
+                        <ModalHeader>
+                            <Typography variant="h3">리뷰 수정</Typography>
+                            <CloseButton onClick={() => setIsEditModalOpen(false)}>닫기</CloseButton>
+                        </ModalHeader>
+
+                        <ModalContent>
+                            <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+                                <img
+                                    src={selectedReview.eventImageurl}
+                                    alt="리뷰 이미지"
+                                    style={{
+                                        width: "60px",
+                                        height: "60px",
+                                        objectFit: "cover",
+                                        borderRadius: "8px",
+                                    }}
+                                />
+                                <div>
+                                    <Typography variant="h5" color={Color.MC1}>
+                                        {selectedReview.calenderDay}
+                                    </Typography>
+                                    <Typography variant="h4">{selectedReview.eventTitle}</Typography>
+                                </div>
+                            </div>
+
+                            <textarea
+                                value={editedContent}
+                                onChange={(e) => setEditedContent(e.target.value)}
+                                placeholder="내용을 입력하세요"
+                                style={{
+                                    width: "100%",
+                                    height: "100px",
+                                    padding: "12px",
+                                    border: `1px solid ${Color.BC4}`,
+                                    borderRadius: "12px",
+                                    resize: "none",
+                                    fontFamily: "inherit",
+                                }}
+                            />
+
+                            <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
+                                <Button variant="secondary" fullWidth onClick={() => setIsEditModalOpen(false)}>
+                                    취소
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    fullWidth
+                                    onClick={() => {
+                                        console.log("날짜:", selectedReview.calenderDay);
+                                        console.log("제목:", selectedReview.eventTitle);
+                                        console.log("내용:", editedContent);
+                                        setIsEditModalOpen(false);
+                                    }}
+                                >
+                                    수정하기
+                                </Button>
+                            </div>
+                        </ModalContent>
+                    </SlideModal>
+                </Backdrop>
+            )}
+
+        </MobileLayout>
+    );
 };
 
 export default Mypage;
