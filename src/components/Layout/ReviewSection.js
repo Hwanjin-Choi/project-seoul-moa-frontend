@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import Typography from "../../components/Typography/Typography";
+import Typography from "../Typography/Typography";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icons } from "../../assets/icons";
 import { Color } from "../../styles/colorsheet";
-import ReviewCard from "../../components/Card/ReviewCard";
+import ReviewCard from "../Card/ReviewCard";
 
 const FlexDiv = styled.div`
   display: flex;
@@ -54,18 +54,28 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const ReviewSection = ({ reviewData, isOpen, setIsOpen }) => {
+const ReviewSection = ({
+    reviewData,
+    isOpen,
+    setIsOpen,
+    showHeader = true,
+    modalTitle = "전체 리뷰",
+    showEdit = false,
+    onEditClick,
+}) => {
     return (
         <>
-            <FlexDiv>
-                <Typography variant="h3">리뷰</Typography>
-                <FontAwesomeIcon
-                    icon={Icons.more}
-                    color={Color.BC3}
-                    onClick={() => setIsOpen(true)}
-                    style={{ cursor: "pointer" }}
-                />
-            </FlexDiv>
+            {showHeader && (
+                <FlexDiv>
+                    <Typography variant="h3">리뷰</Typography>
+                    <FontAwesomeIcon
+                        icon={Icons.more}
+                        color={Color.BC3}
+                        onClick={() => setIsOpen(true)}
+                        style={{ cursor: "pointer" }}
+                    />
+                </FlexDiv>
+            )}
 
             <ReviewCard
                 calenderDay={reviewData[0].calenderDay}
@@ -78,18 +88,33 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen }) => {
                 <ModalWrapper onClick={() => setIsOpen(false)}>
                     <SlideModal onClick={(e) => e.stopPropagation()}>
                         <ModalHeader>
-                            <Typography variant="h3">전체 리뷰</Typography>
+                            <Typography variant="h3">{modalTitle}</Typography>
                             <CloseButton onClick={() => setIsOpen(false)}>닫기</CloseButton>
                         </ModalHeader>
                         <ModalContent>
                             {reviewData.map((review, idx) => (
-                                <ReviewCard
-                                    key={idx}
-                                    calenderDay={review.calenderDay}
-                                    eventTitle={review.eventTitle}
-                                    reviewContent={review.reviewContent}
-                                    imageUrl={review.eventImageurl}
-                                />
+                                <div key={idx} style={{ position: "relative" }}>
+                                    <ReviewCard
+                                        key={idx}
+                                        calenderDay={review.calenderDay}
+                                        eventTitle={review.eventTitle}
+                                        reviewContent={review.reviewContent}
+                                        imageUrl={review.eventImageurl}
+                                    />
+                                    {showEdit && (
+                                        <FontAwesomeIcon
+                                            icon={Icons.pen}
+                                            style={{
+                                                position: "absolute",
+                                                top: 12,
+                                                right: 12,
+                                                cursor: "pointer",
+                                                color: Color.BC4,
+                                            }}
+                                            onClick={() => onEditClick && onEditClick(review)}
+                                        />
+                                    )}
+                                </div>
                             ))}
                         </ModalContent>
                     </SlideModal>
