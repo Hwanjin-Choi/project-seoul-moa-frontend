@@ -1,44 +1,45 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { Color } from "../../styles/colorsheet";
 
 const getVariantStyles = ({ variant }) => {
   switch (variant) {
     case "primary":
       return css`
-        background-color: #7b61ff;
+        background-color: ${Color.MC1};
         color: white;
         &:hover {
-          background-color: #6549ff;
+          background-color: ${Color.MC2};
         }
       `;
     case "secondary":
       return css`
-        background-color: #f5f5f5;
-        color: #666666;
+        background-color: ${Color.MC5};
+        color: ${Color.BC3};
         &:hover {
-          background-color: #e8e8e8;
+          background-color: ${Color.MC4};
         }
       `;
     case "outline":
       return css`
         background-color: transparent;
-        color: #7b61ff;
-        border: 1px solid #7b61ff;
+        color: ${Color.MC1};
+        border: 1px solid ${Color.MC1};
         &:hover {
-          background-color: rgba(123, 97, 255, 0.1);
+          background-color: rgba(132, 120, 255, 0.1); // MC1의 rgba
         }
       `;
     case "text":
       return css`
         background-color: transparent;
-        color: #7b61ff;
+        color: ${Color.MC1};
       `;
     default:
       return css`
-        background-color: #7b61ff;
+        background-color: ${Color.MC1};
         color: white;
         &:hover {
-          background-color: #6549ff;
+          background-color: ${Color.MC2};
         }
       `;
   }

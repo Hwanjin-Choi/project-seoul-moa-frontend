@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Navigation from "../Navigation/Navigation";
 const LayoutWrapper = styled.div`
-  margin: 0 auto; // Center the layout
+  margin: 0 auto;
 
   @media (min-width: 768px) {
-    // Adjust this value based on your tablet breakpoint
-    max-width: 720px; // Set the desired width for larger screens
+    max-width: 720px;
   }
-
   @media (min-width: 1024px) {
-    // Optional: Adjust for larger screens
-    max-width: 960px; // Set another width if needed
+    max-width: 960px;
   }
   width: 100%;
   position: relative;
@@ -20,7 +17,9 @@ const LayoutWrapper = styled.div`
 
 const Content = styled.div``;
 
+
 const MobileLayout = ({ children }) => {
+  
   return (
     <LayoutWrapper>
       <Content>{children}</Content>

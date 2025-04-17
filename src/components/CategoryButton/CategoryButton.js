@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { Color } from "../../styles/colorsheet";
 
 const getIsClicked = ({ isClicked }) => {
   if (isClicked) {
     return css`
-      background-color: #8478ff;
+      background-color: ${Color.MC1};
       color: #fff;
     `;
   }
@@ -16,7 +17,7 @@ const getIsClicked = ({ isClicked }) => {
   `;
 };
 const StyledCategoryButton = styled.button`
-  background-color: #8478ff;
+  background-color: ${Color.MC1};
   border: none;
   border-radius: 10px;
   padding: 10px;
