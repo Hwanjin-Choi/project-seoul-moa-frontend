@@ -1,0 +1,42 @@
+import styled from "styled-components";
+import KakaoMap from "../../components/Map/KakaoMap";
+import Typography from "../../components/Typography/Typography";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icons } from "../../assets/icons";
+import { Color } from "../../styles/colorsheet";
+
+const MapBox = styled.div`
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  margin-top: 12px;
+  z-index: 0;
+`;
+
+const LocationBox = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  gap: 4px;
+  color: ${Color.MC1};
+`;
+
+const MapSection = ({ mapReady, mapData, subwayName }) => (
+  <>
+    <Typography variant="h3" style={{ marginTop: 20 }}>지도</Typography>
+    <MapBox>
+      {mapReady && (
+        <KakaoMap
+          lat={Number(mapData.latitude)}
+          lng={Number(mapData.longitude)}
+        />
+      )}
+    </MapBox>
+    <LocationBox>
+      <FontAwesomeIcon icon={Icons.mapPin} />
+      <Typography variant="h3" color={Color.MC1}>{subwayName}</Typography>
+    </LocationBox>
+  </>
+);
+
+export default MapSection;
