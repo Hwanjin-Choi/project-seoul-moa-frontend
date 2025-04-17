@@ -6,8 +6,8 @@ import Mypage from "./pages/Mypage/Mypage.js";
 import Map from "./pages/Map/Map.js";
 import ViewDetail from "./pages/ViewDetail/ViewDetail.js";
 import RegistrationPage from "./pages/Registration/RegistrationPage";
+import ViewMorePage from "./pages/ViewMore/ViewMorePage";
 import "./App.css";
-
 const App = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -34,6 +34,7 @@ const App = () => {
         <Route path="/my-page" element={<Mypage />} />
         <Route path="/map" element={<Map />} />
         <Route path="/viewdetail-page" element={<ViewDetail mapReady={mapLoaded} />} />
+        <Route path="/view-more-page" element={<ViewMorePage />} />
         <Route path="/" element={<DemoPage />} />
       </Routes>
     </Router>
