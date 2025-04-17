@@ -11,7 +11,7 @@ const StyledTag = styled.span`
   align-items: center;
   margin-right: 8px;
   margin-bottom: 8px;
-
+  width: fit-content;
   &:last-child {
     margin-right: 0;
   }

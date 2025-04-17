@@ -13,10 +13,9 @@ const LayoutWrapper = styled.div`
     // Optional: Adjust for larger screens
     max-width: 960px; // Set another width if needed
   }
-
+  width: 100%;
   position: relative;
-  padding-bottom: 60px; /* Height of the navigation bar */
-  background: white;
+  background: linear-gradient(to bottom, #f3f2ff, #ccc7fa);
 `;
 
 const Content = styled.div``;
