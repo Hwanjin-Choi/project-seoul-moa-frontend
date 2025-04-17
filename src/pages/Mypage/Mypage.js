@@ -174,6 +174,10 @@ const Mypage = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedReview, setSelectedReview] = useState(null);
     const [editedContent, setEditedContent] = useState("");
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [selectedCreateItem, setSelectedCreateItem] = useState(null);
+    const [createContent, setCreateContent] = useState("");
+
 
 
     return (
@@ -225,7 +229,16 @@ const Mypage = () => {
                                             {event.eventLocation}
                                         </Typography>
                                     </div>
-                                    <ReviewButton>리뷰작성</ReviewButton>
+                                    <ReviewButton
+                                        onClick={() => {
+                                            setSelectedCreateItem(event);
+                                            setCreateContent("");
+                                            setIsCreateModalOpen(true);
+                                        }}
+                                    >
+                                        리뷰작성
+                                    </ReviewButton>
+
                                 </ReviewInfoBox>
                             </CarouselItem>
                         ))}
@@ -316,7 +329,6 @@ const Mypage = () => {
                     <SlideModal onClick={(e) => e.stopPropagation()}>
                         <ModalHeader>
                             <Typography variant="h3">리뷰 수정</Typography>
-                            <CloseButton onClick={() => setIsEditModalOpen(false)}>닫기</CloseButton>
                         </ModalHeader>
 
                         <ModalContent>
@@ -369,6 +381,70 @@ const Mypage = () => {
                                     }}
                                 >
                                     수정하기
+                                </Button>
+                            </div>
+                        </ModalContent>
+                    </SlideModal>
+                </Backdrop>
+            )}
+
+            {isCreateModalOpen && selectedCreateItem && (
+                <Backdrop onClick={() => setIsCreateModalOpen(false)}>
+                    <SlideModal onClick={(e) => e.stopPropagation()}>
+                        <ModalHeader>
+                            <Typography variant="h3">리뷰 작성</Typography>
+                        </ModalHeader>
+
+                        <ModalContent>
+                            <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+                                <img
+                                    src={selectedCreateItem.eventImageurl}
+                                    alt="리뷰 이미지"
+                                    style={{
+                                        width: "60px",
+                                        height: "60px",
+                                        objectFit: "cover",
+                                        borderRadius: "8px",
+                                    }}
+                                />
+                                <div>
+                                    <Typography variant="h5" color={Color.MC1}>
+                                        {selectedCreateItem.calenderDay}
+                                    </Typography>
+                                    <Typography variant="h4">{selectedCreateItem.eventTitle}</Typography>
+                                </div>
+                            </div>
+
+                            <textarea
+                                value={createContent}
+                                onChange={(e) => setCreateContent(e.target.value)}
+                                placeholder="내용을 입력하세요"
+                                style={{
+                                    width: "100%",
+                                    height: "100px",
+                                    padding: "12px",
+                                    border: `1px solid ${Color.BC4}`,
+                                    borderRadius: "12px",
+                                    resize: "none",
+                                    fontFamily: "inherit",
+                                }}
+                            />
+
+                            <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
+                                <Button variant="secondary" fullWidth onClick={() => setIsCreateModalOpen(false)}>
+                                    취소
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    fullWidth
+                                    onClick={() => {
+                                        console.log("날짜:", selectedCreateItem.calenderDay);
+                                        console.log("제목:", selectedCreateItem.eventTitle);
+                                        console.log("내용:", createContent);
+                                        setIsCreateModalOpen(false);
+                                    }}
+                                >
+                                    작성하기
                                 </Button>
                             </div>
                         </ModalContent>
