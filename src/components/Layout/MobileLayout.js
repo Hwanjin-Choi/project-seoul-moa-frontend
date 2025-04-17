@@ -26,6 +26,7 @@ const Navigation = styled.nav`
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: 1;
   @media (min-width: 768px) {
     max-width: 720px;
   }

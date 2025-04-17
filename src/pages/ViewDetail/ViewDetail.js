@@ -71,6 +71,7 @@ const MapBox = styled.div`
     height: 200px;
     border-radius: 10px;
     margin-top: 12px;
+    z-index: 0;
 `;
 
 const LocationBox = styled.div`
@@ -118,7 +119,6 @@ const TopBar = styled.div`
         max-width: 720px;
         padding: 0 55px;
     }
-
     @media (min-width: 1024px) {
         max-width: 960px;
         padding: 0 70px;
@@ -220,6 +220,9 @@ const ViewDetail = ({ mapReady }) => {
         return { ...item, fill: color };
     });
 
+    const today = new Date();
+    const currentDay = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+    const [isReserveOpen, setIsReserveOpen] = useState(false);
 
     return (
         <MobileLayout>
@@ -228,7 +231,6 @@ const ViewDetail = ({ mapReady }) => {
             </TopBar>
 
             <ViewDetailLayout>
-
                 <InfoBox>
                     <PosterWrapper>
                         <PosterImage src={EventDetailData.image_url} />
@@ -322,8 +324,12 @@ const ViewDetail = ({ mapReady }) => {
                 </Typography>
 
 
-                <BottomButton>예약하기</BottomButton>
+                <BottomButton onClick={() => setIsReserveOpen(true)}>
+                    예약하기
+                </BottomButton>
+
             </ViewDetailLayout>
+
             {isModalOpen && (
                 <Backdrop onClick={() => setIsModalOpen(false)}>
                     <SlideModal onClick={(e) => e.stopPropagation()}>
@@ -342,6 +348,69 @@ const ViewDetail = ({ mapReady }) => {
                                     imageUrl={review.eventImageurl}
                                 />
                             ))}
+                        </ModalContent>
+                    </SlideModal>
+                </Backdrop>
+            )}
+
+            {isReserveOpen && (
+                <Backdrop onClick={() => setIsReserveOpen(false)}>
+                    <SlideModal onClick={(e) => e.stopPropagation()}>
+                        <ModalHeader>
+                            <Typography variant="h3">
+                                <strong>{currentDay}</strong>에 행사를 예약하시겠습니까?
+                            </Typography>
+                        </ModalHeader>
+
+                        <ModalContent>
+                            <div style={{ display: "flex", gap: "15px", alignItems: "flex-start" }}>
+                                <div style={{ flex: "0 0 150px" }}>
+                                    <img
+                                        src={EventDetailData.image_url}
+                                        alt="poster"
+                                        style={{
+                                            width: "100%",
+                                            aspectRatio: "170 / 220",
+                                            borderRadius: "12px",
+                                            objectFit: "cover",
+                                        }}
+                                    />
+                                </div>
+
+                                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
+                                    <Typography variant="h3" color={Color.BC2}>
+                                        {EventDetailData.title}
+                                    </Typography>
+                                    <Typography variant="h5" color={Color.BC3}>
+                                        {EventDetailData.startDate} - {EventDetailData.endDate}
+                                    </Typography>
+                                    <Typography variant="h5" color={Color.BC3}>
+                                        {EventDetailData.location}
+                                    </Typography>
+                                </div>
+                            </div>
+
+                            <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
+                                <Button
+                                    variant="secondary"
+                                    fullWidth
+                                    onClick={() => setIsReserveOpen(false)}
+                                >
+                                    취소
+                                </Button>
+
+                                <Button
+                                    variant="primary"
+                                    fullWidth
+                                    onClick={() => {
+                                        console.log(`${currentDay}, ${EventDetailData.title}`);
+                                        setIsReserveOpen(false);
+                                    }}
+                                >
+                                    예약하기
+                                </Button>
+                            </div>
+
                         </ModalContent>
                     </SlideModal>
                 </Backdrop>
