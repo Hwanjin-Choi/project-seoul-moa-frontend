@@ -5,15 +5,17 @@ const KakaoMap = ({ lat, lng }) => {
 
   useEffect(() => {
     if (!window.kakao || !window.kakao.maps) return;
-
+  
     const container = mapRef.current;
+    if (!container) return;
+  
     const options = {
       center: new window.kakao.maps.LatLng(lat, lng),
       level: 3,
     };
-
+  
     const map = new window.kakao.maps.Map(container, options);
-
+  
     new window.kakao.maps.Marker({
       position: new window.kakao.maps.LatLng(lat, lng),
       map,
@@ -26,7 +28,7 @@ const KakaoMap = ({ lat, lng }) => {
       style={{
         width: "100%",
         height: "100%",
-        borderRadius: "12px",
+        borderRadius: "10px",
       }}
     />
   );

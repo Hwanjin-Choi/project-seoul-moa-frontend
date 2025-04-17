@@ -68,9 +68,8 @@ const StyledHomeButton = styled(Button)`
 
 const MapBox = styled.div`
     width: 100%;
-    height: 150px;
-    background-color: ${Color.BC3};
-    border-radius: 12px;
+    height: 200px;
+    border-radius: 10px;
     margin-top: 12px;
 `;
 
@@ -84,7 +83,7 @@ const LocationBox = styled.div`
 
 const ChartBox = styled.div`
     width: 100%;
-    height: 100px;
+    height: 120px;
     margin: 15px 0;
 `;
 
@@ -124,7 +123,7 @@ const TopBar = styled.div`
         max-width: 960px;
         padding: 0 70px;
     }
-    z-index: 10;
+    z-index: 10000;
     display: flex;
     align-items: center;
     height: 50px;
@@ -196,7 +195,7 @@ const CloseButton = styled.button`
 `;
 
 
-const ViewDetail = () => {
+const ViewDetail = ({ mapReady }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const currentHour = new Date().getHours();
     const subwayChartData = Object.entries(subwayData).map(([key, value]) => {
@@ -275,10 +274,12 @@ const ViewDetail = () => {
 
                 <Typography variant="h3" style={{ marginTop: 20 }}>지도</Typography>
                 <MapBox>
-                    <KakaoMap
-                        lat={Number(mapData.latitude)}
-                        lng={Number(mapData.longitude)}
-                    />
+                    {mapReady && (
+                        <KakaoMap
+                            lat={Number(mapData.latitude)}
+                            lng={Number(mapData.longitude)}
+                        />
+                    )}
                 </MapBox>
 
                 <LocationBox>
