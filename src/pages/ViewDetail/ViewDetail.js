@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icons } from "../../assets/icons.js";
 import { Color } from "../../styles/colorsheet";
 
@@ -14,13 +14,7 @@ import ReserveModal from "./ReserveModal";
 import useViewDetail from "../../hooks/useViewDetail.js";
 import MapSection from "./MapSection.js";
 
-import {
-    EventDetailData,
-    reviewData,
-    mapData,
-    subwayData
-} from "./data";
-
+import { EventDetailData, reviewData, mapData, subwayData } from "./data";
 
 const BottomButton = styled(Button)`
   width: 100%;
@@ -57,58 +51,58 @@ const TopBar = styled.div`
 `;
 
 const ViewDetail = ({ mapReady }) => {
-    const {
-        isReviewModalOpen,
-        setIsReviewModalOpen,
-        isReserveOpen,
-        setIsReserveOpen,
-        currentDay,
-        subwayChartWithColor,
-        currentHour,
-    } = useViewDetail();
+  const {
+    isReviewModalOpen,
+    setIsReviewModalOpen,
+    isReserveOpen,
+    setIsReserveOpen,
+    currentDay,
+    subwayChartWithColor,
+    currentHour,
+  } = useViewDetail();
 
-    return (
-        <MobileLayout>
-            <TopBar>
-                <FontAwesomeIcon icon={Icons.back} />
-            </TopBar>
+  return (
+    <MobileLayout>
+      <TopBar>
+        <FontAwesomeIcon icon={Icons.back} />
+      </TopBar>
 
-            <ViewDetailLayout>
-                <DetailHeader data={EventDetailData} />
+      <ViewDetailLayout>
+        <DetailHeader data={EventDetailData} />
 
-                <ReviewSection
-                    reviewData={reviewData}
-                    isOpen={isReviewModalOpen}
-                    setIsOpen={setIsReviewModalOpen}
-                />
+        <ReviewSection
+          reviewData={reviewData}
+          isOpen={isReviewModalOpen}
+          setIsOpen={setIsReviewModalOpen}
+        />
 
-                <MapSection
-                    mapReady={mapReady}
-                    mapData={mapData}
-                    subwayName={subwayData.subwayName}
-                />
+        <MapSection
+          mapReady={mapReady}
+          mapData={mapData}
+          subwayName={subwayData.subwayName}
+        />
 
-                <SubwayChart
-                    data={subwayChartWithColor}
-                    currentHour={currentHour}
-                    subwayName={subwayData.subwayName}
-                    state={subwayData.state}
-                />
+        <SubwayChart
+          data={subwayChartWithColor}
+          currentHour={currentHour}
+          subwayName={subwayData.subwayName}
+          state={subwayData.state}
+        />
 
-                <BottomButton onClick={() => setIsReserveOpen(true)}>
-                    예약하기
-                </BottomButton>
-            </ViewDetailLayout>
+        <BottomButton onClick={() => setIsReserveOpen(true)}>
+          일정 추가
+        </BottomButton>
+      </ViewDetailLayout>
 
-            {isReserveOpen && (
-                <ReserveModal
-                    onClose={() => setIsReserveOpen(false)}
-                    date={currentDay}
-                    data={EventDetailData}
-                />
-            )}
-        </MobileLayout>
-    );
+      {isReserveOpen && (
+        <ReserveModal
+          onClose={() => setIsReserveOpen(false)}
+          date={currentDay}
+          data={EventDetailData}
+        />
+      )}
+    </MobileLayout>
+  );
 };
 
 export default ViewDetail;
