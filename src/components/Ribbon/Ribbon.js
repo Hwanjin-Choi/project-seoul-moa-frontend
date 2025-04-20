@@ -3,12 +3,25 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
 
-const StyleRibbonContainer = styled.div`
-  position: absolute;
-  top: 0px;
-  right: 5px;
-  z-index: 1;
+const StyleRibbonContainer = styled.button`
   text-align: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  border: none; /* 버튼 기본 테두리 제거 (선택 사항) */
+
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    /* 호버 시 약간 더 뚜렷한 그림자 */
+    box-shadow: 0 4px 8px #7b61ff;
+  }
+
+  &:active {
+    /* 클릭 시 안쪽으로 들어가는 듯한 그림자 효과 */
+    box-shadow: inset 0 2px 5px #7b61ff;
+  }
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -46,8 +59,8 @@ const Ribbon = ({ ...props }) => {
 
   return (
     <StyleRibbonContainer>
-      <Icon icon={faBookmark} />
-      <Text>{text}</Text>
+      <Icon icon={faBookmark}>{1000}</Icon>
+      <Icon />
     </StyleRibbonContainer>
   );
 };

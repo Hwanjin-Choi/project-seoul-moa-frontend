@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
-import CategoryButton from "../CategoryButton/CategoryButton";
+import Radio from "../Radio/Radio";
+
 const InputGroup = styled.div`
   margin-bottom: 5px;
 `;
@@ -19,6 +20,12 @@ const FormContainer = styled.div`
   max-width: 300px;
   width: 100%;
 `;
+const RadioContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: space-evenly;
+`;
 
 const RegiForm = ({ fields, submitText, onSubmit }) => {
   const [formData, setFormData] = useState({});
@@ -32,9 +39,13 @@ const RegiForm = ({ fields, submitText, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...formData }, setErrors);
+    onSubmit({ ...formData, gender: selectedGender }, setErrors);
   };
+  const [selectedGender, setSelectedGender] = useState(null);
 
+  const handleGenderChange = (value) => {
+    setSelectedGender(value);
+  };
   return (
     <FormContainer>
       <form
@@ -57,6 +68,20 @@ const RegiForm = ({ fields, submitText, onSubmit }) => {
             )}
           </InputGroup>
         ))}
+        <RadioContainer>
+          <Radio
+            label="남자"
+            value="male"
+            checked={selectedGender === "male"}
+            onChange={() => handleGenderChange("male")}
+          />
+          <Radio
+            label="여자"
+            value="male"
+            checked={selectedGender === "female"}
+            onChange={() => handleGenderChange("female")}
+          />
+        </RadioContainer>
 
         <Button fullWidth type="submit">
           {submitText}

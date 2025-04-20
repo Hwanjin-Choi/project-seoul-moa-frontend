@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark } from "@fortawesome/free-solid-svg-icons"; // Import the specific icon
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { Color } from "../../styles/colorsheet";
 
 const getIsClicked = ({ isClicked }) => {
   if (isClicked) {
     return css`
-      background-color: #8478ff;
+      background-color: ${Color.MC1};
       color: #fff;
     `;
   }
@@ -16,7 +17,7 @@ const getIsClicked = ({ isClicked }) => {
   `;
 };
 const StyledCategoryButton = styled.button`
-  background-color: #8478ff;
+  background-color: ${Color.MC1};
   border: none;
   border-radius: 10px;
   padding: 10px;
@@ -55,14 +56,14 @@ const Text = styled.p`
 
 const CategoryButton = (props) => {
   const [isClicked, setIsClicked] = useState(props.isClicked);
-  const handleClick = () => {
+  /* const handleClick = () => {
     setIsClicked(!isClicked);
-  };
+  }; */
 
   return (
-    <StyledCategoryButton onClick={handleClick} isClicked={isClicked}>
-      <Icon isClicked={isClicked} icon={faBookmark} />
-      <Text isClicked={isClicked}>{props.category}</Text>
+    <StyledCategoryButton onClick={props.onClick} isClicked={props.isClicked}>
+      <Icon isClicked={props.isClicked} icon={faBookmark} />
+      <Text isClicked={props.isClicked}>{props.category}</Text>
     </StyledCategoryButton>
   );
 };

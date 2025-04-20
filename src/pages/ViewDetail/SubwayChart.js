@@ -1,0 +1,57 @@
+import { BarChart, Bar, XAxis, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import styled from "styled-components";
+import Typography from "../../components/Typography/Typography";
+import { Color } from "../../styles/colorsheet";
+
+const ChartBox = styled.div`
+  width: 100%;
+  height: 120px;
+  margin: 15px 0;
+`;
+
+const Tag = styled.span`
+  background-color: ${Color.MC1};
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+`;
+
+const SubwayChart = ({ data, currentHour, subwayName, state }) => {
+  return (
+    <>
+      <ChartBox>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data}>
+            <XAxis
+              dataKey="time"
+              tick={({ x, y, payload }) => (
+                <text
+                  x={x}
+                  y={y + 10}
+                  textAnchor="middle"
+                  fontSize="12"
+                  fill={Color.BC3}
+                  fontFamily="'Noto Sans', sans-serif"
+                >
+                  {payload.value}
+                </text>
+              )}
+            />
+            <Tooltip />
+            <Bar dataKey="count" radius={[10, 10, 0, 0]}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartBox>
+
+      <Typography variant="h5" style={{ textAlign: "center" }}>
+        {currentHour}시의 {subwayName}는 <Tag>{state}</Tag> 단계입니다
+      </Typography>
+    </>
+  );
+};
+
+export default SubwayChart;
