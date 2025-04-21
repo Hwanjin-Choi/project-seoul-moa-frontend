@@ -43,29 +43,26 @@ const ViewMorePage = () => {
   return (
     <ViewMorePageContainer>
       <MobileLayout>
-        <BackHeader />
-        <Content>
-          <Typography variant="h3">다가오는 문화행사</Typography>
-          <UpcomingEventsContainer>
-            {UpcomingEventsField.map((item) => (
-              <NoBorderLandscapeCard
-                title={item.title}
-                address={item.address}
-                date={item.date}
-              />
-            ))}
-          </UpcomingEventsContainer>
-          <Typography variant="h3">실시간 리뷰</Typography>
-          <UpcomingEventsContainer>
-            {UpcomingEventsField.map((item) => (
-              <NoBorderLandscapeCard
-                title={item.title}
-                address={item.address}
-                date={item.date}
-              />
-            ))}
-          </UpcomingEventsContainer>
-        </Content>
+        <Typography variant="h3">다가오는 문화행사</Typography>
+        <UpcomingEventsContainer>
+          {UpcomingEventsField.map((item) => (
+            <NoBorderLandscapeCard
+              title={item.title}
+              address={item.address}
+              date={item.date}
+            />
+          ))}
+        </UpcomingEventsContainer>
+        <Typography variant="h3">실시간 리뷰</Typography>
+        <UpcomingEventsContainer>
+          {UpcomingEventsField.map((item) => (
+            <NoBorderLandscapeCard
+              title={item.title}
+              address={item.address}
+              date={item.date}
+            />
+          ))}
+        </UpcomingEventsContainer>
       </MobileLayout>
     </ViewMorePageContainer>
   );

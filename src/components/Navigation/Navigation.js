@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const NavContainer = styled.nav`
   position: fixed;
@@ -8,8 +9,7 @@ const NavContainer = styled.nav`
   transform: translateX(-50%);
   width: 100%;
   @media (min-width: 768px) {
-    // Adjust this value based on your tablet breakpoint
-    max-width: 720px; // Set the desired width for larger screens
+    max-width: 720px;
   }
 
   @media (min-width: 1024px) {
@@ -64,23 +64,35 @@ const ProfileIcon = () => (
 );
 
 const Navigation = () => {
-  const [activeTab, setActiveTab] = useState("home");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <NavContainer>
       <NavItem
-        active={activeTab === "home"}
-        onClick={() => setActiveTab("home")}
+        active={currentPath === "/"}
+        onClick={() => {
+          navigate("/");
+        }}
       >
         <HomeIcon />
         <span>홈</span>
       </NavItem>
-      <NavItem active={activeTab === "map"} onClick={() => setActiveTab("map")}>
+      <NavItem
+        active={currentPath === "/map"}
+        onClick={() => {
+          navigate("/map");
+        }}
+      >
         <MapIcon />
         <span>지도</span>
       </NavItem>
       <NavItem
-        active={activeTab === "profile"}
-        onClick={() => setActiveTab("profile")}
+        active={currentPath === "/my-page"}
+        onClick={() => {
+          navigate("/my-page");
+        }}
       >
         <ProfileIcon />
         <span>마이페이지</span>

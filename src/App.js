@@ -33,7 +33,10 @@ const App = () => {
         <Route path="/demo-page" element={<DemoPage />} />
         <Route path="/my-page" element={<Mypage />} />
         <Route path="/map" element={<Map />} />
-        <Route path="/viewdetail-page" element={<ViewDetail mapReady={mapLoaded} />} />
+        <Route
+          path="/view-detail-page"
+          element={<ViewDetail mapReady={mapLoaded} />}
+        />
         <Route path="/view-more-page" element={<ViewMorePage />} />
         <Route path="/" element={<DemoPage />} />
       </Routes>

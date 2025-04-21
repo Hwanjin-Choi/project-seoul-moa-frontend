@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Navigation from "../Navigation/Navigation";
+import BackHeader from "../BackHeader/BackHeader";
+import logo from "../../assets/seoulmoa.svg";
+import { useLocation, useNavigate } from "react-router-dom";
+
 const LayoutWrapper = styled.div`
   margin: 0 auto;
-
   @media (min-width: 768px) {
     max-width: 720px;
   }
@@ -11,18 +14,66 @@ const LayoutWrapper = styled.div`
     max-width: 960px;
   }
   width: 100%;
+  height: 100vh;
   position: relative;
   background: linear-gradient(to bottom, #f3f2ff, #ccc7fa);
+  overflow: hidden;
 `;
 
-const Content = styled.div``;
+const Content = styled.div`
+  height: calc(100vh - 57px);
+  overflow-y: auto;
+  padding: 20px 30px 70px 30px;
+  @media (max-width: 768px) {
+    padding: 10px 20px 70px 20px;
+  }
+`;
 
+const NavigationWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;
+const Logo = styled.img`
+  width: 45px;
+  height: 45px;
+  margin-left: 10px;
+  cursor: pointer;
+`;
+const HeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const Header = styled.header`
+  background-color: #fff;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+`;
 
 const MobileLayout = ({ children }) => {
-  
+  const location = useLocation();
+  const isDefaultPage = location.pathname === "/";
+  const navigate = useNavigate();
   return (
     <LayoutWrapper>
+      {isDefaultPage ? (
+        <Header onClick={() => navigate("/")}>
+          <HeaderContent>
+            <Logo src={logo} alt="logo" />
+          </HeaderContent>
+        </Header>
+      ) : (
+        <BackHeader />
+      )}
       <Content>{children}</Content>
+      <NavigationWrapper>
+        <Navigation />
+      </NavigationWrapper>
     </LayoutWrapper>
   );
 };

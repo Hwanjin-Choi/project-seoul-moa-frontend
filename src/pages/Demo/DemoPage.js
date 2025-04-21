@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import Container from "../../components/Layout/Container";
-import Card from "../../components/Card/Card";
 import SimpleCard from "../../components/SimpleCard/SimpleCard";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import logo from "../../assets/seoulmoa.svg";
