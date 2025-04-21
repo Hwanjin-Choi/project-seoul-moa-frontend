@@ -30,12 +30,12 @@ const ReviewImage = styled.img`
   flex-shrink: 0;
 `;
 
-const ReviewCard = ({ calenderDay, eventTitle, reviewContent, imageUrl }) => {
+const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imageUrl }) => {
     return (
         <ReviewListBox>
             <ReviewText>
                 <Typography variant="h5" color={Color.MC1}>{calenderDay}</Typography>
-                <Typography variant="h5" style={{ fontWeight: "bold" }}>{eventTitle}</Typography>
+                <Typography variant="h5" style={{ fontWeight: "bold" }}>{eventTitle} - {userNickname}</Typography>
                 <Typography variant="h6" color={Color.BC3}>{reviewContent}</Typography>
             </ReviewText>
             <ReviewImage src={imageUrl} alt={eventTitle} />

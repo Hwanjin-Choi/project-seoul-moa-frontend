@@ -80,6 +80,7 @@ const ReviewSection = ({
             <ReviewCard
                 calenderDay={reviewData[0].calenderDay}
                 eventTitle={reviewData[0].eventTitle}
+                userNickname={reviewData[0].userNickname}
                 reviewContent={reviewData[0].reviewContent}
                 imageUrl={reviewData[0].eventImageurl}
             />
@@ -98,6 +99,7 @@ const ReviewSection = ({
                                         key={idx}
                                         calenderDay={review.calenderDay}
                                         eventTitle={review.eventTitle}
+                                        userNickname={review.userNickname}
                                         reviewContent={review.reviewContent}
                                         imageUrl={review.eventImageurl}
                                     />

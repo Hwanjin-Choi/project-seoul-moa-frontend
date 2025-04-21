@@ -10,6 +10,7 @@ import CreateReviewModal from "./CreateReviewModal.js";
 import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
 import ReviewModal from "./ReviewModal.js";
+import Navigation from "../../components/Navigation/Navigation.js";
 
 import { userData, reviewCreateData, reviewData } from "./data";
 
@@ -72,6 +73,7 @@ const Mypage = () => {
 
       <EditReviewModal {...state} />
       <CreateReviewModal {...state} />
+      <Navigation />
     </MobileLayout>
   );
 };

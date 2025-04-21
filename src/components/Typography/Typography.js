@@ -85,6 +85,6 @@ export default Typography;
 
 const StyledTypography = styled.div`
   font-family: "Pretendard", sans-serif;
-
+  color: ${({ color }) => color || "inherit"};
   ${getVariantStyles}
 `;
