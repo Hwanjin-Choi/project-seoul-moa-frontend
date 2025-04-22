@@ -3,8 +3,8 @@ import Typography from "../Typography/Typography";
 import { Color } from "../../styles/colorsheet";
 
 const ChipWrapper = styled.div`
-  min-width: 60px;
-  height: 30px;
+  min-width: 55px;
+  height: 28px;
   border: 1px solid ${Color.MC1};
   border-radius: 9999px;
   background-color: ${Color.MC5};

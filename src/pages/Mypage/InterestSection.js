@@ -20,6 +20,13 @@ const Iconstyle = styled(FontAwesomeIcon)`
 const CategoryChipWrapper = styled.div`
   display: flex;
   gap: 5px;
+  @media (min-width: 768px) {
+    gap: 10px;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 15px;
+  }
 `;
 
 const InterestSection = ({ userName, categoryName, onEditClick, isClicked }) => (

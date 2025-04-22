@@ -47,7 +47,6 @@ const EditReviewModal = ({ isEditModalOpen, selectedReview, editedContent, setEd
                     <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
                         <img
                             src={selectedReview.eventImageurl}
-                            alt="리뷰 이미지"
                             style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px" }}
                         />
                         <div>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 import Typography from "../Typography/Typography";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icons } from "../../assets/icons";
@@ -43,7 +44,6 @@ const SlideModal = styled.div`
   }
 `;
 
-
 const ModalContent = styled.div`
   max-height: 50vh;
   overflow-y: auto;
@@ -65,6 +65,43 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const SwipeContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+`;
+
+const SwipeContent = styled.div`
+  display: flex;
+  transition: transform 0.3s ease;
+  transform: ${({ isSwiped }) => (isSwiped ? "translateX(-100px)" : "translateX(0)")};
+`;
+
+const SwipeActions = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  padding-top: 10px;
+  display: flex;
+  background-color: white;
+  padding-right: 10px;
+  align-items: center;
+`;
+
+const ActionButton = styled.button`
+  background-color: ${({ bgColor }) => bgColor};
+  color: ${({ iconColor }) => iconColor};
+  border: none;
+  width: 45px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  justify-content: center;
+`;
+
+
 const ReviewSection = ({
     reviewData,
     isOpen,
@@ -73,7 +110,10 @@ const ReviewSection = ({
     modalTitle = "전체 리뷰",
     showEdit = false,
     onEditClick,
+    onDeleteClick,
 }) => {
+    const [swipedIndex, setSwipedIndex] = useState(null);
+
     return (
         <>
             {showHeader && (
@@ -103,33 +143,59 @@ const ReviewSection = ({
                             <Typography variant="h3">{modalTitle}</Typography>
                             <CloseButton onClick={() => setIsOpen(false)}>닫기</CloseButton>
                         </ModalHeader>
-                        
+
                         <ModalContent>
-                            {reviewData.map((review, idx) => (
-                                <div key={idx} style={{ position: "relative" }}>
-                                    <ReviewCard
-                                        key={idx}
-                                        calenderDay={review.calenderDay}
-                                        eventTitle={review.eventTitle}
-                                        userNickname={review.userNickname}
-                                        reviewContent={review.reviewContent}
-                                        imageUrl={review.eventImageurl}
-                                    />
-                                    {showEdit && (
-                                        <FontAwesomeIcon
-                                            icon={Icons.pen}
-                                            style={{
-                                                position: "absolute",
-                                                top: 12,
-                                                right: 12,
-                                                cursor: "pointer",
-                                                color: Color.BC4,
+                            {reviewData.map((review, idx) => {
+                                const isSwiped = swipedIndex === idx;
+
+                                return (
+                                    <SwipeContainer key={idx}>
+                                        <SwipeContent
+                                            isSwiped={isSwiped}
+                                            onTouchStart={(e) => (e.currentTarget.startX = e.touches[0].clientX)}
+                                            onTouchEnd={(e) => {
+                                                const delta = e.changedTouches[0].clientX - e.currentTarget.startX;
+                                                if (delta < -50) setSwipedIndex(idx);
+                                                else setSwipedIndex(null);
                                             }}
-                                            onClick={() => onEditClick && onEditClick(review)}
-                                        />
-                                    )}
-                                </div>
-                            ))}
+                                        >
+                                            <ReviewCard
+                                                calenderDay={review.calenderDay}
+                                                eventTitle={review.eventTitle}
+                                                userNickname={review.userNickname}
+                                                reviewContent={review.reviewContent}
+                                                imageUrl={review.eventImageurl}
+                                            />
+                                        </SwipeContent>
+
+                                        {showEdit && isSwiped && (
+                                            <SwipeActions>
+                                                <ActionButton
+                                                    bgColor={Color.MC1}
+                                                    iconColor={Color.MC5}
+                                                    onClick={() => onEditClick && onEditClick(review)}
+                                                >
+                                                    <FontAwesomeIcon icon={Icons.pen} />
+                                                </ActionButton>
+
+                                                <ActionButton
+                                                    bgColor={Color.BC2}
+                                                    iconColor={Color.BC5}
+                                                    onClick={() => {
+                                                        if (window.confirm("정말 이 리뷰를 삭제하시겠습니까?")) {
+                                                            onDeleteClick && onDeleteClick(review);
+                                                        }
+                                                    }}
+                                                    style={{borderTopRightRadius: 10, borderBottomRightRadius: 10}}
+                                                >
+                                                    <FontAwesomeIcon icon={Icons.trash} />
+                                                </ActionButton>
+                                            </SwipeActions>
+                                        )}
+                                    </SwipeContainer>
+                                );
+                            })}
+
                         </ModalContent>
                     </SlideModal>
                 </ModalWrapper>

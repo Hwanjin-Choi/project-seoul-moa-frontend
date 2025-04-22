@@ -6,6 +6,7 @@ import {
     faChevronRight,
     faChevronLeft,
     faLocationDot,
+    faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const Icons = {
@@ -16,4 +17,5 @@ export const Icons = {
     more: faChevronRight,
     back: faChevronLeft,
     mapPin: faLocationDot,
+    trash: faTrash,
 };
