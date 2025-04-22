@@ -27,7 +27,7 @@ const PosterImage = styled.img`
   border-radius: 10px;
 
   @media (max-width: 768px) {
-    aspect-ratio: 2 / 4;
+    aspect-ratio: 4 / 4;
   }
 `;
 
@@ -41,7 +41,7 @@ const InfoTextBox = styled.div`
 const InfoTexts = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 `;
 
 const Row = styled.div`
@@ -81,6 +81,7 @@ const DetailHeader = ({ data }) => {
       <PosterWrapper>
         <PosterImage src={data.image_url} />
       </PosterWrapper>
+      
       <InfoTextBox>
         <InfoTexts>
           <Typography variant="h3" color={Color.BC2} style={{ marginBottom: 10 }}>

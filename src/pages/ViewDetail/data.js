@@ -3,7 +3,7 @@ export const EventDetailData = {
     detail_url: "https://culture.seoul.go.kr/culture/culture/cultureEvent/view.do?cultcode=152983&menuNo=200010",
     title: "[광진문화재단] 제4회 2025 나루 스트릿 댄스 페스티벌",
     startDate: "2025-09-20",
-    endDate: "2025-09-20",
+    endDate: "2025-09-26",
     location: "나루아트센터 야외광장",
     user: "전체관람",
     fee: "사전 예매가: 8,000원, 현장 구매가: 10,000원",

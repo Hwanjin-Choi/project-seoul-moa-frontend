@@ -1,11 +1,9 @@
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Icons } from "../../assets/icons.js";
 import { Color } from "../../styles/colorsheet";
 
 import MobileLayout from "../../components/Layout/MobileLayout";
-import Container from "../../components/Layout/Container";
 import Button from "../../components/Button/Button";
+import Navigation from "../../components/Navigation/Navigation.js";
 
 import DetailHeader from "./DatailHeader.js";
 import ReviewSection from "../../components/Layout/ReviewSection";
@@ -23,33 +21,6 @@ const BottomButton = styled(Button)`
   color: white;
 `;
 
-const ViewDetailLayout = styled(Container)`
-  background: linear-gradient(to top, ${Color.MC3}, ${Color.MC5});
-  padding-bottom: 5vw;
-  padding-top: 1.5vw;
-`;
-
-const TopBar = styled.div`
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 0 25px;
-  background-color: white;
-  @media (min-width: 768px) {
-    max-width: 720px;
-    padding: 0 55px;
-  }
-  @media (min-width: 1024px) {
-    max-width: 960px;
-    padding: 0 70px;
-  }
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  height: 50px;
-`;
-
 const ViewDetail = ({ mapReady }) => {
   const {
     isReviewModalOpen,
@@ -63,36 +34,31 @@ const ViewDetail = ({ mapReady }) => {
 
   return (
     <MobileLayout>
-      <TopBar>
-        <FontAwesomeIcon icon={Icons.back} />
-      </TopBar>
+      <DetailHeader data={EventDetailData} />
 
-      <ViewDetailLayout>
-        <DetailHeader data={EventDetailData} />
+      <ReviewSection
+        reviewData={reviewData}
+        isOpen={isReviewModalOpen}
+        setIsOpen={setIsReviewModalOpen}
+      />
 
-        <ReviewSection
-          reviewData={reviewData}
-          isOpen={isReviewModalOpen}
-          setIsOpen={setIsReviewModalOpen}
-        />
+      <MapSection
+        mapReady={mapReady}
+        mapData={mapData}
+        subwayName={subwayData.subwayName}
+      />
 
-        <MapSection
-          mapReady={mapReady}
-          mapData={mapData}
-          subwayName={subwayData.subwayName}
-        />
+      <SubwayChart
+        data={subwayChartWithColor}
+        currentHour={currentHour}
+        subwayName={subwayData.subwayName}
+        state={subwayData.state}
+      />
 
-        <SubwayChart
-          data={subwayChartWithColor}
-          currentHour={currentHour}
-          subwayName={subwayData.subwayName}
-          state={subwayData.state}
-        />
-
-        <BottomButton onClick={() => setIsReserveOpen(true)}>
-          일정 추가
-        </BottomButton>
-      </ViewDetailLayout>
+      <BottomButton onClick={() => setIsReserveOpen(true)}>
+        일정 추가
+      </BottomButton>
+      <Navigation />
 
       {isReserveOpen && (
         <ReserveModal
