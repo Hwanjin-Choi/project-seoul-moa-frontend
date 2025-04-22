@@ -30,6 +30,7 @@ const ViewDetail = ({ mapReady }) => {
     currentDay,
     subwayChartWithColor,
     currentHour,
+    state, // 혼잡도 상태 (혼잡 / 보통 / 여유)
   } = useViewDetail();
 
   return (
@@ -52,7 +53,7 @@ const ViewDetail = ({ mapReady }) => {
         data={subwayChartWithColor}
         currentHour={currentHour}
         subwayName={subwayData.subwayName}
-        state={subwayData.state}
+        state={state}
       />
 
       <BottomButton onClick={() => setIsReserveOpen(true)}>

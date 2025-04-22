@@ -16,8 +16,8 @@ const MapBox = styled.div`
 const LocationBox = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 8px;
-  gap: 4px;
+  margin-top: 15px;
+  gap: 5px;
   color: ${Color.MC1};
 `;
 
@@ -34,7 +34,7 @@ const MapSection = ({ mapReady, mapData, subwayName }) => (
     </MapBox>
     <LocationBox>
       <FontAwesomeIcon icon={Icons.mapPin} />
-      <Typography variant="h3" color={Color.MC1}>{subwayName}</Typography>
+      <Typography variant="h4" color={Color.MC1}>{subwayName}</Typography>
     </LocationBox>
   </>
 );

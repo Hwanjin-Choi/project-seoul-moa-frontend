@@ -5,7 +5,7 @@ import { Color } from "../../styles/colorsheet";
 
 const ChartBox = styled.div`
   width: 100%;
-  height: 120px;
+  height: 130px;
   margin: 15px 0;
 `;
 
@@ -27,18 +27,20 @@ const SubwayChart = ({ data, currentHour, subwayName, state }) => {
               tick={({ x, y, payload }) => (
                 <text
                   x={x}
-                  y={y + 10}
+                  y={y + 12}
                   textAnchor="middle"
-                  fontSize="12"
+                  fontSize="10"
                   fill={Color.BC3}
-                  fontFamily="'Noto Sans', sans-serif"
                 >
                   {payload.value}
                 </text>
               )}
             />
             <Tooltip />
-            <Bar dataKey="count" radius={[10, 10, 0, 0]}>
+            <Bar
+              dataKey="count"
+              radius={[10, 10, 0, 0]}
+            >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
