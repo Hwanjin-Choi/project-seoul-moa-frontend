@@ -4,6 +4,7 @@ import Navigation from "../Navigation/Navigation";
 import BackHeader from "../BackHeader/BackHeader";
 import logo from "../../assets/seoulmoa.svg";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Color } from "../../styles/colorsheet";
 
 const LayoutWrapper = styled.div`
   margin: 0 auto;
@@ -16,7 +17,7 @@ const LayoutWrapper = styled.div`
   width: 100%;
   height: 100vh;
   position: relative;
-  background: linear-gradient(to bottom, #f3f2ff, #ccc7fa);
+  background: linear-gradient(to bottom, white, ${Color.MC5});
   overflow: hidden;
 `;
 

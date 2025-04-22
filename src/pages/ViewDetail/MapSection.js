@@ -11,6 +11,14 @@ const MapBox = styled.div`
   border-radius: 10px;
   margin-top: 12px;
   z-index: 0;
+
+  @media (min-width: 768px) {
+    height: 300px;
+  }
+
+  @media (min-width: 1024px) {
+    height: 400px;
+  }
 `;
 
 const LocationBox = styled.div`
@@ -21,7 +29,7 @@ const LocationBox = styled.div`
   color: ${Color.MC1};
 `;
 
-const MapSection = ({ mapReady, mapData, subwayName }) => (
+const MapSection = ({ mapReady, mapData, mapLocation }) => (
   <>
     <Typography variant="h3" style={{ marginTop: 20 }}>지도</Typography>
     <MapBox>
@@ -34,7 +42,7 @@ const MapSection = ({ mapReady, mapData, subwayName }) => (
     </MapBox>
     <LocationBox>
       <FontAwesomeIcon icon={Icons.mapPin} />
-      <Typography variant="h4" color={Color.MC1}>{subwayName}</Typography>
+      <Typography variant="h4" color={Color.MC1}>{mapLocation.location}</Typography>
     </LocationBox>
   </>
 );

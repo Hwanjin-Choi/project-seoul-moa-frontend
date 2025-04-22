@@ -8,6 +8,9 @@ export const EventDetailData = {
     user: "전체관람",
     fee: "사전 예매가: 8,000원, 현장 구매가: 10,000원",
     homepage: "https://www.naruart.or.kr/exhibition/program_view.php?page=1&sch_tab=date&sch_year=2025&sch_month=09&idx=10111",
+    category_id: "문화/예술",
+    gu: "강남구",
+    event_description: " 2025 나루 스트릿 댄스 페스티벌에 많은 관심 부탁드립니다!\n(일정 및 내용은 상황에 따라 변동될 수 있습니다.) "
 };
 
 export const reviewData = [

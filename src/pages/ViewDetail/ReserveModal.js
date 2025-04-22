@@ -23,6 +23,16 @@ const SlideModal = styled.div`
   border-top-right-radius: 20px;
   padding: 24px;
   z-index: 1001;
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    max-width: 720px;
+    padding: 24px 40px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 960px;
+    padding: 24px 70px;
+  }
 `;
 
 const DateInput = styled.input`
@@ -32,14 +42,15 @@ const DateInput = styled.input`
   margin: 12px 0 20px;
   border: 1px solid ${Color.BC4};
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 15px;
+  font-family: 'Pretendard';
   color: ${Color.BC2};
 `;
 
 const Poster = styled.img`
   width: 100%;
   aspect-ratio: 170 / 220;
-  border-radius: 12px;
+  border-radius: 10px;
   object-fit: cover;
 `;
 
@@ -73,7 +84,7 @@ const ReserveModal = ({ onClose, data }) => {
     <ModalWrapper onClick={onClose}>
       <SlideModal onClick={(e) => e.stopPropagation()}>
         <Typography variant="h2" style={{ marginBottom: 12, textAlign: "center" }}>
-          <strong>{selectedDate}</strong>에 행사를 예약하시겠습니까?
+          <strong>{selectedDate}</strong> 에 행사를 예약하시겠습니까?
         </Typography>
 
         <DateInput
@@ -102,7 +113,7 @@ const ReserveModal = ({ onClose, data }) => {
           <Button variant="secondary" fullWidth onClick={onClose}>
             취소
           </Button>
-          <Button variant="primary" fullWidth>
+          <Button variant="primary" fullWidth onClick={onClose}>
             예약하기
           </Button>
         </div>

@@ -16,9 +16,19 @@ import { EventDetailData, reviewData, mapData, subwayData } from "./data";
 
 const BottomButton = styled(Button)`
   width: 100%;
-  margin-top: 16px;
+  margin-top: 17px;
+  margin-bottom: 17px;
   background-color: ${Color.MC1};
   color: white;
+  @media (min-width: 768px) {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
 `;
 
 const ViewDetail = ({ mapReady }) => {
@@ -30,7 +40,7 @@ const ViewDetail = ({ mapReady }) => {
     currentDay,
     subwayChartWithColor,
     currentHour,
-    state, // 혼잡도 상태 (혼잡 / 보통 / 여유)
+    state,
   } = useViewDetail();
 
   return (
@@ -46,7 +56,7 @@ const ViewDetail = ({ mapReady }) => {
       <MapSection
         mapReady={mapReady}
         mapData={mapData}
-        subwayName={subwayData.subwayName}
+        mapLocation={EventDetailData}
       />
 
       <SubwayChart

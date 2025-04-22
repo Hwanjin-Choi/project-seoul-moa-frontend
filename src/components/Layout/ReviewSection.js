@@ -15,7 +15,7 @@ const FlexDiv = styled.div`
 const ModalWrapper = styled.div`
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 1000;
 `;
 
@@ -25,13 +25,24 @@ const SlideModal = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 960px;
-  padding: 24px;
-  background-color: #fff;
+  max-width: 100%;
+  padding: 20px;
+  background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   z-index: 1001;
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    max-width: 720px;
+    padding: 24px 40px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 960px;
+    padding: 24px 70px;
+  }
 `;
+
 
 const ModalContent = styled.div`
   max-height: 50vh;
@@ -92,6 +103,7 @@ const ReviewSection = ({
                             <Typography variant="h3">{modalTitle}</Typography>
                             <CloseButton onClick={() => setIsOpen(false)}>닫기</CloseButton>
                         </ModalHeader>
+                        
                         <ModalContent>
                             {reviewData.map((review, idx) => (
                                 <div key={idx} style={{ position: "relative" }}>

@@ -1,120 +1,220 @@
 import styled from "styled-components";
+import { useState } from "react";
+
 import Typography from "../../components/Typography/Typography";
 import Button from "../../components/Button/Button";
 import { Color } from "../../styles/colorsheet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faMapMarkerAlt, faUser, faWonSign } from "@fortawesome/free-solid-svg-icons";
+import CategoryChip from "../../components/CategoryChip/CategoryChip";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
 
 const InfoBox = styled.div`
   display: flex;
-  gap: 16px;
-  margin-top: 16px;
-  align-items: stretch;
-  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 32px;
+  }
 `;
 
 const PosterWrapper = styled.div`
+  position: relative;
   flex-basis: 55%;
-  border-radius: 10px;
-  overflow: hidden;
+`;
 
-  @media (max-width: 768px) {
-    flex-basis: 50%;
+const ExpandIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 2;
+
+  @media (min-width: 768px) {
+    display: none;
   }
+`;
+
+const CloseTextButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background: none;
+  border: none;
+  color: ${Color.BC2};
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 10;
 `;
 
 const PosterImage = styled.img`
   width: 100%;
   height: 100%;
+  aspect-ratio: 4 / 4;
+  object-fit: cover;
   border-radius: 10px;
 
-  @media (max-width: 768px) {
-    aspect-ratio: 4 / 4;
+  @media (min-width: 768px) {
+    aspect-ratio: 3 / 4;
   }
 `;
 
-const InfoTextBox = styled.div`
-  flex: 1;
+const InfoContent = styled.div`
+  flex: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
 `;
 
-const InfoTexts = styled.div`
+const Title = styled(Typography)`
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: center;
+`;
+
+const ChipWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 10px;
+`;
+
+const InfoCard = styled.div`
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-`;
+  gap: 10px;
 
-const Row = styled.div`
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 1px;
+  @media (min-width: 768px) {
+    padding: 30px 0 30px ;
+    margin: 0 auto;
   }
 `;
-const Label = styled(Typography).attrs({
-  variant: "h6",
-  color: Color.BC2,
-})`
-  min-width: 60px;
-  flex-shrink: 0;
+
+const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
 `;
 
-const Value = styled(Typography).attrs({
+const ValueText = styled(Typography).attrs({
   variant: "h6",
   color: Color.BC3,
 })`
-  flex: 1;
   word-break: keep-all;
+  flex: 1;
 `;
 
 const StyledHomeButton = styled(Button)`
   width: 100%;
   margin-top: 10px;
+
+  @media (max-width: 768px) {
+    margin-top: 16px;
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  position: relative;
+  background: white;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 10px;
+  padding-top: 40px;
+`;
+
+const ModalImage = styled.img`
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 `;
 
 const DetailHeader = ({ data }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
-    <InfoBox>
-      <PosterWrapper>
-        <PosterImage src={data.image_url} />
-      </PosterWrapper>
-      
-      <InfoTextBox>
-        <InfoTexts>
-          <Typography variant="h3" color={Color.BC2} style={{ marginBottom: 10 }}>
-            {data.title}
-          </Typography>
+    <>
+      <InfoBox>
+        <PosterWrapper>
+          <PosterImage src={data.image_url} alt={data.title} />
+          <ExpandIcon icon={faExpand} onClick={() => setIsModalOpen(true)} />
+        </PosterWrapper>
 
-          <Row>
-            <Label>날짜</Label>
-            <Value>{data.startDate} ~ {data.endDate}</Value>
-          </Row>
-          <Row>
-            <Label>주소</Label>
-            <Value>{data.location}</Value>
-          </Row>
-          <Row>
-            <Label>이용대상</Label>
-            <Value>{data.user}</Value>
-          </Row>
-          <Row>
-            <Label>이용요금</Label>
-            <Value>{data.fee}</Value>
-          </Row>
-        </InfoTexts>
 
-        <StyledHomeButton
-          variant="primary"
-          size="medium"
-          onClick={() => window.open(data.homepage, "_blank")}
-        >
-          홈페이지
-        </StyledHomeButton>
-      </InfoTextBox>
-    </InfoBox>
+        <InfoContent>
+          <div>
+            <Title>{data.title}</Title>
+
+            <ChipWrapper>
+              <CategoryChip>{data.category_id}</CategoryChip>
+              <CategoryChip>{data.gu}</CategoryChip>
+            </ChipWrapper>
+
+            <InfoCard>
+              <InfoRow>
+                <FontAwesomeIcon icon={faCalendarAlt} color={Color.MC1} />
+                <ValueText>{`${data.startDate} ~ ${data.endDate}`}</ValueText>
+              </InfoRow>
+
+              <InfoRow>
+                <FontAwesomeIcon icon={faMapMarkerAlt} color={Color.MC1} />
+                <ValueText>{data.location}</ValueText>
+              </InfoRow>
+
+              <InfoRow>
+                <FontAwesomeIcon icon={faUser} color={Color.MC1} />
+                <ValueText>{data.user}</ValueText>
+              </InfoRow>
+
+              <InfoRow>
+                <FontAwesomeIcon icon={faWonSign} color={Color.MC1} />
+                <ValueText>{data.fee}</ValueText>
+              </InfoRow>
+            </InfoCard>
+          </div>
+
+          <StyledHomeButton
+            variant="primary"
+            size="medium"
+            onClick={() => window.open(data.homepage, "_blank")}
+          >
+            홈페이지
+          </StyledHomeButton>
+        </InfoContent>
+      </InfoBox>
+
+      {isModalOpen && (
+        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseTextButton onClick={() => setIsModalOpen(false)}>닫기</CloseTextButton>
+            <ModalImage src={data.image_url} />
+          </ModalContent>
+
+        </ModalOverlay>
+      )}
+
+    </>
   );
 };
 

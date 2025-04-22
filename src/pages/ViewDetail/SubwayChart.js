@@ -7,12 +7,19 @@ const ChartBox = styled.div`
   width: 100%;
   height: 130px;
   margin: 15px 0;
+  @media (min-width: 768px) {
+    height: 200px;
+  }
+
+  @media (min-width: 1024px) {
+    height: 300px;
+  }
 `;
 
 const Tag = styled.span`
   background-color: ${Color.MC1};
   color: white;
-  padding: 2px 8px;
+  padding: 2px 10px;
   border-radius: 10px;
 `;
 
@@ -49,7 +56,7 @@ const SubwayChart = ({ data, currentHour, subwayName, state }) => {
         </ResponsiveContainer>
       </ChartBox>
 
-      <Typography variant="h5" style={{ textAlign: "center" }}>
+      <Typography variant="h6" style={{ textAlign: "center", fontSize: 12 }}>
         {currentHour}시의 {subwayName}는 <Tag>{state}</Tag> 단계입니다
       </Typography>
     </>

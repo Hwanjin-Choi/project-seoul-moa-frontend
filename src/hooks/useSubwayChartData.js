@@ -28,9 +28,9 @@ const useSubwayChartData = (subwayData) => {
     let color = Color.MC5;
 
     if (item.hour === currentHour) color = Color.MC1;
-    else if (highCongestion.includes(item.hour)) color = "rgba(132, 120, 255, 0.3)";
-    else if (midCongestion.includes(item.hour)) color = Color.MC4;
-    else if (lowCongestion.includes(item.hour)) color = Color.MC5;
+    else if (highCongestion.includes(item.hour)) color = "rgba(132, 120, 255, 0.4)";
+    else if (midCongestion.includes(item.hour)) color = "rgba(132, 120, 255, 0.1)";
+    else if (lowCongestion.includes(item.hour)) color = "rgba(132, 120, 255, 0.1)";
 
     return { ...item, fill: color };
   });
