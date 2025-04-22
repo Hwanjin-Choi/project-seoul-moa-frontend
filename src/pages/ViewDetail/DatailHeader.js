@@ -57,8 +57,8 @@ const CloseTextButton = styled.button`
 const PosterImage = styled.img`
   width: 100%;
   height: 100%;
-  aspect-ratio: 4 / 4;
-  object-fit: cover;
+  aspect-ratio: 3.7/ 4;
+  object-fit: contain;
   border-radius: 10px;
 
   @media (min-width: 768px) {
@@ -157,8 +157,9 @@ const DetailHeader = ({ data }) => {
     <>
       <InfoBox>
         <PosterWrapper>
+          <div style={{height: "45vh"}}>
           <PosterImage src={data.image_url} alt={data.title} />
-          <ExpandIcon icon={faExpand} onClick={() => setIsModalOpen(true)} />
+          </div>
         </PosterWrapper>
 
 

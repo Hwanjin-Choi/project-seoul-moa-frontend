@@ -24,6 +24,10 @@ const LayoutWrapper = styled.div`
 const Content = styled.div`
   height: calc(100vh - 57px);
   overflow-y: auto;
+  padding: 0 0 70px 0px;
+  @media (max-width: 768px) {
+    padding: 0px 0px 70px 0px;
+  }
 `;
 
 const NavigationWrapper = styled.div`
@@ -54,18 +58,20 @@ const Header = styled.header`
 
 const MobileLayout = ({ children }) => {
   const location = useLocation();
-  const path = location.pathname;
+  const isDefaultPage = location.pathname === "/";
   const navigate = useNavigate();
-
-  const hideHeaderPaths = ["/", "/my-page", "/map"];
-  const isBackHeaderVisible = !hideHeaderPaths.includes(path);
-
   return (
     <LayoutWrapper>
-      {isBackHeaderVisible && <BackHeader />}
-
+      {isDefaultPage ? (
+        <Header onClick={() => navigate("/")}>
+          <HeaderContent>
+            <Logo src={logo} alt="logo" />
+          </HeaderContent>
+        </Header>
+      ) : (
+        <BackHeader />
+      )}
       <Content>{children}</Content>
-
       <NavigationWrapper>
         <Navigation />
       </NavigationWrapper>

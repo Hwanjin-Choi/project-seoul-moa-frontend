@@ -1,5 +1,5 @@
 export const EventDetailData = {
-    image_url: "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=a3ab97a289ab44eba250ef33e4314175&thumb=Y",
+    image_url: "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=6719f511230d43568d3a5779480d1921&thumb=Y",
     detail_url: "https://culture.seoul.go.kr/culture/culture/cultureEvent/view.do?cultcode=152983&menuNo=200010",
     title: "[광진문화재단] 제4회 2025 나루 스트릿 댄스 페스티벌",
     startDate: "2025-09-20",
