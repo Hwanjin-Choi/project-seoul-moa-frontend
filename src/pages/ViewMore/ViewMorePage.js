@@ -7,10 +7,11 @@ import Typography from "../../components/Typography/Typography";
 import Content from "../../components/Content/Content";
 import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard";
 const ViewMorePageContainer = styled.div`
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
+  padding: 20px 20px;
 `;
 
 const UpcomingEventsContainer = styled.div`
@@ -24,32 +25,36 @@ const UpcomingEventsContainer = styled.div`
 const UpcomingEventsField = [
   {
     title: "[광진문화재단] 제4회 2025 나루 스트릿 댄스 페스티벌",
-    address: "서울특별시 광진구 중곡로 123",
-    date: "2025-09-20~2025-09-20",
+    location: "서울시립 북서울미술관 2층 전시실 3, 4",
+    startDate: "2025-05-13T00:00:00",
+    endDate: "2025-06-04T00:00:00",
   },
   {
     title: "[광진문화재단] 제4회 2025 나루 스트릿 댄스 페스티벌",
-    address: "서울특별시 광진구 중곡로 123",
-    date: "2025-09-20~2025-09-20",
+    location: "서울시립 북서울미술관 2층 전시실 3, 4",
+    startDate: "2025-05-13T00:00:00",
+    endDate: "2025-06-04T00:00:00",
   },
   {
     title: "[광진문화재단] 제4회 2025 나루 스트릿 댄스 페스티벌",
-    address: "서울특별시 광진구 중곡로 123",
-    date: "2025-09-20~2025-09-20",
+    location: "서울시립 북서울미술관 2층 전시실 3, 4",
+    startDate: "2025-05-13T00:00:00",
+    endDate: "2025-06-04T00:00:00",
   },
 ];
 
 const ViewMorePage = () => {
   return (
-    <ViewMorePageContainer>
-      <MobileLayout>
+    <MobileLayout>
+      <ViewMorePageContainer>
         <Typography variant="h3">다가오는 문화행사</Typography>
         <UpcomingEventsContainer>
           {UpcomingEventsField.map((item) => (
             <NoBorderLandscapeCard
               title={item.title}
-              address={item.address}
-              date={item.date}
+              endDate={item.endDate}
+              startDate={item.startDate}
+              location={item.location}
             />
           ))}
         </UpcomingEventsContainer>
@@ -58,13 +63,14 @@ const ViewMorePage = () => {
           {UpcomingEventsField.map((item) => (
             <NoBorderLandscapeCard
               title={item.title}
-              address={item.address}
-              date={item.date}
+              endDate={item.endDate}
+              startDate={item.startDate}
+              location={item.location}
             />
           ))}
         </UpcomingEventsContainer>
-      </MobileLayout>
-    </ViewMorePageContainer>
+      </ViewMorePageContainer>
+    </MobileLayout>
   );
 };
 
