@@ -10,8 +10,9 @@ import CreateReviewModal from "./CreateReviewModal.js";
 import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
 import ReviewModal from "./ReviewModal.js";
+import { ScheduleCarousel } from "../../components/Card/ScheduleCard.js";
 
-import { userData, reviewCreateData, reviewData } from "./data";
+import { userData, EventData, reviewData } from "./data";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -23,8 +24,28 @@ const Section = styled.div`
   margin-bottom: 20px;
 `;
 
+const splitEventDataByDate = (data) => {
+  const today = new Date();
+  const upcoming = [];
+  const past = [];
+
+  data.forEach((item) => {
+    const eventDate = new Date(item.calenderDay);
+    if (isNaN(eventDate)) return;
+
+    if (eventDate > today) {
+      upcoming.push(item);
+    } else {
+      past.push(item);
+    }
+  });
+
+  return { upcoming, past };
+};
+
 const Mypage = () => {
   const state = useMypage();
+  const { upcoming, past } = splitEventDataByDate(EventData);
 
   return (
     <MobileLayout>
@@ -42,24 +63,33 @@ const Mypage = () => {
           />
         </Section>
 
-        <Section>
-          <Typography variant="h3">리뷰 작성하기</Typography>
-          <ReviewCarousel
-            reviewCreateData={reviewCreateData}
-            onReviewClick={(item) => {
-              state.setSelectedCreateItem(item);
-              state.setCreateContent("");
-              state.setIsCreateModalOpen(true);
-            }}
-          />
-        </Section>
+        {upcoming.length > 0 && (
+          <Section>
+            <Typography variant="h3">예약 일정</Typography>
+            <ScheduleCarousel data={upcoming} />
+          </Section>
+        )}
+
+        {past.length > 0 && (
+          <Section>
+            <Typography variant="h3">리뷰 작성하기</Typography>
+            <ReviewCarousel
+              reviewCreateData={past}
+              onReviewClick={(item) => {
+                state.setSelectedCreateItem(item);
+                state.setCreateContent("");
+                state.setIsCreateModalOpen(true);
+              }}
+            />
+          </Section>
+        )}
 
         <Section>
           <ReviewModal
+            userName={userData.userName}
             reviewData={reviewData}
             isOpen={state.isReviewModalOpen}
             setIsOpen={state.setIsReviewModalOpen}
-            modalTitle={`${userData.userName}님의 전체 리뷰`}
             onEditClick={(review) => {
               state.setSelectedReview(review);
               state.setEditedContent(review.reviewContent);
@@ -68,8 +98,8 @@ const Mypage = () => {
           />
         </Section>
 
-      <EditReviewModal {...state} />
-      <CreateReviewModal {...state} />
+        <EditReviewModal {...state} />
+        <CreateReviewModal {...state} />
       </Container>
     </MobileLayout>
   );

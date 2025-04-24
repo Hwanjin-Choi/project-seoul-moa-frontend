@@ -103,6 +103,7 @@ const ActionButton = styled.button`
 
 
 const ReviewSection = ({
+    userName,
     reviewData,
     isOpen,
     setIsOpen,
@@ -118,7 +119,7 @@ const ReviewSection = ({
         <>
             {showHeader && (
                 <FlexDiv>
-                    <Typography variant="h3">리뷰</Typography>
+                    <Typography variant="h3">{userName}님의 리뷰</Typography>
                     <FontAwesomeIcon
                         icon={Icons.more}
                         color={Color.BC3}
@@ -135,6 +136,7 @@ const ReviewSection = ({
                 reviewContent={reviewData[0].reviewContent}
                 imageUrl={reviewData[0].eventImageurl}
             />
+
 
             {isOpen && (
                 <ModalWrapper onClick={() => setIsOpen(false)}>
@@ -160,12 +162,14 @@ const ReviewSection = ({
                                             }}
                                         >
                                             <ReviewCard
+                                                modal={true}
                                                 calenderDay={review.calenderDay}
                                                 eventTitle={review.eventTitle}
                                                 userNickname={review.userNickname}
                                                 reviewContent={review.reviewContent}
                                                 imageUrl={review.eventImageurl}
                                             />
+
                                         </SwipeContent>
 
                                         {showEdit && isSwiped && (
@@ -186,7 +190,7 @@ const ReviewSection = ({
                                                             onDeleteClick && onDeleteClick(review);
                                                         }
                                                     }}
-                                                    style={{borderTopRightRadius: 10, borderBottomRightRadius: 10}}
+                                                    style={{ borderTopRightRadius: 10, borderBottomRightRadius: 10 }}
                                                 >
                                                     <FontAwesomeIcon icon={Icons.trash} />
                                                 </ActionButton>

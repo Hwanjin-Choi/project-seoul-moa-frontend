@@ -3,7 +3,7 @@ import Typography from "../Typography/Typography";
 import { Color } from "../../styles/colorsheet";
 
 const ReviewListBox = styled.div`
-  background-color: ${Color.MC5};
+  background-color: ${({ modal }) => (modal ? Color.MC5 : "rgba(255, 255, 255, 0.7)")};
   border-radius: 10px;
   padding: 15px;
   margin-top: 10px;
@@ -29,9 +29,9 @@ const ReviewImage = styled.img`
   object-fit: cover;
 `;
 
-const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imageUrl }) => {
+const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imageUrl, modal = false }) => {
   return (
-    <ReviewListBox>
+    <ReviewListBox modal={modal}>
       <ReviewText>
         <Typography variant="h4" color={Color.MC1}>
           {calenderDay}
