@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { useState } from "react";
+
 import Banner from "../../assets/img/Mypage_View1.png";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import Typography from "../../components/Typography/Typography";
@@ -11,6 +13,8 @@ import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
 import ReviewModal from "./ReviewModal.js";
 import { ScheduleCarousel } from "../../components/Card/ScheduleCard.js";
+import ReserveEditModal from "./ReserveEditModal.js";
+import ReserveDeleteModal from "./ReserveDeleteModal .js";
 
 import { userData, EventData, reviewData } from "./data";
 
@@ -45,7 +49,26 @@ const splitEventDataByDate = (data) => {
 
 const Mypage = () => {
   const state = useMypage();
-  const { upcoming, past } = splitEventDataByDate(EventData);
+  const [eventList, setEventList] = useState(EventData);
+  const { upcoming, past } = splitEventDataByDate(eventList);
+
+  const [editItem, setEditItem] = useState(null);
+  const [deleteItem, setDeleteItem] = useState(null);
+
+  const handleEditSave = (newDate) => {
+    setEventList(prev =>
+      prev.map(item =>
+        item === editItem ? { ...item, calenderDay: newDate } : item
+      )
+    );
+    setEditItem(null);
+  };
+
+  const handleDelete = () => {
+    setEventList(prev => prev.filter(item => item !== deleteItem));
+    setDeleteItem(null);
+  };
+
 
   return (
     <MobileLayout>
@@ -66,7 +89,27 @@ const Mypage = () => {
         {upcoming.length > 0 && (
           <Section>
             <Typography variant="h3">예약 일정</Typography>
-            <ScheduleCarousel data={upcoming} />
+            <ScheduleCarousel
+              data={upcoming}
+              onEditClick={setEditItem}
+              onDeleteClick={setDeleteItem}
+            />
+
+            <ReserveEditModal
+              isOpen={!!editItem}
+              onClose={() => setEditItem(null)}
+              onSave={handleEditSave}
+              item={editItem}
+            />
+
+            <ReserveDeleteModal
+              isOpen={!!deleteItem}
+              onClose={() => setDeleteItem(null)}
+              onDelete={handleDelete}
+              item={deleteItem}
+            />
+
+
           </Section>
         )}
 
