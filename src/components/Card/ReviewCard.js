@@ -18,15 +18,16 @@ const ReviewText = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  word-break: keep-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
   min-width: 0;
 `;
 
 const ReviewImage = styled.img`
-  width: 60px;
-  height: 80px;
+  width: 25%;
   border-radius: 10px;
   object-fit: cover;
+  margin-left: 10px;
 `;
 
 const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imageUrl, modal = false }) => {

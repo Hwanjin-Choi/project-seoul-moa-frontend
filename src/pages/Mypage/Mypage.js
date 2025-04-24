@@ -15,6 +15,7 @@ import ReviewModal from "./ReviewModal.js";
 import { ScheduleCarousel } from "../../components/Card/ScheduleCard.js";
 import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
+import EditCategoryModal from "./EditCategoryModal.js";
 
 import { userData, EventData, reviewData } from "./data";
 
@@ -69,6 +70,20 @@ const Mypage = () => {
     setDeleteItem(null);
   };
 
+  const [selectedCategories, setSelectedCategories] = useState(userData.categoryName);
+  const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+
+  const [reviewList, setReviewList] = useState(reviewData);
+
+  const handleEditReview = (updatedReview) => {
+    setReviewList((prev) =>
+      prev.map((r) => (r.id === updatedReview.id ? updatedReview : r))
+    );
+  };
+
+  const handleDeleteReview = (targetReview) => {
+    setReviewList((prev) => prev.filter((r) => r.id !== targetReview.id));
+  };
 
   return (
     <MobileLayout>
@@ -77,14 +92,18 @@ const Mypage = () => {
         <Section>
           <InterestSection
             userName={userData.userName}
-            categoryName={userData.categoryName}
-            isClicked={state.isClicked}
-            onEditClick={() => {
-              state.setIsModalOpen(true);
-              state.setIsClicked(true);
-            }}
+            categoryName={selectedCategories}
+            isClicked={isEditCategoryOpen}
+            onEditClick={() => setIsEditCategoryOpen(true)}
           />
         </Section>
+
+        <EditCategoryModal
+          isOpen={isEditCategoryOpen}
+          onClose={() => setIsEditCategoryOpen(false)}
+          selected={selectedCategories}
+          setSelected={setSelectedCategories}
+        />
 
         {upcoming.length > 0 && (
           <Section>
@@ -128,17 +147,18 @@ const Mypage = () => {
         )}
 
         <Section>
-          <ReviewModal
-            userName={userData.userName}
-            reviewData={reviewData}
-            isOpen={state.isReviewModalOpen}
-            setIsOpen={state.setIsReviewModalOpen}
-            onEditClick={(review) => {
-              state.setSelectedReview(review);
-              state.setEditedContent(review.reviewContent);
-              state.setIsEditModalOpen(true);
-            }}
-          />
+        <ReviewModal
+  userName={userData.userName}
+  reviewData={reviewList}
+  isOpen={state.isReviewModalOpen}
+  setIsOpen={state.setIsReviewModalOpen}
+  onEditClick={(review) => {
+    state.setSelectedReview(review);
+    state.setEditedContent(review.reviewContent);
+    state.setIsEditModalOpen(true);
+  }}
+  onDeleteClick={handleDeleteReview}
+/>
         </Section>
 
         <EditReviewModal {...state} />

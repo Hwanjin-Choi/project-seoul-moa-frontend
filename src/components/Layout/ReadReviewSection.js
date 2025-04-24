@@ -101,6 +101,7 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
                   eventTitle={review.eventTitle}
                   userNickname={review.userNickname}
                   reviewContent={review.reviewContent}
+                  modal={true}
                 />
               ))}
             </ModalContent>
