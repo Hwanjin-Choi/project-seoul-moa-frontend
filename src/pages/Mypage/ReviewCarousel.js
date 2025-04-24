@@ -55,7 +55,7 @@ const InfoRow = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-top: 4px;
+  padding: 3px;
 `;
 
 const StyledIcon = styled(FontAwesomeIcon)`
@@ -72,7 +72,7 @@ const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => (
         <Thumb src={event.eventImageurl} />
         <ReviewInfoBox>
           <div>
-            <Typography variant="h3" color={Color.MC1}>
+            <Typography variant="h4" color={Color.MC1}>
               {event.calenderDay}
             </Typography>
             <Typography variant="h3">{event.eventTitle}</Typography>
