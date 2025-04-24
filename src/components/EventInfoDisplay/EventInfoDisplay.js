@@ -81,7 +81,6 @@ const getEventStatus = (startDate, endDate) => {
 
 // --- 컴포넌트 로직 (날짜 처리 등 - 변경 없음) ---
 const EventInfoDisplay = ({ location, startDate, endDate }) => {
-  console.log(location, startDate, endDate);
   let parsedStartDate, parsedEndDate;
   let dateString = "날짜 정보 없음";
   let status = null;

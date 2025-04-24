@@ -90,7 +90,6 @@ const StyledTag = styled(Tag)`
 `;
 
 const NoBorderLandscapeCard = (props) => {
-  console.log(props);
   return (
     <NoBorderLandscapeCardContainer>
       <ImageContainer>

@@ -24,9 +24,9 @@ const LayoutWrapper = styled.div`
 const Content = styled.div`
   height: calc(100vh - 57px);
   overflow-y: auto;
-  padding: 0 0 70px 0px;
+  padding: 0 0 60px 0px;
   @media (max-width: 768px) {
-    padding: 0px 0px 70px 0px;
+    padding: 0px 0px 60px 0px;
   }
 `;
 
