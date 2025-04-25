@@ -147,18 +147,18 @@ const Mypage = () => {
         )}
 
         <Section>
-        <ReviewModal
-  userName={userData.userName}
-  reviewData={reviewList}
-  isOpen={state.isReviewModalOpen}
-  setIsOpen={state.setIsReviewModalOpen}
-  onEditClick={(review) => {
-    state.setSelectedReview(review);
-    state.setEditedContent(review.reviewContent);
-    state.setIsEditModalOpen(true);
-  }}
-  onDeleteClick={handleDeleteReview}
-/>
+          <ReviewModal
+            userName={userData.userName}
+            reviewData={reviewList}
+            isOpen={state.isReviewModalOpen}
+            setIsOpen={state.setIsReviewModalOpen}
+            onEditClick={(review) => {
+              state.setSelectedReview(review);
+              state.setEditedContent(review.reviewContent);
+              state.setIsEditModalOpen(true);
+            }}
+            onDeleteClick={handleDeleteReview}
+          />
         </Section>
 
         <EditReviewModal {...state} />

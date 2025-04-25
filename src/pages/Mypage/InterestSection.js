@@ -20,13 +20,16 @@ const Iconstyle = styled(FontAwesomeIcon)`
 const CategoryChipWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin-top: 10px;
   gap: 5px;
   @media (min-width: 768px) {
     gap: 10px;
+    margin-top: 15px;
   }
 
   @media (min-width: 1024px) {
     gap: 15px;
+    margin-top: 20px;
   }
 `;
 

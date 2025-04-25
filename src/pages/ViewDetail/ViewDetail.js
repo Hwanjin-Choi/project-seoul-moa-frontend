@@ -10,8 +10,9 @@ import ReserveModal from "./ReserveModal";
 import useViewDetail from "../../hooks/useViewDetail.js";
 import MapSection from "./MapSection.js";
 import Container from "../../components/Layout/Container.js";
+import EventDetail from "../../api/EventDetail.js";
 
-import { EventDetailData, reviewData, mapData, subwayData } from "./data";
+import { reviewData, subwayData } from "./data";
 
 const BottomButton = styled(Button)`
   width: 100%;
@@ -28,6 +29,8 @@ const BottomButton = styled(Button)`
 `;
 
 const ViewDetail = ({ mapReady }) => {
+  const { eventData, loading } = EventDetail(59);
+
   const {
     isReviewModalOpen,
     setIsReviewModalOpen,
@@ -39,10 +42,12 @@ const ViewDetail = ({ mapReady }) => {
     state,
   } = useViewDetail();
 
+  if (loading || !eventData) return <div>로딩 중...</div>;
+
   return (
     <MobileLayout>
       <Container>
-        <DetailHeader data={EventDetailData} />
+        <DetailHeader data={eventData} />
 
         <ReadReviewSection
           reviewData={reviewData}
@@ -52,8 +57,11 @@ const ViewDetail = ({ mapReady }) => {
 
         <MapSection
           mapReady={mapReady}
-          mapData={mapData}
-          mapLocation={EventDetailData}
+          mapData={{
+            latitude: eventData.longtitude,
+            longitude: eventData.latitude,
+          }}
+          mapLocation={eventData}
         />
 
         <SubwayChart
@@ -72,7 +80,7 @@ const ViewDetail = ({ mapReady }) => {
         <ReserveModal
           onClose={() => setIsReserveOpen(false)}
           date={currentDay}
-          data={EventDetailData}
+          data={eventData}
         />
       )}
     </MobileLayout>
