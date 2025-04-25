@@ -7,7 +7,6 @@ import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt, faUser, faWonSign } from "@fortawesome/free-solid-svg-icons";
 import CategoryChip from "../../components/CategoryChip/CategoryChip";
-import { faExpand } from "@fortawesome/free-solid-svg-icons";
 
 const InfoBox = styled.div`
   display: flex;
@@ -25,20 +24,11 @@ const PosterWrapper = styled.div`
   flex-basis: 55%;
 `;
 
-const ExpandIcon = styled(FontAwesomeIcon)`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 20px;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 6px;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 2;
-
-  @media (min-width: 768px) {
-    display: none;
-  }
+const StyledIcon = styled(FontAwesomeIcon)`
+  width: 14px;
+  height: 14px;
+  color: ${Color.MC1};
+  flex-shrink: 0;
 `;
 
 const CloseTextButton = styled.button`
@@ -157,8 +147,13 @@ const DetailHeader = ({ data }) => {
     <>
       <InfoBox>
         <PosterWrapper>
-          <div style={{height: "45vh"}}>
-          <PosterImage src={data.image_url} alt={data.title} />
+          <div style={{ height: "45vh" }}>
+            <PosterImage
+              src={data.image_url}
+              alt={data.title}
+              onClick={() => setIsModalOpen(true)}
+              style={{ cursor: "pointer" }}
+            />
           </div>
         </PosterWrapper>
 
@@ -174,25 +169,26 @@ const DetailHeader = ({ data }) => {
 
             <InfoCard>
               <InfoRow>
-                <FontAwesomeIcon icon={faCalendarAlt} color={Color.MC1} />
+                <StyledIcon icon={faCalendarAlt} />
                 <ValueText>{`${data.startDate} ~ ${data.endDate}`}</ValueText>
               </InfoRow>
 
               <InfoRow>
-                <FontAwesomeIcon icon={faMapMarkerAlt} color={Color.MC1} />
+                <StyledIcon icon={faMapMarkerAlt} />
                 <ValueText>{data.location}</ValueText>
               </InfoRow>
 
               <InfoRow>
-                <FontAwesomeIcon icon={faUser} color={Color.MC1} />
+                <StyledIcon icon={faUser} />
                 <ValueText>{data.user}</ValueText>
               </InfoRow>
 
               <InfoRow>
-                <FontAwesomeIcon icon={faWonSign} color={Color.MC1} />
+                <StyledIcon icon={faWonSign} />
                 <ValueText>{data.fee}</ValueText>
               </InfoRow>
             </InfoCard>
+
           </div>
 
           <StyledHomeButton

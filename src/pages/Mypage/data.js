@@ -3,7 +3,22 @@ export const userData = {
     categoryName: ["전시", "공연", "클래식", "영화"]
 };
 
-export const reviewCreateData = [
+export const categoryFieldsData = [
+    { category: "교육/체험", isClicked: false },
+    { category: "독주/독창회", isClicked: false },
+    { category: "콘서트", isClicked: false },
+    { category: "전시/미술", isClicked: false },
+    { category: "클래식", isClicked: false },
+    { category: "무용", isClicked: false },
+    { category: "뮤지컬/오페라", isClicked: false },
+    { category: "연극", isClicked: false },
+    { category: "영화", isClicked: false },
+    { category: "기타", isClicked: false },
+    { category: "축제", isClicked: false },
+    { category: "국악", isClicked: false },
+];
+
+export const EventData = [
     {
         calenderDay: "2025-04-20",
         eventTitle: "K-핸드메이드페어 2025",
@@ -13,13 +28,29 @@ export const reviewCreateData = [
         eventImageurl: "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=42afe00583eb4b0983dba37a04a41222&thumb=Y"
     },
     {
+        calenderDay: "2025-04-30",
+        eventTitle: "[광진문화재단] 제4회 2025 나루 스트릿 댄스 페스티벌",
+        eventStartdate: "2025-04-25",
+        eventEnddate: "2025-04-30",
+        eventLocation: "나루아트센터 야외광장",
+        eventImageurl: "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=6cb462c4c32a4d0b83029054aef5652b&thumb=Y"
+    },
+    {
         calenderDay: "2025-05-01",
         eventTitle: "한강 야외 클래식",
         eventStartdate: "2025-05-01",
         eventEnddate: "2025-05-01",
         eventLocation: "여의도 한강공원",
+        eventImageurl: "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=6719f511230d43568d3a5779480d1921&thumb=Y"
+    },
+    {
+        calenderDay: "2025-04-20",
+        eventTitle: "K-핸드메이드페어 2025",
+        eventStartdate: "2025-04-20",
+        eventEnddate: "2025-04-22",
+        eventLocation: "서울 삼성동 코엑스 1층 B홀",
         eventImageurl: "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=42afe00583eb4b0983dba37a04a41222&thumb=Y"
-    }
+    },
 ];
 
 

@@ -17,7 +17,7 @@ const LayoutWrapper = styled.div`
   width: 100%;
   height: 100vh;
   position: relative;
-  background: linear-gradient(to bottom, white, ${Color.MC5});
+  background: linear-gradient(to bottom, #fff, ${Color.MC4});
   overflow: hidden;
 `;
 

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icons } from "../../assets/icons";
 import { Color } from "../../styles/colorsheet";
 import ReviewCard from "../Card/ReviewCard";
+import Button from "../Button/Button";
 
 const FlexDiv = styled.div`
   display: flex;
@@ -44,11 +45,6 @@ const SlideModal = styled.div`
   }
 `;
 
-const ModalContent = styled.div`
-  max-height: 50vh;
-  overflow-y: auto;
-`;
-
 const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -65,6 +61,11 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const ModalContent = styled.div`
+  max-height: 50vh;
+  overflow-y: auto;
+`;
+
 const SwipeContainer = styled.div`
   position: relative;
   overflow: hidden;
@@ -74,7 +75,7 @@ const SwipeContainer = styled.div`
 const SwipeContent = styled.div`
   display: flex;
   transition: transform 0.3s ease;
-  transform: ${({ isSwiped }) => (isSwiped ? "translateX(-100px)" : "translateX(0)")};
+  transform: ${({ isSwiped }) => (isSwiped ? "translateX(-90px)" : "translateX(0)")};
 `;
 
 const SwipeActions = styled.div`
@@ -84,9 +85,6 @@ const SwipeActions = styled.div`
   height: 100%;
   padding-top: 10px;
   display: flex;
-  background-color: white;
-  padding-right: 10px;
-  align-items: center;
 `;
 
 const ActionButton = styled.button`
@@ -97,43 +95,88 @@ const ActionButton = styled.button`
   height: 100%;
   display: flex;
   align-items: center;
-  font-size: 15px;
   justify-content: center;
 `;
 
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border: 1px solid ${Color.BC4};
+  border-radius: 12px;
+  resize: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+`;
 
-const ReviewSection = ({
-    reviewData,
-    isOpen,
-    setIsOpen,
-    showHeader = true,
-    modalTitle = "전체 리뷰",
-    showEdit = false,
-    onEditClick,
-    onDeleteClick,
-}) => {
+const EditHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-top: 20px;
+`;
+const EditImage = styled.img`
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 12px;
+`;
+const EditInfo = styled.div``;
+
+const BottomArea = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+`;
+
+const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리뷰" }) => {
+    const [reviews, setReviews] = useState(reviewData);
     const [swipedIndex, setSwipedIndex] = useState(null);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [currentReview, setCurrentReview] = useState(null);
+    const [editContent, setEditContent] = useState("");
+
+    const handleDelete = (idx) => {
+        setReviews((prev) => prev.filter((_, i) => i !== idx));
+        setSwipedIndex(null);
+    };
+
+    const handleEdit = (review, idx) => {
+        setCurrentReview({ ...review, idx });
+        setEditContent(review.reviewContent);
+        setEditModalOpen(true);
+    };
+
+    const submitEdit = () => {
+        setReviews((prev) =>
+            prev.map((r, i) =>
+                i === currentReview.idx ? { ...r, reviewContent: editContent } : r
+            )
+        );
+        setEditModalOpen(false);
+        setSwipedIndex(null);
+    };
 
     return (
         <>
-            {showHeader && (
-                <FlexDiv>
-                    <Typography variant="h3">리뷰</Typography>
-                    <FontAwesomeIcon
-                        icon={Icons.more}
-                        color={Color.BC3}
-                        onClick={() => setIsOpen(true)}
-                        style={{ cursor: "pointer" }}
-                    />
-                </FlexDiv>
-            )}
+            <FlexDiv>
+                <Typography variant="h3">리뷰</Typography>
+                <FontAwesomeIcon
+                    icon={Icons.more}
+                    color={Color.BC3}
+                    onClick={() => setIsOpen(true)}
+                    style={{ cursor: "pointer" }}
+                />
+            </FlexDiv>
 
             <ReviewCard
-                calenderDay={reviewData[0].calenderDay}
-                eventTitle={reviewData[0].eventTitle}
-                userNickname={reviewData[0].userNickname}
-                reviewContent={reviewData[0].reviewContent}
-                imageUrl={reviewData[0].eventImageurl}
+                calenderDay={reviews[0].calenderDay}
+                eventTitle={reviews[0].eventTitle}
+                userNickname={reviews[0].userNickname}
+                reviewContent={reviews[0].reviewContent}
+                imageUrl={reviews[0].eventImageurl}
             />
 
             {isOpen && (
@@ -145,14 +188,15 @@ const ReviewSection = ({
                         </ModalHeader>
 
                         <ModalContent>
-                            {reviewData.map((review, idx) => {
+                            {reviews.map((review, idx) => {
                                 const isSwiped = swipedIndex === idx;
-
                                 return (
                                     <SwipeContainer key={idx}>
                                         <SwipeContent
                                             isSwiped={isSwiped}
-                                            onTouchStart={(e) => (e.currentTarget.startX = e.touches[0].clientX)}
+                                            onTouchStart={(e) =>
+                                                (e.currentTarget.startX = e.touches[0].clientX)
+                                            }
                                             onTouchEnd={(e) => {
                                                 const delta = e.changedTouches[0].clientX - e.currentTarget.startX;
                                                 if (delta < -50) setSwipedIndex(idx);
@@ -160,6 +204,7 @@ const ReviewSection = ({
                                             }}
                                         >
                                             <ReviewCard
+                                                modal={true}
                                                 calenderDay={review.calenderDay}
                                                 eventTitle={review.eventTitle}
                                                 userNickname={review.userNickname}
@@ -168,25 +213,20 @@ const ReviewSection = ({
                                             />
                                         </SwipeContent>
 
-                                        {showEdit && isSwiped && (
+                                        {isSwiped && (
                                             <SwipeActions>
                                                 <ActionButton
                                                     bgColor={Color.MC1}
                                                     iconColor={Color.MC5}
-                                                    onClick={() => onEditClick && onEditClick(review)}
+                                                    onClick={() => handleEdit(review, idx)}
                                                 >
                                                     <FontAwesomeIcon icon={Icons.pen} />
                                                 </ActionButton>
-
                                                 <ActionButton
                                                     bgColor={Color.BC2}
                                                     iconColor={Color.BC5}
-                                                    onClick={() => {
-                                                        if (window.confirm("정말 이 리뷰를 삭제하시겠습니까?")) {
-                                                            onDeleteClick && onDeleteClick(review);
-                                                        }
-                                                    }}
-                                                    style={{borderTopRightRadius: 10, borderBottomRightRadius: 10}}
+                                                    onClick={() => handleDelete(idx)}
+                                                    style={{ borderTopRightRadius: 10, borderBottomRightRadius: 10 }}
                                                 >
                                                     <FontAwesomeIcon icon={Icons.trash} />
                                                 </ActionButton>
@@ -195,8 +235,47 @@ const ReviewSection = ({
                                     </SwipeContainer>
                                 );
                             })}
-
                         </ModalContent>
+                    </SlideModal>
+                </ModalWrapper>
+            )}
+
+            {editModalOpen && (
+                <ModalWrapper onClick={() => setEditModalOpen(false)}>
+                    <SlideModal onClick={e => e.stopPropagation()}>
+
+                        <Typography variant="h3">리뷰 수정</Typography>
+                        <EditHeader>
+                            <EditImage src={currentReview.eventImageurl} alt="poster" />
+                            <EditInfo>
+                                <Typography variant="h4" color={Color.MC1}>{currentReview.calenderDay}</Typography>
+                                <Typography variant="h3">{currentReview.eventTitle}</Typography>
+                            </EditInfo>
+                        </EditHeader>
+
+                        <ModalContent>
+                            <TextArea
+                                maxLength={100}
+                                placeholder="content"
+                                value={editContent}
+                                onChange={e => setEditContent(e.target.value)}
+                            />
+                            <BottomArea>
+                                <Button
+                                    onClick={() => setEditModalOpen(false)}
+                                    style={{ flex: 1, backgroundColor: "#f2f2f2", color: "#888" }}
+                                >
+                                    취소
+                                </Button>
+                                <Button
+                                    onClick={submitEdit}
+                                    style={{ flex: 1, backgroundColor: Color.MC1, color: "white" }}
+                                >
+                                    수정하기
+                                </Button>
+                            </BottomArea>
+                        </ModalContent>
+
                     </SlideModal>
                 </ModalWrapper>
             )}
