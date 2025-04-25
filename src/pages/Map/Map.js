@@ -7,6 +7,7 @@ import MobileLayout from "../../components/Layout/MobileLayout";
 // TopSearchBar를 이름으로 불러옵니다.
 import { TopSearchBar } from "../../components/TopSearchBar/TopSearchBar";
 import BottomSearchResult from "../../components/BottomSearchResult/BottomSearchResult";
+import BottomFilterFormDrag from "../../components/BottomFilterForm/BottomFilterFormDrag";
 // --- Layout Styled Components ---
 // 전체 페이지 컨텐츠를 감싸는 Wrapper
 const PageWrapper = styled.div`

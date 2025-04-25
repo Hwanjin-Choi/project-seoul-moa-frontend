@@ -27,7 +27,7 @@ const RadioContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-const RegiForm = ({ fields, submitText, onSubmit }) => {
+const RegiForm = ({ fields, submitText, onSubmit, loading }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
@@ -71,20 +71,20 @@ const RegiForm = ({ fields, submitText, onSubmit }) => {
         <RadioContainer>
           <Radio
             label="남자"
-            value="male"
-            checked={selectedGender === "male"}
-            onChange={() => handleGenderChange("male")}
+            value="m"
+            checked={selectedGender === "m"}
+            onChange={() => handleGenderChange("m")}
           />
           <Radio
             label="여자"
-            value="male"
-            checked={selectedGender === "female"}
-            onChange={() => handleGenderChange("female")}
+            value="f"
+            checked={selectedGender === "f"}
+            onChange={() => handleGenderChange("f")}
           />
         </RadioContainer>
 
         <Button fullWidth type="submit">
-          {submitText}
+          {!loading ? submitText : "가입 처리 중..."}
         </Button>
       </form>
     </FormContainer>

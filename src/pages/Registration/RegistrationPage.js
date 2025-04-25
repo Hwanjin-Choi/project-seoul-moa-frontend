@@ -1,15 +1,18 @@
-import React, { useState } from "react";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import styled from "styled-components";
 import RegiForm from "../../components/RegiForm/RegiForm";
 import CategoryButton from "../../components/CategoryButton/CategoryButton";
+import { fetchCategories } from "../../api/category";
+import { registerUser } from "../../api/registration";
 
+import React, { useState, useEffect, useRef } from "react"; // useRef 임포트 추가
+import { useNavigate } from "react-router-dom"; // useNavigate 임포트 추가
 const RegistrationContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
 `;
 const RegistrationTitle = styled.h1`
   font-size: 24px;
@@ -48,6 +51,16 @@ const RegistrationButtonGrid = styled.div`
     overflow-y: auto;
   }
 `;
+
+const SuccessMessage = styled.div`
+  color: #00a37f; // 진한 녹색 계열 텍스트
+
+  margin-top: 20px; // 위쪽 여백
+  font-weight: 600; // 굵은 글씨
+  text-align: center;
+  width: 100%;
+`;
+
 const registrationFields = [
   { name: "userId", type: "text", placeholder: "아이디", required: true },
   {
@@ -70,50 +83,79 @@ const registrationFields = [
   },
 ];
 
-const categoryFieldsData = [
-  { category: "교육/체험", isClicked: false },
-  { category: "독주/독창회", isClicked: false },
-  { category: "콘서트", isClicked: false },
-  { category: "전시/미술", isClicked: false },
-  { category: "클래식", isClicked: false },
-  { category: "무용", isClicked: false },
-  { category: "뮤지컬/오페라", isClicked: false },
-  { category: "연극", isClicked: false },
-  { category: "영화", isClicked: false },
-  { category: "기타", isClicked: false },
-  { category: "축제", isClicked: false },
-  { category: "국악", isClicked: false },
-];
-
 const RegistrationPage = () => {
-  const [categoryFields, setCategoryFields] = useState(categoryFieldsData);
-  const handleCategoryClick = (category) => {
-    setCategoryFields(
-      categoryFields.map((item) =>
-        item.category === category
-          ? { ...item, isClicked: !item.isClicked }
-          : item
-      )
-    );
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const categories = await fetchCategories();
+        setAllCategories(categories);
+      } catch (err) {
+        setError(err.message);
+        setAllCategories([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const [allCategories, setAllCategories] = useState([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState("");
+  const [formKey, setFormKey] = useState(0);
+  const navigate = useNavigate(); // ✨ 1. useNavigate 훅 사용
+  const timeoutRef = useRef(null); // ✨ 2. setTimeout ID 저장을 위한 ref 생성
+
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategoryIds((prevSelectedIds) => {
+      if (prevSelectedIds.includes(categoryId)) {
+        return prevSelectedIds.filter((id) => id !== categoryId);
+      } else {
+        return [...prevSelectedIds, categoryId];
+      }
+    });
   };
-  const handleRegistration = (credentials, setErrors) => {
+  const handleRegistration = async (credentials) => {
     const { userId, password, nickname, age, gender } = credentials;
+    setError("");
+    setSuccess("");
+    setLoading(true);
 
     try {
       const formData = {
-        userId: userId,
+        username: userId,
         password: password,
         nickname: nickname,
         age: age,
         gender: gender,
-        category: categoryFields
-          .filter((item) => item.isClicked)
-          .map((item) => item.category),
+        categoryIds: selectedCategoryIds,
       };
       console.log(formData);
-      /* if (response.status === 200) {
-    } */
-    } catch (error) {}
+      const response = await registerUser(formData);
+      setSuccess(
+        "회원가입이 성공적으로 완료되었습니다. 잠시후 로그인 페이지로 이동됩니다"
+      );
+      setFormKey((prevKey) => prevKey + 1);
+      setSelectedCategoryIds([]);
+
+      timeoutRef.current = setTimeout(() => {
+        navigate("/login-page"); // '/login'은 실제 로그인 페이지 경로로 변경
+      }, 2000); // 3000ms = 3초
+    } catch (error) {
+      setError(error.message || "회원가입 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <MobileLayout>
@@ -124,21 +166,24 @@ const RegistrationPage = () => {
           <RegistrationTitle>
             프로필 생성에 필요한 기본 정보를 입력해주세요!
           </RegistrationTitle>
+          <SuccessMessage>{success && success}</SuccessMessage>
         </RegistrationTitleContainer>
         <RegistrationForm>
           <RegiForm
+            key={formKey}
             fields={registrationFields}
             submitText="회원가입"
             onSubmit={handleRegistration}
+            loading={loading}
           />
         </RegistrationForm>
         <RegistrationButtonGrid>
-          {categoryFields.map((item) => (
+          {allCategories.map((item) => (
             <CategoryButton
-              key={item.category}
-              category={item.category}
-              isClicked={item.isClicked}
-              onClick={() => handleCategoryClick(item.category)}
+              key={item.categoryId}
+              category={item.name}
+              isClicked={selectedCategoryIds.includes(item.categoryId)}
+              onClick={() => handleCategoryClick(item.categoryId)}
             />
           ))}
         </RegistrationButtonGrid>

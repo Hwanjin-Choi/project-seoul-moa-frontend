@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react"; // useRef 임포트 추가
+import { useNavigate } from "react-router-dom"; // useNavigate 임포트 추가
+
 import styled from "styled-components";
-import Input from "../../components/Input/Input";
 import logo from "../../assets/seoulmoa.svg";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import Button from "../../components/Button/Button";
 import AuthForm from "../../components/AuthForm/AuthForm";
-import CategoryButton from "../../components/CategoryButton/CategoryButton";
-import { useNavigate } from "react-router-dom";
+
+import { loginUser } from "../../api/login";
+
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -57,16 +59,34 @@ const loginFields = [
   },
 ];
 
-const handleLogin = async (credentials) => {
-
-  try {
-    console.log(credentials);
-    /* if (response.status === 200) {
-    } */
-  } catch (error) {}
-};
-
 const Login = () => {
+  const handleLogin = async (credentials) => {
+    const { username, password } = credentials;
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    try {
+      const formData = {
+        username: username,
+        password: password,
+      };
+      console.log(formData);
+      const response = await loginUser(formData);
+      setSuccess("로그인 성공");
+      setFormKey((prevKey) => prevKey + 1);
+      navigate("/view-more-page");
+    } catch (error) {
+      setError(error.message || "로그인 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [formKey, setFormKey] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState("");
+
   const navigate = useNavigate();
   return (
     <MobileLayout>
@@ -78,6 +98,7 @@ const Login = () => {
         <LoginTitle>Seoul Moa</LoginTitle>
         <FormContainer>
           <AuthForm
+            key={formKey}
             fields={loginFields}
             submitText="로그인"
             onSubmit={handleLogin}
