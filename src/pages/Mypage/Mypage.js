@@ -12,7 +12,7 @@ import CreateReviewModal from "./CreateReviewModal.js";
 import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
 import ReviewModal from "./ReviewModal.js";
-import { ScheduleCarousel } from "../../components/Card/ScheduleCard.js";
+import { ScheduleCarousel } from "./ScheduleCard.js";
 import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
 import EditCategoryModal from "./EditCategoryModal.js";
