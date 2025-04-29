@@ -5,6 +5,14 @@ export const loginUser = async (userData) => {
     const response = await apiClient.post("/members/login", userData);
     if (response.data && response.data.status === "SUCCESS") {
       console.log("로그인 성공:", response.data);
+      const loginData = response.data.data;
+      localStorage.setItem("isLoggedIn", true);
+      localStorage.setItem("username", loginData.username);
+      localStorage.setItem("nickname", loginData.nickname);
+      localStorage.setItem("userId", loginData.userId);
+      localStorage.setItem("age", loginData.age);
+      localStorage.setItem("gender", loginData.gender);
+
       return response.data;
     } else {
       throw new Error(

@@ -8,6 +8,14 @@ export const logoutUser = async () => {
     const response = await apiClient.post("/members/logout");
     if (response.data && response.data.status === "SUCCESS") {
       console.log("로그아웃 성공:", response.data);
+
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("username");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("age");
+      localStorage.removeItem("gender");
+
       return response.data;
     } else {
       throw new Error(

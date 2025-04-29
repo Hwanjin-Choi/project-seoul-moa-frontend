@@ -14,7 +14,7 @@ const LoginContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 60px);
+  height: 100%;
 `;
 const Logo = styled.img`
   width: 200px;
@@ -75,8 +75,6 @@ const Login = () => {
       setSuccess("로그인 성공");
       setFormKey((prevKey) => prevKey + 1);
       navigate("/view-more-page");
-      localStorage.setItem("nickname", "문어체");
-      localStorage.setItem("isLoggedIn", true);
     } catch (error) {
       setError(error.message || "로그인 중 오류가 발생했습니다.");
     } finally {

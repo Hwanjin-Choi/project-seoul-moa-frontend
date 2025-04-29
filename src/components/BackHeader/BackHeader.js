@@ -10,6 +10,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/seoulmoa.svg";
 import { Color } from "../../styles/colorsheet";
 import LogoutModal from "./LogoutModal";
+import { logoutUser } from "../../api/logout";
+
 // --- 기존 스타일 컴포넌트 ---
 const Logo = styled.img`
   width: 45px;
@@ -203,12 +205,13 @@ const BackHeader = () => {
 
   // --- 상태 관리 ---
   // TODO: 실제 로그인 상태는 전역 상태 관리(Context API, Redux 등) 또는 props로 받아와야 합니다.
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true" ? true : false
+  );
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [nickname] = useState("문어체");
+  const [nickname] = useState(localStorage.getItem("nickname") || "");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
   // --- 드롭다운 토글 핸들러 ---
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -225,19 +228,16 @@ const BackHeader = () => {
   };
 
   // --- 로그아웃 핸들러 ---
-  const handleLogout = () => {
-    console.log("최종 로그아웃 실행");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("nickname");
-    localStorage.removeItem("authToken");
-    setIsLoggedIn(false); // UI 업데이트를 위한 상태 변경
-    closeLogoutModal(); // 모달 닫기
-    navigate("/"); // 홈으로 이동
+  const handleLogout = async () => {
+    const res = await logoutUser();
+    if (res.status === "SUCCESS") {
+      closeLogoutModal(); // 모달 닫기
+      navigate("/"); // 홈으로 이동
+    }
   };
 
   // --- 로그인 버튼 핸들러 ---
   const handleLogin = () => {
-    console.log("로그인 버튼 클릭");
     navigate("/login-page");
   };
 
