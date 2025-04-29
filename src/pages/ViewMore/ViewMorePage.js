@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import BackHeader from "../../components/BackHeader/BackHeader";
 import MobileLayout from "../../components/Layout/MobileLayout";
-import SimpleCard from "../../components/SimpleCard/SimpleCard";
 import Typography from "../../components/Typography/Typography";
-import Content from "../../components/Content/Content";
 import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard";
+import EmptyListMessage from "./EmptyListMessage";
+
 const ViewMorePageContainer = styled.div`
   /* display: flex;
   flex-direction: column;
@@ -43,6 +42,8 @@ const UpcomingEventsField = [
   },
 ];
 
+const RecentReviewEventsField = [];
+
 const ViewMorePage = () => {
   return (
     <MobileLayout>
@@ -60,14 +61,18 @@ const ViewMorePage = () => {
         </UpcomingEventsContainer>
         <Typography variant="h3">실시간 리뷰</Typography>
         <UpcomingEventsContainer>
-          {UpcomingEventsField.map((item) => (
-            <NoBorderLandscapeCard
-              title={item.title}
-              endDate={item.endDate}
-              startDate={item.startDate}
-              location={item.location}
-            />
-          ))}
+          {RecentReviewEventsField.length > 0 ? (
+            UpcomingEventsField.map((item) => (
+              <NoBorderLandscapeCard
+                title={item.title}
+                endDate={item.endDate}
+                startDate={item.startDate}
+                location={item.location}
+              />
+            ))
+          ) : (
+            <EmptyListMessage message={"아직 리뷰가 없습니다"} />
+          )}
         </UpcomingEventsContainer>
       </ViewMorePageContainer>
     </MobileLayout>

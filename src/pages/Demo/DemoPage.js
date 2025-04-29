@@ -106,14 +106,6 @@ const DemoPage = () => {
 
   return (
     <MobileLayout>
-      <Header>
-        <Container>
-          <HeaderContent>
-            <Logo src={logo} alt="logo" />
-          </HeaderContent>
-        </Container>
-      </Header>
-
       <MainContent>
         <Container>
           <LocationInfo>

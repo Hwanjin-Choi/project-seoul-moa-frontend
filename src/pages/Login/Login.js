@@ -75,6 +75,8 @@ const Login = () => {
       setSuccess("로그인 성공");
       setFormKey((prevKey) => prevKey + 1);
       navigate("/view-more-page");
+      localStorage.setItem("nickname", "문어체");
+      localStorage.setItem("isLoggedIn", true);
     } catch (error) {
       setError(error.message || "로그인 중 오류가 발생했습니다.");
     } finally {
