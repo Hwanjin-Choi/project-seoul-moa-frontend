@@ -13,6 +13,7 @@ const RegistrationContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  overflow-y: scroll;
 `;
 const RegistrationTitle = styled.h1`
   font-size: 24px;
@@ -113,8 +114,8 @@ const RegistrationPage = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState("");
   const [formKey, setFormKey] = useState(0);
-  const navigate = useNavigate(); // ✨ 1. useNavigate 훅 사용
-  const timeoutRef = useRef(null); // ✨ 2. setTimeout ID 저장을 위한 ref 생성
+  const navigate = useNavigate();
+  const timeoutRef = useRef(null);
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategoryIds((prevSelectedIds) => {
@@ -149,8 +150,8 @@ const RegistrationPage = () => {
       setSelectedCategoryIds([]);
 
       timeoutRef.current = setTimeout(() => {
-        navigate("/login-page"); // '/login'은 실제 로그인 페이지 경로로 변경
-      }, 2000); // 3000ms = 3초
+        navigate("/login-page");
+      }, 2000);
     } catch (error) {
       setError(error.message || "회원가입 중 오류가 발생했습니다.");
     } finally {

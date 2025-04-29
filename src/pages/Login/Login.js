@@ -19,6 +19,10 @@ const LoginContainer = styled.div`
 const Logo = styled.img`
   width: 200px;
   height: 200px;
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 const LoginDescription = styled.div`
@@ -42,6 +46,12 @@ const FormContainer = styled.div`
   max-width: 300px;
   width: 100%;
 `;
+const ErrorMessage = styled.div`
+  color: red;
+  margin: 10px 0px;
+  font-size: 0.9em;
+`;
+
 const loginFields = [
   {
     name: "username",
@@ -77,6 +87,7 @@ const Login = () => {
       navigate("/view-more-page");
     } catch (error) {
       setError(error.message || "로그인 중 오류가 발생했습니다.");
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
@@ -96,6 +107,7 @@ const Login = () => {
           서울 곳곳의 문화행사를 <br /> 한눈에 모아주는 플랫폼
         </LoginDescription>
         <LoginTitle>Seoul Moa</LoginTitle>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <FormContainer>
           <AuthForm
             key={formKey}
