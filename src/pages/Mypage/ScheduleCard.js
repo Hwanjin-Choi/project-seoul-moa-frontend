@@ -57,10 +57,10 @@ const Title = styled(Typography)`
 `;
 
 const Poster = styled.img`
-  width: 100px;
-  height: 130px;
+  width: 35%;
+  aspect-ratio: 3 / 4;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
 `;
 

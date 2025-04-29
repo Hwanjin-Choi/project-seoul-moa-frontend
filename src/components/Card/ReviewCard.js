@@ -25,8 +25,9 @@ const ReviewText = styled.div`
 
 const ReviewImage = styled.img`
   width: 25%;
+  aspect-ratio: 3 / 4;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
   margin-left: 10px;
 `;
 
@@ -34,13 +35,40 @@ const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imag
   return (
     <ReviewListBox modal={modal}>
       <ReviewText>
-        <Typography variant="h4" color={Color.MC1}>
+        <Typography
+          variant="h4"
+          color={Color.MC1}
+          style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+        >
           {calenderDay}
         </Typography>
-        <Typography variant="h4" style={{ fontWeight: "600", color: Color.BC2 }}>
-          {eventTitle} - {userNickname}
+        <Typography
+          variant="h5"
+          style={{
+            color: Color.BC2,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {eventTitle}
         </Typography>
-        <Typography variant="h6" color={Color.BC3} style={{ lineHeight: 1.4 }}>
+        <Typography
+          variant="h6"
+          color={Color.BC3}
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
           {reviewContent}
         </Typography>
       </ReviewText>

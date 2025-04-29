@@ -16,20 +16,24 @@ import { reviewData, subwayData } from "./data";
 
 const BottomButton = styled(Button)`
   width: 100%;
-  margin-top: 17px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   background-color: ${Color.MC1};
   color: white;
   @media (min-width: 768px) {
     margin-top: 20px;
+    margin-bottom: 30px;
   }
 
   @media (min-width: 1024px) {
     margin-top: 40px;
+    margin-bottom: 40px;
   }
 `;
 
 const ViewDetail = ({ mapReady }) => {
-  const { eventData, loading } = EventDetail(59);
+  const eventId = 28;
+  const { eventData, loading } = EventDetail(eventId);
 
   const {
     isReviewModalOpen,
@@ -58,16 +62,16 @@ const ViewDetail = ({ mapReady }) => {
         <MapSection
           mapReady={mapReady}
           mapData={{
-            latitude: eventData.longtitude,
-            longitude: eventData.latitude,
+            latitude: eventData.latitude,
+            longitude: eventData.longitude,
           }}
           mapLocation={eventData}
         />
-
+        
         <SubwayChart
           data={subwayChartWithColor}
           currentHour={currentHour}
-          subwayName={subwayData.subwayName}
+          subwayName={eventData?.nearestStation?.name || subwayData.subwayName}
           state={state}
         />
 

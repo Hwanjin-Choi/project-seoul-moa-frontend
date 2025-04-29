@@ -20,11 +20,21 @@ const ReadReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, 
       <Typography variant="h4" color={Color.MC1}>
         {calenderDay}
       </Typography>
-      <Typography variant="h4" style={{ fontWeight: "600", color: Color.BC2 }}>
-        {eventTitle} - {userNickname}
-      </Typography>
-      <Typography variant="h6" color={Color.BC3} style={{ lineHeight: 1.4 }}>
-        {reviewContent}
+      <Typography
+          variant="h6"
+          color={Color.BC2}
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {reviewContent}
+        </Typography>
+        <Typography variant="h6" style={{ color: Color.BC3 }}>
+        {userNickname}
       </Typography>
     </CardBox>
   );

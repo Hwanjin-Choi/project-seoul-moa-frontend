@@ -255,7 +255,6 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
 
                         <ModalContent>
                             <TextArea
-                                maxLength={100}
                                 placeholder="content"
                                 value={editContent}
                                 onChange={e => setEditContent(e.target.value)}

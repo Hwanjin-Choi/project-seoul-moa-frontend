@@ -47,9 +47,9 @@ const CloseTextButton = styled.button`
 const PosterImage = styled.img`
   width: 100%;
   height: 100%;
-  aspect-ratio: 3.7/ 4;
   object-fit: contain;
   border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
 
   @media (min-width: 768px) {
     aspect-ratio: 3 / 4;
@@ -69,6 +69,8 @@ const Title = styled(Typography)`
   font-weight: 700;
   margin-bottom: 10px;
   text-align: center;
+  white-space: normal;
+  word-break: keep-all;
 `;
 
 const ChipWrapper = styled.div`

@@ -26,7 +26,14 @@ const BannerImg = styled.img`
 `;
 
 const Section = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  @media (min-width: 768px) {
+    margin-bottom: 35px;
+  }
+  @media (min-width: 1024px) {
+    margin-bottom: 40px;
+  }
+
 `;
 
 const splitEventDataByDate = (data) => {
@@ -74,12 +81,6 @@ const Mypage = () => {
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
 
   const [reviewList, setReviewList] = useState(reviewData);
-
-  const handleEditReview = (updatedReview) => {
-    setReviewList((prev) =>
-      prev.map((r) => (r.id === updatedReview.id ? updatedReview : r))
-    );
-  };
 
   const handleDeleteReview = (targetReview) => {
     setReviewList((prev) => prev.filter((r) => r.id !== targetReview.id));

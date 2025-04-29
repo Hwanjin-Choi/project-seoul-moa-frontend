@@ -37,9 +37,9 @@ const NavigationWrapper = styled.div`
   right: 0;
 `;
 const Logo = styled.img`
-  width: 45px;
-  height: 45px;
-  margin-left: 10px;
+  width: 30px;
+  height: 30px;
+  margin-left: 20px;
   cursor: pointer;
 `;
 const HeaderContent = styled.div`
@@ -48,9 +48,8 @@ const HeaderContent = styled.div`
   align-items: center;
 `;
 const Header = styled.header`
-  background-color: #fff;
-  padding: 16px 0;
-  border-bottom: 1px solid #eee;
+  background-color: white;
+  padding: 10px 0;
   position: sticky;
   top: 0;
   z-index: 100;
