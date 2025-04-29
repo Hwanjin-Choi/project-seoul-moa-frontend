@@ -4,6 +4,8 @@ import { useState } from "react";
 import Typography from "../../components/Typography/Typography";
 import Button from "../../components/Button/Button";
 import { Color } from "../../styles/colorsheet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -18,11 +20,11 @@ const SlideModal = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 960px;
+  max-width: 100%;
+  padding: 20px;
   background-color: white;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  padding: 24px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   z-index: 1001;
 
   @media (min-width: 768px) and (max-width: 1023px) {
@@ -34,6 +36,46 @@ const SlideModal = styled.div`
     max-width: 960px;
     padding: 24px 70px;
   }
+`;
+
+const Poster = styled.img`
+  width: 100%;
+  aspect-ratio: 170 / 220;
+  border-radius: 10px;
+  object-fit: cover;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-start;
+`;
+
+const PosterWrapper = styled.div`
+  flex: 0 0 150px;
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  word-break: break-word;
+`;
+
+const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+
+const StyledIcon = styled(FontAwesomeIcon)`
+  width: 12px;
+  height: 12px;
+  color: ${Color.MC1};
+  flex-shrink: 0;
 `;
 
 const DateInput = styled.input`
@@ -48,11 +90,11 @@ const DateInput = styled.input`
   color: ${Color.BC2};
 `;
 
-const Poster = styled.img`
-  width: 100%;
-  aspect-ratio: 170 / 220;
-  border-radius: 10px;
-  object-fit: cover;
+const HeaderText = styled(Typography)`
+  text-align: center;
+  padding: 10px;
+  white-space: normal;
+  word-break: keep-all;
 `;
 
 const ReserveEditModal = ({ isOpen, onClose, onSave, item }) => {
@@ -63,12 +105,22 @@ const ReserveEditModal = ({ isOpen, onClose, onSave, item }) => {
   const minDate = item.eventStartdate > today ? item.eventStartdate : today;
   const maxDate = item.eventEnddate;
 
+  const formatDateRange = (start, end) => `${start} ~ ${end}`;
+
+  const formatDate = (dateStr) => {
+    if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return `--년 --월 --일`;
+    }
+    const [y, m, d] = dateStr.split("-");
+    return `${y}년 ${parseInt(m, 10)}월 ${parseInt(d, 10)}일`;
+  };
+
   return (
     <ModalWrapper onClick={onClose}>
       <SlideModal onClick={(e) => e.stopPropagation()}>
-        <Typography variant="h2" style={{ marginBottom: 12, textAlign: "center" }}>
-          <strong>{selectedDate}</strong> 로 수정하시겠습니까?
-        </Typography>
+        <HeaderText variant="h3">
+          <strong>{formatDate(selectedDate)}</strong>로 수정하시겠습니까?
+        </HeaderText>
 
         <DateInput
           type="date"
@@ -78,22 +130,40 @@ const ReserveEditModal = ({ isOpen, onClose, onSave, item }) => {
           onChange={(e) => setSelectedDate(e.target.value)}
         />
 
-        <div style={{ display: "flex", gap: "15px", alignItems: "flex-start" }}>
-          <div style={{ flex: "0 0 150px" }}>
+        <ContentWrapper>
+          <PosterWrapper>
             <Poster src={item.eventImageurl} alt="poster" />
-          </div>
+          </PosterWrapper>
 
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-            <Typography variant="h3" color={Color.BC2}>{item.eventTitle}</Typography>
-            <Typography variant="h5" color={Color.BC3}>
-              {item.eventStartdate} - {item.eventEnddate}
+          <InfoWrapper>
+            <Typography
+              variant="h3"
+              color={Color.BC2}
+              style={{ whiteSpace: "normal", wordBreak: "keep-all", marginBottom: 10 }}
+            >
+              {item.eventTitle}
             </Typography>
-            <Typography variant="h5" color={Color.BC3}>{item.eventLocation}</Typography>
-          </div>
-        </div>
+
+            <InfoRow>
+              <StyledIcon icon={faCalendarAlt} />
+              <Typography variant="h6" color={Color.BC3}>
+                {formatDateRange(item.eventStartdate, item.eventEnddate)}
+              </Typography>
+            </InfoRow>
+
+            <InfoRow>
+              <StyledIcon icon={faMapMarkerAlt} />
+              <Typography variant="h6" color={Color.BC3}>
+                {item.eventLocation}
+              </Typography>
+            </InfoRow>
+          </InfoWrapper>
+        </ContentWrapper>
 
         <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
-          <Button variant="secondary" fullWidth onClick={onClose}>취소</Button>
+          <Button variant="secondary" fullWidth onClick={onClose}>
+            취소
+          </Button>
           <Button
             variant="primary"
             fullWidth

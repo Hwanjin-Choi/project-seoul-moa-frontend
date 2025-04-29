@@ -1,23 +1,3 @@
-export const userData = {
-    userName: "홍길동",
-    categoryName: ["전시", "공연", "클래식", "영화"]
-};
-
-export const categoryFieldsData = [
-    { category: "교육/체험", isClicked: false },
-    { category: "독주/독창회", isClicked: false },
-    { category: "콘서트", isClicked: false },
-    { category: "전시/미술", isClicked: false },
-    { category: "클래식", isClicked: false },
-    { category: "무용", isClicked: false },
-    { category: "뮤지컬/오페라", isClicked: false },
-    { category: "연극", isClicked: false },
-    { category: "영화", isClicked: false },
-    { category: "기타", isClicked: false },
-    { category: "축제", isClicked: false },
-    { category: "국악", isClicked: false },
-];
-
 export const EventData = [
     {
         calenderDay: "2025-04-20",
