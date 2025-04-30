@@ -65,6 +65,9 @@ const ModalContent = styled.div`
 `;
 
 const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리뷰" }) => {
+  const hasData = Array.isArray(reviewData) && reviewData.length > 0;
+  const firstReview = hasData ? reviewData[0] : null;
+
   return (
     <>
       <FlexDiv>
@@ -77,13 +80,19 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
         />
       </FlexDiv>
 
+      {/* ✅ 리뷰가 있을 때만 카드 보여줌, 없으면 텍스트 */}
       <div onClick={() => setIsOpen(true)} style={{ cursor: "pointer" }}>
-        <ReadReviewCard
-          calenderDay={reviewData[0].calenderDay}
-          eventTitle={reviewData[0].eventTitle}
-          userNickname={reviewData[0].userNickname}
-          reviewContent={reviewData[0].reviewContent}
-        />
+        {firstReview ? (
+          <ReadReviewCard
+            calendarDay={firstReview.calendarDay}
+            userNickname={firstReview.userNickname}
+            reviewContent={firstReview.reviewContent}
+          />
+        ) : (
+          <Typography variant="body2" color={Color.BC3} style={{ marginTop: "10px" }}>
+            작성된 리뷰가 없습니다.
+          </Typography>
+        )}
       </div>
 
       {isOpen && (
@@ -94,16 +103,21 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
               <CloseButton onClick={() => setIsOpen(false)}>닫기</CloseButton>
             </ModalHeader>
             <ModalContent>
-              {reviewData.map((review, idx) => (
-                <ReadReviewCard
-                  key={idx}
-                  calenderDay={review.calenderDay}
-                  eventTitle={review.eventTitle}
-                  userNickname={review.userNickname}
-                  reviewContent={review.reviewContent}
-                  modal={true}
-                />
-              ))}
+              {hasData ? (
+                reviewData.map((review, idx) => (
+                  <ReadReviewCard
+                    key={idx}
+                    calendarDay={review.calendarDay}
+                    userNickname={review.userNickname}
+                    reviewContent={review.reviewContent}
+                    modal={true}
+                  />
+                ))
+              ) : (
+                <Typography variant="body2" color={Color.BC3}>
+                  작성된 리뷰가 없습니다.
+                </Typography>
+              )}
             </ModalContent>
           </SlideModal>
         </ModalWrapper>
@@ -111,5 +125,6 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
     </>
   );
 };
+
 
 export default ReadReviewSection;

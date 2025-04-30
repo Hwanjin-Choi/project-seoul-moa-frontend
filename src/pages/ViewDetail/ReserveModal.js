@@ -122,7 +122,7 @@ const ReserveModal = ({ onClose, data, date }) => {
     <ModalWrapper onClick={onClose}>
       <SlideModal onClick={(e) => e.stopPropagation()}>
         <HeaderText variant="h3">
-          <strong>{formatDate(selectedDate)}</strong>에 행사를 예약하시겠습니까?
+          <strong>{formatDate(selectedDate)}</strong>에 일정을 추가하시겠습니까?
         </HeaderText>
 
         <DateInput
@@ -167,7 +167,7 @@ const ReserveModal = ({ onClose, data, date }) => {
             취소
           </Button>
           <Button variant="primary" fullWidth onClick={onClose}>
-            예약하기
+            일정 추가
           </Button>
         </div>
       </SlideModal>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiClient from "./index"; // 경로 주의
+import apiClient from "./index";
 
 const useUserFetch = () => {
   const [user, setUser] = useState(null);
@@ -9,8 +9,6 @@ const useUserFetch = () => {
     const fetchUser = async () => {
       try {
         const res = await apiClient.get("/members/detail/me");
-        console.log("👀 유저 API 응답:", res.data);
-
         if (res.data.status === "SUCCESS") {
           const data = res.data.data;
           setUser({

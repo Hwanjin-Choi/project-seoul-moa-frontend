@@ -3,16 +3,11 @@ import { Color } from "../styles/colorsheet";
 const useSubwayChartData = (subwayData) => {
   const currentHour = new Date().getHours();
 
-  const rawData = Object.entries(subwayData)
-    .filter(([key]) => key.startsWith("Timedata"))
-    .map(([key, value]) => {
-      const hour = Number(key.replace("Timedata", ""));
-      return {
-        time: `${hour}시`,
-        hour,
-        count: Number(value),
-      };
-    });
+  const rawData = subwayData.map(({ hour, count }) => ({
+    time: `${hour}시`,
+    hour,
+    count,
+  }));
 
   const sorted = [...rawData].sort((a, b) => b.count - a.count);
   const total = sorted.length;

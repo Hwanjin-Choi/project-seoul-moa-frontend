@@ -11,8 +11,8 @@ import useViewDetail from "../../hooks/useViewDetail.js";
 import MapSection from "./MapSection.js";
 import Container from "../../components/Layout/Container.js";
 import EventDetail from "../../api/EventDetail.js";
-
-import { reviewData, subwayData } from "./data";
+import useReviewFetch from "../../hooks/useReviewFetch";
+import EventDescriptionSection from "./EventDescriptionSection.js";
 
 const BottomButton = styled(Button)`
   width: 100%;
@@ -32,7 +32,7 @@ const BottomButton = styled(Button)`
 `;
 
 const ViewDetail = ({ mapReady }) => {
-  const eventId = 28;
+  const eventId = 30;
   const { eventData, loading } = EventDetail(eventId);
 
   const {
@@ -44,7 +44,14 @@ const ViewDetail = ({ mapReady }) => {
     subwayChartWithColor,
     currentHour,
     state,
-  } = useViewDetail();
+  } = useViewDetail(eventId);
+
+  const {
+    reviews,
+    fetchMoreReviews,
+    hasMore,
+    loading: reviewLoading,
+  } = useReviewFetch(eventId);
 
   if (loading || !eventData) return <div>로딩 중...</div>;
 
@@ -53,8 +60,10 @@ const ViewDetail = ({ mapReady }) => {
       <Container>
         <DetailHeader data={eventData} />
 
+        <EventDescriptionSection description={eventData.eventDescription} />
+
         <ReadReviewSection
-          reviewData={reviewData}
+          reviewData={reviews}
           isOpen={isReviewModalOpen}
           setIsOpen={setIsReviewModalOpen}
         />
@@ -67,11 +76,12 @@ const ViewDetail = ({ mapReady }) => {
           }}
           mapLocation={eventData}
         />
-        
+
         <SubwayChart
           data={subwayChartWithColor}
           currentHour={currentHour}
-          subwayName={eventData?.nearestStation?.name || subwayData.subwayName}
+          subwayName={eventData?.nearestStation?.name}
+          subwayLine={eventData?.nearestStation?.line}
           state={state}
         />
 
@@ -90,5 +100,6 @@ const ViewDetail = ({ mapReady }) => {
     </MobileLayout>
   );
 };
+
 
 export default ViewDetail;

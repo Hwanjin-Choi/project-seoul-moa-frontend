@@ -14,11 +14,11 @@ const CardBox = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
-const ReadReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, modal = false }) => {
+const ReadReviewCard = ({ calendarDay, userNickname, reviewContent, modal = false }) => {
   return (
     <CardBox modal={modal}>
       <Typography variant="h4" color={Color.MC1}>
-        {calenderDay}
+        {calendarDay}
       </Typography>
       <Typography
           variant="h6"

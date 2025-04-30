@@ -33,11 +33,21 @@ const MapSection = ({ mapReady, mapData, mapLocation }) => {
   const lat = Number(mapData.latitude);
   const lng = Number(mapData.longitude);
 
+  const stationLat = Number(mapLocation?.nearestStation?.latitude);
+  const stationLng = Number(mapLocation?.nearestStation?.longitude);
+
   return (
     <>
       <Typography variant="h3" style={{ marginTop: 20 }}>지도</Typography>
       <MapBox>
-        {mapReady && <KakaoMap lat={lat} lng={lng} />}
+        {mapReady && (
+          <KakaoMap
+            lat={lat}
+            lng={lng}
+            stationLat={stationLat}
+            stationLng={stationLng}
+          />
+        )}
       </MapBox>
       <LocationBox>
         <FontAwesomeIcon icon={Icons.mapPin} />

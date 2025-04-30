@@ -118,7 +118,7 @@ const Mypage = () => {
 
         {upcoming.length > 0 && (
           <Section>
-            <Typography variant="h3">예약 일정</Typography>
+            <Typography variant="h3">다가오는 일정</Typography>
             <ScheduleCarousel
               data={upcoming}
               onEditClick={setEditItem}

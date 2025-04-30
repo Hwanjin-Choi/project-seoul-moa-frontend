@@ -24,7 +24,7 @@ const Tag = styled.span`
   border-radius: 10px;
 `;
 
-const SubwayChart = ({ data, currentHour, subwayName, state }) => {
+const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
   return (
     <>
       <ChartBox>
@@ -58,7 +58,7 @@ const SubwayChart = ({ data, currentHour, subwayName, state }) => {
       </ChartBox>
 
       <Typography variant="h6" style={{ textAlign: "center" }}>
-        {currentHour}시의 {subwayName}역은 <Tag>{state}</Tag> 단계입니다
+        {currentHour}시의 {subwayName}({subwayLine})은 <Tag>{state}</Tag> 단계입니다
       </Typography>
     </>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import apiClient from "./index";
 
 const EventDetail = (eventId) => {
   const [eventData, setEventData] = useState(null);
@@ -8,8 +8,9 @@ const EventDetail = (eventId) => {
   useEffect(() => {
     if (eventId == null) return;
     setLoading(true);
-    axios
-      .get(`http://localhost:8080/events/data/${eventId}`)
+
+    apiClient
+      .get(`/events/data/${eventId}`)
       .then(res => {
         setEventData(res.data.data);
       })
