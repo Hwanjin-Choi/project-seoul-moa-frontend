@@ -66,6 +66,9 @@ const ViewDetail = ({ mapReady }) => {
           reviewData={reviews}
           isOpen={isReviewModalOpen}
           setIsOpen={setIsReviewModalOpen}
+          fetchMore={fetchMoreReviews}
+          hasMore={hasMore}
+          loading={reviewLoading}
         />
 
         <MapSection

@@ -1,9 +1,12 @@
 import apiClient from "./index";
 
-export const fetchEventReviews = async ({ eventId, offset = 0, limit = 5 }) => {
+export const fetchEventReviews = async ({ eventId, offset, limit }) => {
   try {
     const res = await apiClient.get(
-      `/interaction/event/reviews/event?eventId=${eventId}&offset=${offset}&limit=${limit}`
+      "/interaction/event/reviews/event",
+      {
+        params: { eventId, offset, limit }
+      }
     );
 
     if (res.data.status === "SUCCESS") {
