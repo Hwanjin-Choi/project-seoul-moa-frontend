@@ -80,7 +80,13 @@ const getEventStatus = (startDate, endDate) => {
 };
 
 // --- 컴포넌트 로직 (날짜 처리 등 - 변경 없음) ---
-const EventInfoDisplay = ({ location, startDate, endDate }) => {
+const EventInfoDisplay = ({
+  title,
+  location,
+  startDate,
+  endDate,
+  likeCount,
+}) => {
   let parsedStartDate, parsedEndDate;
   let dateString = "날짜 정보 없음";
   let status = null;
@@ -115,16 +121,11 @@ const EventInfoDisplay = ({ location, startDate, endDate }) => {
   // --- Styled Components를 사용하여 렌더링 ---
   return (
     <Wrapper>
-      {/* 장소 정보 행 */}
       <InfoRow>
         <IconWrapper>
           <FiFileText />
         </IconWrapper>
-        <InfoText>
-          {
-            "[서울시립 북서울미술관] 대학(원)생 전시 감상 프로그램 [캠퍼스 옆 미술관]"
-          }
-        </InfoText>
+        <InfoText>{title}</InfoText>
       </InfoRow>
 
       <InfoRow>
@@ -133,13 +134,17 @@ const EventInfoDisplay = ({ location, startDate, endDate }) => {
         </IconWrapper>
         <InfoText>{location || "장소 정보 없음"}</InfoText>
       </InfoRow>
-      {/* 날짜 및 상태 정보 행 */}
       <InfoRow>
         <IconWrapper>
           <FiCalendar />
         </IconWrapper>
         <InfoText>{dateString}</InfoText>
-        {/* 상태가 있을 경우 StatusBadge 렌더링 */}
+      </InfoRow>
+      <InfoRow>
+        <IconWrapper>
+          <FiCalendar />
+        </IconWrapper>
+        <InfoText>{likeCount + "명이 관심있어 합니다"}</InfoText>
       </InfoRow>
     </Wrapper>
   );

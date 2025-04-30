@@ -1,14 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import Typography from "../Typography/Typography";
-
-import TestImage from "../../assets/Test.jpeg";
 import Tag from "../Tag/Tag"; // 기존 Tag 컴포넌트
 import IconButton from "../IconButton/IconButton";
 
 import EventInfoDisplay from "../EventInfoDisplay/EventInfoDisplay";
 
-// --- 기존 styled-components 정의 (변경 없음) ---
 const NoBorderLandscapeCardContainer = styled.div`
   width: 100%;
   display: flex;
@@ -82,33 +78,67 @@ const StyledIconButton = styled(IconButton)`
   flex-shrink: 0;
 `;
 
-// --- 변경/추가된 부분 ---
-// Tag 컴포넌트를 감싸면서 하단 정렬 스타일을 적용할 새 styled-component 생성
-const StyledTag = styled(Tag)`
-  margin-top: auto; /* 이 스타일이 태그를 DescriptionContainer 하단으로 밀어냅니다 */
-  align-self: flex-start; /* 태그 자체는 왼쪽 정렬 유지 */
+const TagContainer = styled.div`
+  margin-top: auto;
 `;
 
+const StyledTag = styled(Tag)`
+  align-self: flex-start; /* 태그 자체는 왼쪽 정렬 유지 */
+`;
+const calculateDday = (startDateStr) => {
+  if (!startDateStr) return "";
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDate = new Date(startDateStr);
+    startDate.setHours(0, 0, 0, 0);
+    const diffTime = startDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0) {
+      return `D-${diffDays}`;
+    } else if (diffDays === 0) {
+      return "D-Day";
+    } else {
+      return "종료";
+    }
+  } catch (error) {
+    console.error("D-day 계산 오류:", error);
+    return "";
+  }
+};
+
 const NoBorderLandscapeCard = (props) => {
+  const dDayString = calculateDday(props.startDate);
+
   return (
     <NoBorderLandscapeCardContainer>
       <ImageContainer>
         <BadgeContainer>
-          <Dday>D-{"19"}</Dday>
+          <Dday>{dDayString}</Dday>
         </BadgeContainer>
-        <Image src={TestImage} alt={props.title || "Card image"} />{" "}
+        <Image src={props.image} alt={props.title || "Card image"} />{" "}
       </ImageContainer>
       <RowContainer>
         <DescriptionContainer>
           <EventInfoDisplay
+            title={props.title}
             startDate={props.startDate}
             endDate={props.endDate}
             location={props.location}
+            likeCount={props.likeCount}
           />
-          <StyledTag>{"교육/체험"}</StyledTag>
+
+          <TagContainer>
+            <StyledTag>{props.category}</StyledTag>
+            <StyledTag>{props.gu}</StyledTag>
+          </TagContainer>
         </DescriptionContainer>
 
-        <StyledIconButton />
+        <StyledIconButton
+          onClick={props.onLikeToggle}
+          isLiked={props.isLiked}
+        />
       </RowContainer>
     </NoBorderLandscapeCardContainer>
   );
