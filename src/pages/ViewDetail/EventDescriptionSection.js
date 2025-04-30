@@ -43,7 +43,7 @@ const EventDescriptionSection = ({ description = "" }) => {
 
   return (
     <Wrapper>
-      <Typography variant="h3">상세내용</Typography>
+      <Typography variant="h3">AI 요약 설명</Typography>
       <OuterBox expanded={expanded}>
         <ScrollBox>
           <Typography

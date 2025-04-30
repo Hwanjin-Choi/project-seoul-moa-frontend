@@ -17,8 +17,9 @@ import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
 import EditCategoryModal from "./EditCategoryModal.js";
 
-import { EventData, reviewData } from "./data";
+import { EventData } from "./data";
 import useUserFetch from "../../api/UserFetch";
+import { fetchUserReviews } from "../../api/userReview.js";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -59,9 +60,12 @@ const Mypage = () => {
   const state = useMypage();
   const [eventList, setEventList] = useState(EventData);
   const { upcoming, past } = splitEventDataByDate(eventList);
-
   const [editItem, setEditItem] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
+  const { user, loading } = useUserFetch();
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+  const [reviewList, setReviewList] = useState([]);
 
   const handleEditSave = (newDate) => {
     setEventList(prev =>
@@ -77,12 +81,6 @@ const Mypage = () => {
     setDeleteItem(null);
   };
 
-  const { user, loading } = useUserFetch();
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
-
-  const [reviewList, setReviewList] = useState(reviewData);
-
   useEffect(() => {
     if (user) {
       setSelectedCategories(user.categories);
@@ -90,8 +88,32 @@ const Mypage = () => {
   }, [user]);
 
   const handleDeleteReview = (targetReview) => {
-    setReviewList((prev) => prev.filter((r) => r.id !== targetReview.id));
+    setReviewList((prev) => prev.filter((r) => r.reviewId !== targetReview.reviewId));
   };
+
+  useEffect(() => {
+    const loadUserReviews = async () => {
+      try {
+        const result = await fetchUserReviews();
+        const mapped = result.map((item) => ({
+          reviewId: item.reviewId,
+          calendarDay: item.calendarDay,
+          eventTitle: item.eventTitle,
+          userNickname: user?.nickname || "회원",
+          reviewContent: item.content,
+          eventImageurl: item.imageUrl,
+        }));
+        console.log("👉 리뷰 데이터:", mapped);
+        setReviewList(mapped);
+      } catch (err) {
+        console.error("리뷰 로드 실패", err);
+      }
+    };
+  
+    if (user) {
+      loadUserReviews();
+    }
+  }, [user]);
 
   if (loading) return <div>로딩 중...</div>;
 
@@ -109,12 +131,12 @@ const Mypage = () => {
         </Section>
 
         <EditCategoryModal
-  isOpen={isEditCategoryOpen}
-  onClose={() => setIsEditCategoryOpen(false)}
-  selected={selectedCategories}
-  setSelected={setSelectedCategories}
-  userInfo={user}
-/>
+          isOpen={isEditCategoryOpen}
+          onClose={() => setIsEditCategoryOpen(false)}
+          selected={selectedCategories}
+          setSelected={setSelectedCategories}
+          userInfo={user}
+        />
 
         {upcoming.length > 0 && (
           <Section>

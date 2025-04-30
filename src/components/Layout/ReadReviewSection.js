@@ -80,7 +80,6 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
         />
       </FlexDiv>
 
-      {/* ✅ 리뷰가 있을 때만 카드 보여줌, 없으면 텍스트 */}
       <div onClick={() => setIsOpen(true)} style={{ cursor: "pointer" }}>
         {firstReview ? (
           <ReadReviewCard

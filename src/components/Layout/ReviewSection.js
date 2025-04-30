@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Typography from "../Typography/Typography";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icons } from "../../assets/icons";
@@ -100,11 +100,17 @@ const ActionButton = styled.button`
 
 
 const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리뷰" }) => {
-    const [reviews, setReviews] = useState(reviewData);
+    const [reviews, setReviews] = useState([]);
     const [swipedIndex, setSwipedIndex] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [currentReview, setCurrentReview] = useState(null);
     const [editContent, setEditContent] = useState("");
+
+    useEffect(() => {
+        if (reviewData?.length > 0) {
+            setReviews(reviewData);
+        }
+    }, [reviewData]);
 
     const handleDelete = (idx) => {
         setReviews((prev) => prev.filter((_, i) => i !== idx));
@@ -115,16 +121,6 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
         setCurrentReview({ ...review, idx });
         setEditContent(review.reviewContent);
         setEditModalOpen(true);
-    };
-
-    const submitEdit = () => {
-        setReviews((prev) =>
-            prev.map((r, i) =>
-                i === currentReview.idx ? { ...r, reviewContent: editContent } : r
-            )
-        );
-        setEditModalOpen(false);
-        setSwipedIndex(null);
     };
 
     return (
@@ -139,13 +135,15 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
                 />
             </FlexDiv>
 
-            <ReviewCard
-                calenderDay={reviews[0].calenderDay}
-                eventTitle={reviews[0].eventTitle}
-                userNickname={reviews[0].userNickname}
-                reviewContent={reviews[0].reviewContent}
-                imageUrl={reviews[0].eventImageurl}
-            />
+            {reviews.length > 0 && (
+                <ReviewCard
+                    calendarDay={reviews[0].calendarDay}
+                    eventTitle={reviews[0].eventTitle}
+                    userNickname={reviews[0].userNickname}
+                    reviewContent={reviews[0].reviewContent}
+                    imageUrl={reviews[0].eventImageurl}
+                />
+            )}
 
             {isOpen && (
                 <ModalWrapper onClick={() => setIsOpen(false)}>
@@ -173,7 +171,7 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
                                         >
                                             <ReviewCard
                                                 modal={true}
-                                                calenderDay={review.calenderDay}
+                                                calendarDay={review.calendarDay}
                                                 eventTitle={review.eventTitle}
                                                 userNickname={review.userNickname}
                                                 reviewContent={review.reviewContent}
