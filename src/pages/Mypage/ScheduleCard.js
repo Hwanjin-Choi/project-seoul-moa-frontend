@@ -3,7 +3,7 @@ import Typography from "../../components/Typography/Typography";
 import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
-import Button from "../Button/Button";
+import Button from "../../components/Button/Button";
 
 const CarouselWrapper = styled.div`
   display: flex;
@@ -32,8 +32,7 @@ const Card = styled.div`
   flex: 0 0 100%;
   scroll-snap-align: start;
   background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
   overflow: hidden;
 `;
 
@@ -46,16 +45,22 @@ const InfoSection = styled.div`
 
 const InfoBox = styled.div`
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
 `;
 
+const Title = styled(Typography)`
+  white-space: normal;
+  overflow-wrap: break-word;
+`;
+
 const Poster = styled.img`
-  width: 100px;
-  height: 130px;
-  border-radius: 20px;
-  object-fit: cover;
+  width: 35%;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  object-fit: contain;
   flex-shrink: 0;
 `;
 
@@ -114,7 +119,9 @@ const ScheduleCard = ({ item, onEditClick, onDeleteClick }) => {
             </Typography>
             <DdayTag>D-{dday}</DdayTag>
           </DateRow>
-          <Typography variant="h3" style={{ fontWeight: 700 }}>{item.eventTitle}</Typography>
+          <Title variant="h3" style={{ fontWeight: 700 }}>
+            {item.eventTitle}
+          </Title>
           <InfoRow>
             <StyledIcon icon={faCalendarAlt} />
             <Typography variant="h6" color={Color.BC3}>

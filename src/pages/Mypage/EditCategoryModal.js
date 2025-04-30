@@ -1,9 +1,13 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+
 import Typography from "../../components/Typography/Typography";
 import Button from "../../components/Button/Button";
 import { Color } from "../../styles/colorsheet";
-import { categoryFieldsData } from "./data";
 import CategoryButton from "../../components/CategoryButton/CategoryButton";
+
+import { fetchCategories } from "../../api/category"
+import { updateUserInterests } from "../../api/user";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -73,8 +77,16 @@ const BottomRow = styled.div`
   flex-shrink: 0;
 `;
 
-const EditCategoryModal = ({ isOpen, onClose, selected, setSelected }) => {
-  if (!isOpen) return null;
+const EditCategoryModal = ({ isOpen, onClose, selected, setSelected, userInfo }) => {
+  const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchCategories()
+        .then((data) => setCategoryList(data))
+        .catch((err) => console.error("카테고리 목록 로드 실패:", err));
+    }
+  }, [isOpen]);
 
   const toggleCategory = (cat) => {
     if (selected.includes(cat)) {
@@ -83,6 +95,30 @@ const EditCategoryModal = ({ isOpen, onClose, selected, setSelected }) => {
       setSelected([...selected, cat]);
     }
   };
+
+  const handleSave = async () => {
+    try {
+      const selectedCategoryIds = categoryList
+        .filter((cat) => selected.includes(cat.name))
+        .map((cat) => cat.categoryId);
+      if (!userInfo) {
+        alert("유저 정보를 찾을 수 없습니다.");
+        return;
+      }
+      if (selectedCategoryIds.length === 0) {
+        alert("하나 이상의 관심사를 선택해주세요.");
+        return;
+      }
+      await updateUserInterests(userInfo, selectedCategoryIds);
+      alert("관심사가 저장되었습니다.");
+      onClose();
+    } catch (err) {
+      console.error("저장 중 오류:", err);
+      alert("관심사 저장 중 문제가 발생했습니다.");
+    }
+  };
+
+  if (!isOpen) return null;
 
   return (
     <ModalWrapper onClick={onClose}>
@@ -94,12 +130,12 @@ const EditCategoryModal = ({ isOpen, onClose, selected, setSelected }) => {
 
         <ScrollableContent>
           <ButtonGrid>
-            {categoryFieldsData.map((field, idx) => (
+            {categoryList.map((field) => (
               <CategoryButton
-                key={idx}
-                category={field.category}
-                isClicked={selected.includes(field.category)}
-                onClick={() => toggleCategory(field.category)}
+                key={field.categoryId}
+                category={field.name}
+                isClicked={selected.includes(field.name)}
+                onClick={() => toggleCategory(field.name)}
               />
             ))}
           </ButtonGrid>
@@ -107,7 +143,7 @@ const EditCategoryModal = ({ isOpen, onClose, selected, setSelected }) => {
 
         <BottomRow>
           <Button variant="secondary" fullWidth onClick={onClose}>취소</Button>
-          <Button variant="primary" fullWidth onClick={onClose}>저장</Button>
+          <Button variant="primary" fullWidth onClick={handleSave}>저장</Button>
         </BottomRow>
       </SlideModal>
     </ModalWrapper>

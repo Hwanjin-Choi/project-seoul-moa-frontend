@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Banner from "../../assets/img/Mypage_View1.png";
 import MobileLayout from "../../components/Layout/MobileLayout";
@@ -12,12 +12,13 @@ import CreateReviewModal from "./CreateReviewModal.js";
 import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
 import ReviewModal from "./ReviewModal.js";
-import { ScheduleCarousel } from "../../components/Card/ScheduleCard.js";
+import { ScheduleCarousel } from "./ScheduleCard.js";
 import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
 import EditCategoryModal from "./EditCategoryModal.js";
 
-import { userData, EventData, reviewData } from "./data";
+import { EventData, reviewData } from "./data";
+import useUserFetch from "../../api/UserFetch";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -26,7 +27,13 @@ const BannerImg = styled.img`
 `;
 
 const Section = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  @media (min-width: 768px) {
+    margin-bottom: 35px;
+  }
+  @media (min-width: 1024px) {
+    margin-bottom: 40px;
+  }
 `;
 
 const splitEventDataByDate = (data) => {
@@ -70,20 +77,23 @@ const Mypage = () => {
     setDeleteItem(null);
   };
 
-  const [selectedCategories, setSelectedCategories] = useState(userData.categoryName);
+  const { user, loading } = useUserFetch();
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
 
   const [reviewList, setReviewList] = useState(reviewData);
 
-  const handleEditReview = (updatedReview) => {
-    setReviewList((prev) =>
-      prev.map((r) => (r.id === updatedReview.id ? updatedReview : r))
-    );
-  };
+  useEffect(() => {
+    if (user) {
+      setSelectedCategories(user.categories);
+    }
+  }, [user]);
 
   const handleDeleteReview = (targetReview) => {
     setReviewList((prev) => prev.filter((r) => r.id !== targetReview.id));
   };
+
+  if (loading) return <div>로딩 중...</div>;
 
   return (
     <MobileLayout>
@@ -91,7 +101,7 @@ const Mypage = () => {
       <Container>
         <Section>
           <InterestSection
-            userName={userData.userName}
+            userName={user?.nickname || "회원"}
             categoryName={selectedCategories}
             isClicked={isEditCategoryOpen}
             onEditClick={() => setIsEditCategoryOpen(true)}
@@ -99,36 +109,33 @@ const Mypage = () => {
         </Section>
 
         <EditCategoryModal
-          isOpen={isEditCategoryOpen}
-          onClose={() => setIsEditCategoryOpen(false)}
-          selected={selectedCategories}
-          setSelected={setSelectedCategories}
-        />
+  isOpen={isEditCategoryOpen}
+  onClose={() => setIsEditCategoryOpen(false)}
+  selected={selectedCategories}
+  setSelected={setSelectedCategories}
+  userInfo={user}
+/>
 
         {upcoming.length > 0 && (
           <Section>
-            <Typography variant="h3">예약 일정</Typography>
+            <Typography variant="h3">다가오는 일정</Typography>
             <ScheduleCarousel
               data={upcoming}
               onEditClick={setEditItem}
               onDeleteClick={setDeleteItem}
             />
-
             <ReserveEditModal
               isOpen={!!editItem}
               onClose={() => setEditItem(null)}
               onSave={handleEditSave}
               item={editItem}
             />
-
             <ReserveDeleteModal
               isOpen={!!deleteItem}
               onClose={() => setDeleteItem(null)}
               onDelete={handleDelete}
               item={deleteItem}
             />
-
-
           </Section>
         )}
 
@@ -147,18 +154,18 @@ const Mypage = () => {
         )}
 
         <Section>
-        <ReviewModal
-  userName={userData.userName}
-  reviewData={reviewList}
-  isOpen={state.isReviewModalOpen}
-  setIsOpen={state.setIsReviewModalOpen}
-  onEditClick={(review) => {
-    state.setSelectedReview(review);
-    state.setEditedContent(review.reviewContent);
-    state.setIsEditModalOpen(true);
-  }}
-  onDeleteClick={handleDeleteReview}
-/>
+          <ReviewModal
+            userName={user?.nickname || "회원"}
+            reviewData={reviewList}
+            isOpen={state.isReviewModalOpen}
+            setIsOpen={state.setIsReviewModalOpen}
+            onEditClick={(review) => {
+              state.setSelectedReview(review);
+              state.setEditedContent(review.reviewContent);
+              state.setIsEditModalOpen(true);
+            }}
+            onDeleteClick={handleDeleteReview}
+          />
         </Section>
 
         <EditReviewModal {...state} />

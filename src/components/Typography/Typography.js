@@ -49,15 +49,18 @@ const getVariantStyles = ({ variant }) => {
         font-weight: 700;
         line-height: 1.2;
         margin: 0em 0.3125em;
+        @media (max-width: 768px) {
+          font-size: 0.7em; /* 12px / 16px = 0.75em */
+        }
       `;
     case "h6":
       return css`
-        font-size: 0.75em; /* 12px / 16px = 0.75em */
-        font-weight: 700;
+        font-size: 0.9em;
+        font-weight: 500;
         line-height: 1.2;
         margin: 0em 0.3125em;
         @media (max-width: 768px) {
-          font-size: 0.625em; /* 10px / 16px = 0.625em */
+          font-size: 0.68em;
         }
       `;
     default:

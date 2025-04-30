@@ -3,16 +3,17 @@ import Typography from "../../components/Typography/Typography.js";
 import { Color } from "../../styles/colorsheet.js";
 import Button from "../../components/Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faMapMarkerAlt, faUser, faWonSign } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 const CarouselWrapper = styled.div`
   display: flex;
-  flex-direction: row;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   gap: 15px;
   padding: 10px 0;
-  -ms-overflow-style: none;
+  -ms-overflow-style: auto;
+  scrollbar-width: auto;
+
   &::-webkit-scrollbar {
     height: 6px;
   }
@@ -30,25 +31,39 @@ const CarouselWrapper = styled.div`
 const CarouselItem = styled.div`
   flex: 0 0 100%;
   scroll-snap-align: start;
-  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.7);
-  padding: 15px;
+  border-radius: 10px;
   display: flex;
+  padding: 15px;
+  gap: 10px;
+  box-sizing: border-box;
 `;
 
 const Thumb = styled.img`
-  width: 50%;
-  height: 100%;
+  width: 45%;
+  aspect-ratio: 3 / 4;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
+  flex-shrink: 0;
 `;
 
-const ReviewInfoBox = styled.div`
-  margin-left: 15px;
+const InfoBox = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: space-between;
-  flex: 1;
+  padding-right: 10px;
+  box-sizing: border-box;
+`;
+
+const Title = styled(Typography)`
+  white-space: normal;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const InfoRow = styled.div`
@@ -70,12 +85,18 @@ const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => (
     {reviewCreateData.map((event, idx) => (
       <CarouselItem key={idx}>
         <Thumb src={event.eventImageurl} />
-        <ReviewInfoBox>
+        <InfoBox>
           <div>
-            <Typography variant="h4" color={Color.MC1}>
+            <Typography
+              variant="h4"
+              color={Color.MC1}
+              style={{ margin: 5 }}
+            >
               {event.calenderDay}
             </Typography>
-            <Typography variant="h3">{event.eventTitle}</Typography>
+            <Title variant="h3" style={{ margin: 5 }}>
+              {event.eventTitle}
+            </Title>
 
             <InfoRow>
               <StyledIcon icon={faCalendarAlt} />
@@ -99,7 +120,7 @@ const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => (
           >
             리뷰작성
           </Button>
-        </ReviewInfoBox>
+        </InfoBox>
 
       </CarouselItem>
     ))}

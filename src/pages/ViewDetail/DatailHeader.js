@@ -47,9 +47,9 @@ const CloseTextButton = styled.button`
 const PosterImage = styled.img`
   width: 100%;
   height: 100%;
-  aspect-ratio: 3.7/ 4;
   object-fit: contain;
   border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
 
   @media (min-width: 768px) {
     aspect-ratio: 3 / 4;
@@ -69,6 +69,8 @@ const Title = styled(Typography)`
   font-weight: 700;
   margin-bottom: 10px;
   text-align: center;
+  white-space: normal;
+  word-break: keep-all;
 `;
 
 const ChipWrapper = styled.div`
@@ -149,7 +151,7 @@ const DetailHeader = ({ data }) => {
         <PosterWrapper>
           <div style={{ height: "45vh" }}>
             <PosterImage
-              src={data.image_url}
+              src={data.imageUrl}
               alt={data.title}
               onClick={() => setIsModalOpen(true)}
               style={{ cursor: "pointer" }}
@@ -163,14 +165,14 @@ const DetailHeader = ({ data }) => {
             <Title>{data.title}</Title>
 
             <ChipWrapper>
-              <CategoryChip>{data.category_id}</CategoryChip>
+              <CategoryChip>{data.categoryName}</CategoryChip>
               <CategoryChip>{data.gu}</CategoryChip>
             </ChipWrapper>
 
             <InfoCard>
               <InfoRow>
                 <StyledIcon icon={faCalendarAlt} />
-                <ValueText>{`${data.startDate} ~ ${data.endDate}`}</ValueText>
+                <ValueText>{`${data.startDate.slice(0, 10)} ~ ${data.endDate.slice(0, 10)}`}</ValueText>
               </InfoRow>
 
               <InfoRow>
@@ -180,12 +182,12 @@ const DetailHeader = ({ data }) => {
 
               <InfoRow>
                 <StyledIcon icon={faUser} />
-                <ValueText>{data.user}</ValueText>
+                <ValueText>{data.targetUser}</ValueText>
               </InfoRow>
 
               <InfoRow>
                 <StyledIcon icon={faWonSign} />
-                <ValueText>{data.fee}</ValueText>
+                <ValueText>{data.isFree ? "무료" : data.fee || "정보 없음"}</ValueText>
               </InfoRow>
             </InfoCard>
 
@@ -194,7 +196,7 @@ const DetailHeader = ({ data }) => {
           <StyledHomeButton
             variant="primary"
             size="medium"
-            onClick={() => window.open(data.homepage, "_blank")}
+            onClick={() => window.open(data.detailUrl, "_blank")}
           >
             홈페이지
           </StyledHomeButton>
@@ -205,7 +207,7 @@ const DetailHeader = ({ data }) => {
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <CloseTextButton onClick={() => setIsModalOpen(false)}>닫기</CloseTextButton>
-            <ModalImage src={data.image_url} />
+            <ModalImage src={data.imageUrl} />
           </ModalContent>
 
         </ModalOverlay>

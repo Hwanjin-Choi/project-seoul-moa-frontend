@@ -3,6 +3,8 @@ import { useState } from "react";
 import Typography from "../../components/Typography/Typography";
 import Button from "../../components/Button/Button";
 import { Color } from "../../styles/colorsheet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -17,11 +19,11 @@ const SlideModal = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 960px;
+  max-width: 100%;
+  padding: 20px;
   background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 24px;
   z-index: 1001;
 
   @media (min-width: 768px) and (max-width: 1023px) {
@@ -54,38 +56,74 @@ const Poster = styled.img`
   object-fit: cover;
 `;
 
-const ReserveModal = ({ onClose, data }) => {
+const HeaderText = styled(Typography)`
+  text-align: center;
+  padding: 10px;
+  white-space: normal;
+  word-break: keep-all;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-start;
+`;
+
+const PosterWrapper = styled.div`
+  flex: 0 0 150px;
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  word-break: break-word;
+`;
+
+const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+
+const StyledIcon = styled(FontAwesomeIcon)`
+  width: 12px;
+  height: 12px;
+  color: ${Color.MC1};
+  flex-shrink: 0;
+`;
+
+
+const ReserveModal = ({ onClose, data, date }) => {
   const today = new Date().toISOString().split("T")[0];
-  const minDate = data.startDate > today ? data.startDate : today;
-  const maxDate = data.endDate;
-  const [selectedDate, setSelectedDate] = useState(minDate);
+  const eventStart = data.startDate.split("T")[0];
+  const eventEnd = data.endDate.split("T")[0];
+  const minDate = eventStart > today ? eventStart : today;
+  const maxDate = eventEnd;
+  const [selectedDate, setSelectedDate] = useState(date || "");
 
-//   const handleReserve = async () => {
-//     const payload = {
-//       userId: 1,
-//       eventId: 2,
-//       selectedDate,
-//     };
+  const formatDate = (dateStr) => {
+    if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return `--년 --월 --일`;
+    }
+    const [y, m, d] = dateStr.split("-");
+    return `${y}년 ${parseInt(m, 10)}월 ${parseInt(d, 10)}일`;
+  };
 
-//     try {
-//       const response = await fetch("", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(payload),
-//       });
-//       if (!response.ok) throw new Error("예약 실패");
-//       onClose();
-//     } catch (error) {
-//       alert("예약에 실패했습니다. 다시 시도해주세요.");
-//     }
-//   };
+  const formatDateRange = (start, end) => {
+    const format = (dateStr) => dateStr.split("T")[0];
+    return `${format(start)} ~ ${format(end)}`;
+  };
 
   return (
     <ModalWrapper onClick={onClose}>
       <SlideModal onClick={(e) => e.stopPropagation()}>
-        <Typography variant="h2" style={{ marginBottom: 12, textAlign: "center" }}>
-          <strong>{selectedDate}</strong> 에 행사를 예약하시겠습니까?
-        </Typography>
+        <HeaderText variant="h3">
+          <strong>{formatDate(selectedDate)}</strong>에 일정을 추가하시겠습니까?
+        </HeaderText>
 
         <DateInput
           type="date"
@@ -95,26 +133,41 @@ const ReserveModal = ({ onClose, data }) => {
           onChange={(e) => setSelectedDate(e.target.value)}
         />
 
-        <div style={{ display: "flex", gap: "15px", alignItems: "flex-start" }}>
-          <div style={{ flex: "0 0 150px" }}>
-            <Poster src={data.image_url} alt="poster" />
-          </div>
+        <ContentWrapper>
+          <PosterWrapper>
+            <Poster src={data.imageUrl} alt="poster" />
+          </PosterWrapper>
 
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-            <Typography variant="h3" color={Color.BC2}>{data.title}</Typography>
-            <Typography variant="h5" color={Color.BC3}>
-              {data.startDate} - {data.endDate}
+          <InfoWrapper>
+            <Typography
+              variant="h3"
+              color={Color.BC2}
+              style={{ whiteSpace: "normal", wordBreak: "keep-all", marginBottom: 10 }}
+            >
+              {data.title}
             </Typography>
-            <Typography variant="h5" color={Color.BC3}>{data.location}</Typography>
-          </div>
-        </div>
+            <InfoRow>
+              <StyledIcon icon={faCalendarAlt} />
+              <Typography variant="h6" color={Color.BC3}>
+                {formatDateRange(data.startDate, data.endDate)}
+              </Typography>
+            </InfoRow>
+
+            <InfoRow>
+              <StyledIcon icon={faMapMarkerAlt} />
+              <Typography variant="h6" color={Color.BC3}>
+                {data.location}
+              </Typography>
+            </InfoRow>
+          </InfoWrapper>
+        </ContentWrapper>
 
         <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
           <Button variant="secondary" fullWidth onClick={onClose}>
             취소
           </Button>
           <Button variant="primary" fullWidth onClick={onClose}>
-            예약하기
+            일정 추가
           </Button>
         </div>
       </SlideModal>

@@ -14,17 +14,27 @@ const CardBox = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
-const ReadReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, modal = false }) => {
+const ReadReviewCard = ({ calendarDay, userNickname, reviewContent, modal = false }) => {
   return (
     <CardBox modal={modal}>
       <Typography variant="h4" color={Color.MC1}>
-        {calenderDay}
+        {calendarDay}
       </Typography>
-      <Typography variant="h4" style={{ fontWeight: "600", color: Color.BC2 }}>
-        {eventTitle} - {userNickname}
-      </Typography>
-      <Typography variant="h6" color={Color.BC3} style={{ lineHeight: 1.4 }}>
-        {reviewContent}
+      <Typography
+          variant="h6"
+          color={Color.BC2}
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {reviewContent}
+        </Typography>
+        <Typography variant="h6" style={{ color: Color.BC3 }}>
+        {userNickname}
       </Typography>
     </CardBox>
   );

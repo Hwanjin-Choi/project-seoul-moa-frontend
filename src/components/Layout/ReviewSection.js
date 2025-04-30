@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icons } from "../../assets/icons";
 import { Color } from "../../styles/colorsheet";
 import ReviewCard from "../Card/ReviewCard";
-import Button from "../Button/Button";
+import EditReviewModal from "../../pages/Mypage/EditReviewModal";
 
 const FlexDiv = styled.div`
   display: flex;
@@ -98,38 +98,6 @@ const ActionButton = styled.button`
   justify-content: center;
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  height: 100px;
-  padding: 12px;
-  border: 1px solid ${Color.BC4};
-  border-radius: 12px;
-  resize: none;
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.5;
-`;
-
-const EditHeader = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-  margin-top: 20px;
-`;
-const EditImage = styled.img`
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-right: 12px;
-`;
-const EditInfo = styled.div``;
-
-const BottomArea = styled.div`
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-`;
 
 const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리뷰" }) => {
     const [reviews, setReviews] = useState(reviewData);
@@ -241,43 +209,13 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
             )}
 
             {editModalOpen && (
-                <ModalWrapper onClick={() => setEditModalOpen(false)}>
-                    <SlideModal onClick={e => e.stopPropagation()}>
-
-                        <Typography variant="h3">리뷰 수정</Typography>
-                        <EditHeader>
-                            <EditImage src={currentReview.eventImageurl} alt="poster" />
-                            <EditInfo>
-                                <Typography variant="h4" color={Color.MC1}>{currentReview.calenderDay}</Typography>
-                                <Typography variant="h3">{currentReview.eventTitle}</Typography>
-                            </EditInfo>
-                        </EditHeader>
-
-                        <ModalContent>
-                            <TextArea
-                                maxLength={100}
-                                placeholder="content"
-                                value={editContent}
-                                onChange={e => setEditContent(e.target.value)}
-                            />
-                            <BottomArea>
-                                <Button
-                                    onClick={() => setEditModalOpen(false)}
-                                    style={{ flex: 1, backgroundColor: "#f2f2f2", color: "#888" }}
-                                >
-                                    취소
-                                </Button>
-                                <Button
-                                    onClick={submitEdit}
-                                    style={{ flex: 1, backgroundColor: Color.MC1, color: "white" }}
-                                >
-                                    수정하기
-                                </Button>
-                            </BottomArea>
-                        </ModalContent>
-
-                    </SlideModal>
-                </ModalWrapper>
+                <EditReviewModal
+                    isEditModalOpen={editModalOpen}
+                    selectedReview={currentReview}
+                    editedContent={editContent}
+                    setEditedContent={setEditContent}
+                    setIsEditModalOpen={setEditModalOpen}
+                />
             )}
         </>
     );

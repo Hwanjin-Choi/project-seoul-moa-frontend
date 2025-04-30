@@ -3,25 +3,25 @@ import Typography from "../../components/Typography/Typography.js";
 import Button from "../../components/Button/Button.js";
 import { Color } from "../../styles/colorsheet.js";
 
-const Backdrop = styled.div`
+const ModalWrapper = styled.div`
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
 `;
 
 const SlideModal = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
-  max-width: 960px;
-  background-color: #fff;
+  max-width: 100%;
+  padding: 20px;
+  background-color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 24px;
   z-index: 1001;
-  animation: slideUp 0.3s ease-out;
 
   @media (min-width: 768px) and (max-width: 1023px) {
     max-width: 720px;
@@ -32,46 +32,48 @@ const SlideModal = styled.div`
     max-width: 960px;
     padding: 24px 70px;
   }
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
 `;
 
-const ModalHeader = styled.div`
+const Poster = styled.img`
+  width: 100%;
+  aspect-ratio: 170 / 220;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+`;
+
+const ContentWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-start;
 `;
 
-const ModalContent = styled.div`
-  max-height: 50vh;
-  overflow-y: auto;
+const PosterWrapper = styled.div`
+  flex: 0 0 60px;
+`;
+
+const InfoWrapper = styled.div`
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
+  word-break: break-word;
 `;
 
-const InfoRow = styled.div`
-  display: flex;
-  gap: 12px;
-  align-items: center;
+const DateText = styled(Typography)`
+  color: ${Color.MC1};
+  font-weight: bold;
 `;
 
-const InfoImage = styled.img`
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
+const TitleText = styled(Typography)`
+  color: ${Color.BC2};
+  word-break: break-word;
+  white-space: normal;
 `;
 
-const TextArea = styled.textarea`
+const Textarea = styled.textarea`
   width: 100%;
   height: 100px;
   padding: 12px;
@@ -79,13 +81,7 @@ const TextArea = styled.textarea`
   border-radius: 12px;
   resize: none;
   font-family: inherit;
-  font-size: 14px;
-  line-height: 1.5;
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  gap: 8px;
+  margin-top: 20px;
 `;
 
 const CreateReviewModal = ({
@@ -94,57 +90,62 @@ const CreateReviewModal = ({
   createContent,
   setCreateContent,
   setIsCreateModalOpen,
-}) => (
-  isCreateModalOpen && selectedCreateItem && (
-    <Backdrop onClick={() => setIsCreateModalOpen(false)}>
+}) => {
+  if (!isCreateModalOpen || !selectedCreateItem) return null;
+
+  return (
+    <ModalWrapper onClick={() => setIsCreateModalOpen(false)}>
       <SlideModal onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
-          <Typography variant="h3">리뷰 작성</Typography>
-        </ModalHeader>
+        <Typography variant="h3" style={{ textAlign: "center", marginBottom: "24px" }}>
+          리뷰 작성
+        </Typography>
 
-        <ModalContent>
-          <InfoRow>
-            <InfoImage
-              src={selectedCreateItem.eventImageurl}
-              alt="리뷰 이미지"
-            />
-            <div>
-              <Typography variant="h5" color={Color.MC1}>{selectedCreateItem.calenderDay}</Typography>
-              <Typography variant="h4">{selectedCreateItem.eventTitle}</Typography>
-            </div>
-          </InfoRow>
+        <ContentWrapper>
+          <PosterWrapper>
+            <Poster src={selectedCreateItem.eventImageurl} alt="poster" />
+          </PosterWrapper>
 
-          <TextArea
-            value={createContent}
-            onChange={(e) => setCreateContent(e.target.value)}
-            placeholder="내용을 입력하세요"
-          />
+          <InfoWrapper>
+            <DateText variant="h4">
+              {selectedCreateItem.calenderDay}
+            </DateText>
 
-          <ButtonRow>
-            <Button
-              variant="secondary"
-              fullWidth
-              onClick={() => setIsCreateModalOpen(false)}
-            >
-              취소
-            </Button>
-            <Button
-              variant="primary"
-              fullWidth
-              onClick={() => {
-                console.log("날짜:", selectedCreateItem.calenderDay);
-                console.log("제목:", selectedCreateItem.eventTitle);
-                console.log("내용:", createContent);
-                setIsCreateModalOpen(false);
-              }}
-            >
-              작성하기
-            </Button>
-          </ButtonRow>
-        </ModalContent>
+            <TitleText variant="h3">
+              {selectedCreateItem.eventTitle}
+            </TitleText>
+          </InfoWrapper>
+        </ContentWrapper>
+
+        <Textarea
+          value={createContent}
+          onChange={(e) => setCreateContent(e.target.value)}
+          placeholder="리뷰 내용을 입력하세요"
+        />
+
+        <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
+          <Button
+            variant="secondary"
+            fullWidth
+            onClick={() => setIsCreateModalOpen(false)}
+          >
+            취소
+          </Button>
+          <Button
+            variant="primary"
+            fullWidth
+            onClick={() => {
+              console.log("날짜:", selectedCreateItem.calenderDay);
+              console.log("제목:", selectedCreateItem.eventTitle);
+              console.log("내용:", createContent);
+              setIsCreateModalOpen(false);
+            }}
+          >
+            작성하기
+          </Button>
+        </div>
       </SlideModal>
-    </Backdrop>
-  )
-);
+    </ModalWrapper>
+  );
+};
 
 export default CreateReviewModal;

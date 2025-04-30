@@ -1,5 +1,4 @@
-// MobileLayout.js
-import React from "react"; // useState, useEffect 제거
+import React from "react";
 import styled from "styled-components";
 import Navigation from "../Navigation/Navigation";
 import BackHeader from "../BackHeader/BackHeader"; // BackHeader만 import
@@ -40,6 +39,24 @@ const NavigationWrapper = styled.div`
   left: 0;
   right: 0;
 `;
+/* const Logo = styled.img`
+  width: 30px;
+  height: 30px;
+  margin-left: 20px;
+  cursor: pointer;
+`;
+const HeaderContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const Header = styled.header`
+  background-color: white;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+`; */
 
 const MobileLayout = ({ children }) => {
   return (
