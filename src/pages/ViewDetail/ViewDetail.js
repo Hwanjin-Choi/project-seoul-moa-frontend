@@ -14,6 +14,7 @@ import Container from "../../components/Layout/Container.js";
 import EventDetail from "../../api/EventDetail.js";
 import useReviewFetch from "../../hooks/useReviewFetch";
 import EventDescriptionSection from "./EventDescriptionSection.js";
+import WeatherSection from "./WeatherSection";
 
 const BottomButton = styled(Button)`
   width: 100%;
@@ -88,6 +89,8 @@ const ViewDetail = ({ mapReady }) => {
           subwayLine={eventData?.nearestStation?.line}
           state={state}
         />
+
+        <WeatherSection gu={eventData.gu} />
 
         <BottomButton onClick={() => setIsReserveOpen(true)}>
           일정 추가
