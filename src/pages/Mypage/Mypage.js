@@ -11,15 +11,14 @@ import InterestSection from "./InterestSection.js";
 import CreateReviewModal from "./CreateReviewModal.js";
 import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
-import ReviewModal from "./ReviewModal.js";
+import ReviewSection from "../../components/Layout/ReviewSection.js";
 import { ScheduleCarousel } from "./ScheduleCard.js";
 import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
 import EditCategoryModal from "./EditCategoryModal.js";
-
 import { EventData } from "./data";
 import useUserFetch from "../../api/UserFetch";
-import { fetchUserReviews } from "../../api/userReview.js";
+import useMyReviewFetch from "../../hooks/useMyReviewFetch";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -65,11 +64,17 @@ const Mypage = () => {
   const { user, loading } = useUserFetch();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
-  const [reviewList, setReviewList] = useState([]);
+  const {
+    reviews: reviewList,
+    fetchMoreReviews,
+    hasMore,
+    loading: reviewLoading,
+    deleteReview,
+  } = useMyReviewFetch();
 
   const handleEditSave = (newDate) => {
-    setEventList(prev =>
-      prev.map(item =>
+    setEventList((prev) =>
+      prev.map((item) =>
         item === editItem ? { ...item, calenderDay: newDate } : item
       )
     );
@@ -77,7 +82,7 @@ const Mypage = () => {
   };
 
   const handleDelete = () => {
-    setEventList(prev => prev.filter(item => item !== deleteItem));
+    setEventList((prev) => prev.filter((item) => item !== deleteItem));
     setDeleteItem(null);
   };
 
@@ -88,27 +93,8 @@ const Mypage = () => {
   }, [user]);
 
   const handleDeleteReview = (targetReview) => {
-    setReviewList((prev) => prev.filter((r) => r.reviewId !== targetReview.reviewId));
+    deleteReview(targetReview.reviewId);
   };
-
-  useEffect(() => {
-    const loadUserReviews = async () => {
-      const result = await fetchUserReviews();
-      const mapped = result.map((item) => ({
-        reviewId: item.reviewId,
-        calendarDay: item.calendarDay,
-        eventTitle: item.eventTitle,
-        userNickname: user?.nickname || "회원",
-        reviewContent: item.content,
-        eventImageurl: item.imageUrl,
-      }));
-      setReviewList(mapped);
-    };
-
-    if (user) {
-      loadUserReviews();
-    }
-  }, [user]);
 
   if (loading) return <div>로딩 중...</div>;
 
@@ -171,17 +157,23 @@ const Mypage = () => {
         )}
 
         <Section>
-          <ReviewModal
+          <ReviewSection
             userName={user?.nickname || "회원"}
             reviewData={reviewList}
             isOpen={state.isReviewModalOpen}
             setIsOpen={state.setIsReviewModalOpen}
+            modalTitle="나의 리뷰 모아보기"
+            showHeader={true}
+            showEdit={true}
             onEditClick={(review) => {
               state.setSelectedReview(review);
               state.setEditedContent(review.reviewContent);
               state.setIsEditModalOpen(true);
             }}
             onDeleteClick={handleDeleteReview}
+            fetchMore={fetchMoreReviews}
+            hasMore={hasMore}
+            loading={reviewLoading}
           />
         </Section>
 

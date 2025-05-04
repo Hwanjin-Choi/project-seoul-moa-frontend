@@ -99,7 +99,22 @@ const ActionButton = styled.button`
 `;
 
 
-const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리뷰" }) => {
+const ReviewSection = ({
+    userName,
+    reviewData,
+    isOpen,
+    setIsOpen,
+    modalTitle = "전체 리뷰",
+    showHeader = true,
+    showEdit = false,
+    onEditClick,
+    onDeleteClick,
+    fetchMore,
+    hasMore,
+    loading
+}) => {
+    const hasData = Array.isArray(reviewData) && reviewData.length > 0;
+    const firstReview = hasData ? reviewData[0] : null;
     const [reviews, setReviews] = useState([]);
     const [swipedIndex, setSwipedIndex] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -123,6 +138,14 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
         setEditModalOpen(true);
     };
 
+    const handleScroll = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+        const nearBottom = scrollHeight - scrollTop <= clientHeight + 5;
+        if (nearBottom && hasMore && !loading) {
+            fetchMore();
+        }
+    };
+
     return (
         <>
             <FlexDiv>
@@ -135,15 +158,21 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
                 />
             </FlexDiv>
 
-            {reviews.length > 0 && (
-                <ReviewCard
-                    calendarDay={reviews[0].calendarDay}
-                    eventTitle={reviews[0].eventTitle}
-                    userNickname={reviews[0].userNickname}
-                    reviewContent={reviews[0].reviewContent}
-                    imageUrl={reviews[0].eventImageurl}
-                />
-            )}
+            <div onClick={() => setIsOpen(true)} style={{ cursor: "pointer" }}>
+                {firstReview ? (
+                    <ReviewCard
+                        calendarDay={firstReview.calendarDay}
+                        eventTitle={firstReview.eventTitle}
+                        userNickname={firstReview.userNickname}
+                        reviewContent={firstReview.reviewContent}
+                        imageUrl={firstReview.eventImageurl}
+                    />
+                ) : (
+                    <Typography variant="body2" color={Color.BC3} style={{ marginTop: "10px" }}>
+                        작성된 리뷰가 없습니다.
+                    </Typography>
+                )}
+            </div>
 
             {isOpen && (
                 <ModalWrapper onClick={() => setIsOpen(false)}>
@@ -153,55 +182,74 @@ const ReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리
                             <CloseButton onClick={() => setIsOpen(false)}>닫기</CloseButton>
                         </ModalHeader>
 
-                        <ModalContent>
-                            {reviews.map((review, idx) => {
-                                const isSwiped = swipedIndex === idx;
-                                return (
-                                    <SwipeContainer key={idx}>
-                                        <SwipeContent
-                                            isSwiped={isSwiped}
-                                            onTouchStart={(e) =>
-                                                (e.currentTarget.startX = e.touches[0].clientX)
-                                            }
-                                            onTouchEnd={(e) => {
-                                                const delta = e.changedTouches[0].clientX - e.currentTarget.startX;
-                                                if (delta < -50) setSwipedIndex(idx);
-                                                else setSwipedIndex(null);
-                                            }}
-                                        >
-                                            <ReviewCard
-                                                modal={true}
-                                                calendarDay={review.calendarDay}
-                                                eventTitle={review.eventTitle}
-                                                userNickname={review.userNickname}
-                                                reviewContent={review.reviewContent}
-                                                imageUrl={review.eventImageurl}
-                                            />
-                                        </SwipeContent>
+                        <ModalContent onScroll={handleScroll}>
+                            {reviews.length > 0 ? (
+                                reviews.map((review, idx) => {
+                                    const isSwiped = swipedIndex === idx;
+                                    return (
+                                        <SwipeContainer key={idx}>
+                                            <SwipeContent
+                                                isSwiped={isSwiped}
+                                                onTouchStart={(e) =>
+                                                    (e.currentTarget.startX = e.touches[0].clientX)
+                                                }
+                                                onTouchEnd={(e) => {
+                                                    const delta =
+                                                        e.changedTouches[0].clientX - e.currentTarget.startX;
+                                                    if (delta < -50) setSwipedIndex(idx);
+                                                    else setSwipedIndex(null);
+                                                }}
+                                            >
+                                                <ReviewCard
+                                                    modal={true}
+                                                    calendarDay={review.calendarDay}
+                                                    eventTitle={review.eventTitle}
+                                                    userNickname={review.userNickname}
+                                                    reviewContent={review.reviewContent}
+                                                    imageUrl={review.eventImageurl}
+                                                />
+                                            </SwipeContent>
 
-                                        {isSwiped && (
-                                            <SwipeActions>
-                                                <ActionButton
-                                                    bgColor={Color.MC1}
-                                                    iconColor={Color.MC5}
-                                                    onClick={() => handleEdit(review, idx)}
-                                                >
-                                                    <FontAwesomeIcon icon={Icons.pen} />
-                                                </ActionButton>
-                                                <ActionButton
-                                                    bgColor={Color.BC2}
-                                                    iconColor={Color.BC5}
-                                                    onClick={() => handleDelete(idx)}
-                                                    style={{ borderTopRightRadius: 10, borderBottomRightRadius: 10 }}
-                                                >
-                                                    <FontAwesomeIcon icon={Icons.trash} />
-                                                </ActionButton>
-                                            </SwipeActions>
-                                        )}
-                                    </SwipeContainer>
-                                );
-                            })}
+                                            {isSwiped && (
+                                                <SwipeActions>
+                                                    <ActionButton
+                                                        bgColor={Color.MC1}
+                                                        iconColor={Color.MC5}
+                                                        onClick={() => handleEdit(review, idx)}
+                                                    >
+                                                        <FontAwesomeIcon icon={Icons.pen} />
+                                                    </ActionButton>
+                                                    <ActionButton
+                                                        bgColor={Color.BC2}
+                                                        iconColor={Color.BC5}
+                                                        onClick={() => handleDelete(idx)}
+                                                        style={{
+                                                            borderTopRightRadius: 10,
+                                                            borderBottomRightRadius: 10,
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon={Icons.trash} />
+                                                    </ActionButton>
+                                                </SwipeActions>
+                                            )}
+                                        </SwipeContainer>
+                                    );
+                                })
+                            ) : (
+                                <Typography variant="body2" color={Color.BC3}>
+                                    작성된 리뷰가 없습니다.
+                                </Typography>
+                            )}
+                            {loading && (
+                                <Typography
+                                    variant="body2"
+                                    style={{ textAlign: "center", marginTop: "10px" }}
+                                >
+                                    로딩 중...
+                                </Typography>
+                            )}
                         </ModalContent>
+
                     </SlideModal>
                 </ModalWrapper>
             )}
