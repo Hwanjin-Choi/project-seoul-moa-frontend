@@ -1,8 +1,9 @@
 import apiClient from "../index";
 
 export const getUpcomingEvents = async (payload) => {
+  console.log(payload);
   try {
-    const response = await apiClient.get("/events", payload);
+    const response = await apiClient.get("/events", { params: payload });
     if (response.data && response.data.status === "SUCCESS") {
       return response.data;
     } else {

@@ -4,37 +4,57 @@ import Tag from "../Tag/Tag"; // 기존 Tag 컴포넌트
 import IconButton from "../IconButton/IconButton";
 
 import EventInfoDisplay from "../EventInfoDisplay/EventInfoDisplay";
+import { useNavigate } from "react-router-dom";
 
 const NoBorderLandscapeCardContainer = styled.div`
   width: 100%;
-  display: flex;
+  display: flex; /* 기본은 가로 배치 */
   padding: 10px;
   cursor: pointer;
   overflow: hidden;
   &:hover {
+    /* 데스크탑 hover 효과 */
     background-color: #f0f0f0;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    /* 모바일 화면 (breakpoint는 조절 가능) */
+    flex-direction: column; /* 세로 배치로 변경 */
+    padding: 0; /* 내부 컨텐츠 패딩으로 조절 */
+    &:hover {
+      /* 모바일에서는 hover 효과 제거 또는 다른 효과 */
+      background-color: transparent;
+      box-shadow: none;
+    }
   }
 `;
 
 const ImageContainer = styled.div`
-  width: 180px;
+  width: 180px; /* 데스크탑 이미지 너비 */
   flex-shrink: 0;
+  position: relative; /* BadgeContainer 위치 기준 */
+  padding: 10px; /* 데스크탑 패딩 */
+
   @media (max-width: 768px) {
-    width: 100px;
+    width: 100%; /* 모바일에서 너비 100% */
+    height: 180px; /* 예시 높이, 또는 aspect-ratio 사용 */
+    padding: 0; /* 패딩 제거 또는 조절 */
+    margin-bottom: 10px; /* 아래 텍스트와의 간격 */
+    flex-shrink: 1; /* 필요시 추가 */
   }
-  padding: 10px;
-  position: relative;
 `;
 
 const Image = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  @media (max-width: 768px) {
-    object-fit: contain;
-  }
+  object-fit: cover; /* 데스크탑에서는 cover */
   display: block;
+
+  @media (max-width: 768px) {
+    /* 모바일 이미지 스타일 (필요시 object-fit 변경 등) */
+    border-radius: 8px 8px 0 0; /* 예시: 위쪽 모서리 둥글게 */
+  }
 `;
 
 const RowContainer = styled.div`
@@ -43,15 +63,24 @@ const RowContainer = styled.div`
   justify-content: space-between;
   flex-grow: 1;
   min-width: 0;
-  padding: 10px;
+  padding: 10px; /* 데스크탑 패딩 */
+
+  @media (max-width: 768px) {
+    width: 100%; /* 모바일에서 너비 100% */
+    padding: 10px 15px; /* 모바일용 패딩 조절 */
+  }
 `;
 
 const DescriptionContainer = styled.div`
   display: flex;
-  flex-direction: column; // 세로 방향 flex 유지
+  flex-direction: column;
   flex-grow: 1;
   min-width: 0;
   margin-right: 10px;
+
+  @media (max-width: 768px) {
+    margin-right: 5px; /* 아이콘 버튼과의 간격 조절 */
+  }
 `;
 
 const BadgeContainer = styled.div`
@@ -110,9 +139,13 @@ const calculateDday = (startDateStr) => {
 
 const NoBorderLandscapeCard = (props) => {
   const dDayString = calculateDday(props.startDate);
+  const navigate = useNavigate();
 
+  const handleClick = () => {
+    navigate(`/view-detail-page/${props.eventId}`);
+  };
   return (
-    <NoBorderLandscapeCardContainer>
+    <NoBorderLandscapeCardContainer onClick={handleClick}>
       <ImageContainer>
         <BadgeContainer>
           <Dday>{dDayString}</Dday>

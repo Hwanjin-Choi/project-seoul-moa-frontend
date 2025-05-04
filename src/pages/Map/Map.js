@@ -8,6 +8,7 @@ import MobileLayout from "../../components/Layout/MobileLayout";
 import { TopSearchBar } from "../../components/TopSearchBar/TopSearchBar";
 import BottomSearchResult from "../../components/BottomSearchResult/BottomSearchResult";
 import BottomFilterFormDrag from "../../components/BottomFilterForm/BottomFilterFormDrag";
+import ExpandableSearchFilter from "../../components/ExpandableSearchFilter/ExpandableSearchFilter";
 // --- Layout Styled Components ---
 // 전체 페이지 컨텐츠를 감싸는 Wrapper
 const PageWrapper = styled.div`
@@ -88,14 +89,7 @@ const Map = () => {
       {/* 페이지 전체를 감싸는 Wrapper */}
       <PageWrapper>
         {/* 상단 검색 바 */}
-        <TopSearchBar
-          onSearch={handleSearch}
-          onFilter={handleFilterClick}
-          tags={currentTags}
-          onRemoveTag={handleRemoveTag}
-          onClick={handleSearchBarClick}
-        />
-
+        <ExpandableSearchFilter />
         {/* 중앙 컨텐츠 영역 (지도 등) */}
         <ContentArea>
           {/* 실제 지도 컴포넌트가 위치할 자리 */}

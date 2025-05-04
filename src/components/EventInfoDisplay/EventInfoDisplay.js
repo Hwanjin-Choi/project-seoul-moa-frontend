@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components"; // styled-components 가져오기
+import styled from "styled-components";
 import {
   parseISO,
   format,
@@ -11,61 +11,83 @@ import {
   endOfDay,
 } from "date-fns";
 import { ko } from "date-fns/locale";
-import { FiMapPin, FiCalendar, FiFileText } from "react-icons/fi";
+// 아이콘 종류 변경 (예시: 관심 수에 하트 아이콘 사용)
+import { FiMapPin, FiCalendar, FiFileText, FiHeart } from "react-icons/fi";
 
 // --- Styled Components 정의 ---
 
-// 컴포넌트 전체를 감싸는 Wrapper
 const Wrapper = styled.div`
-  font-family: sans-serif; /* 테마가 있다면 theme provider의 폰트 사용 권장 */
-  line-height: 1.6;
-  color: #333; /* 기본 텍스트 색상, 필요시 조정 */
+  font-family: sans-serif;
+  line-height: 1.5; /* 모바일에서 줄 간격 약간 조정 */
+  color: #333;
 `;
 
-// 장소 또는 날짜 정보를 담는 한 줄 (아이콘 + 텍스트)
 const InfoRow = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 6px; /* 행 간의 간격 */
+  margin-bottom: 4px; /* 모바일에서 행 간격 약간 줄임 */
 
-  /* 마지막 행에는 하단 마진 제거 */
   &:last-child {
     margin-bottom: 0;
   }
+
+  @media (min-width: 769px) {
+    /* 데스크탑 화면 이상 */
+    margin-bottom: 6px; /* 데스크탑 행 간격 */
+  }
 `;
 
-// 아이콘을 감싸는 영역 (스타일 일관성 유지 목적)
 const IconWrapper = styled.span`
-  display: flex; /* 아이콘 수직 정렬 도움 */
+  display: flex;
   align-items: center;
-  margin-right: 8px; /* 아이콘과 텍스트 사이 간격 */
-  flex-shrink: 0; /* 컨테이너 크기가 줄어도 아이콘 크기 유지 */
-  color: #666; /* 아이콘 색상 */
+  margin-right: 6px; /* 모바일 아이콘-텍스트 간격 약간 줄임 */
+  flex-shrink: 0;
+  color: #666;
+  font-size: 1em; /* 아이콘 크기 기준 */
+
+  svg {
+    /* react-icons의 svg 크기 조절 */
+    width: 14px;
+    height: 14px;
+    @media (min-width: 769px) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  @media (min-width: 769px) {
+    margin-right: 8px; /* 데스크탑 아이콘-텍스트 간격 */
+  }
 `;
 
-// 주요 텍스트(장소, 날짜)를 표시하는 영역
 const InfoText = styled.span`
-  flex-grow: 1; /* 가능한 공간 차지 (텍스트가 길 경우 대비) */
-  min-width: 0; /* flex 컨테이너 내에서 내용 넘침 방지 */
-  font-weight: bold;
+  flex-grow: 1;
+  min-width: 0;
+  font-weight: normal; /* 기본 폰트 두께 normal로 변경 */
+  font-size: 0.8rem; /* 모바일 기본 폰트 크기 (약 12.8px) */
+  color: #555; /* 부가 정보 텍스트 색상 약간 연하게 */
+
+  /* 제목 행의 InfoText 스타일링 (Wrapper의 첫번째 InfoRow 자식 내부) */
+  ${Wrapper} ${InfoRow}:first-child & {
+    font-weight: bold; /* 제목은 bold 유지 */
+    font-size: 0.9rem; /* 모바일 제목 폰트 크기 (약 14.4px) */
+    color: #333; /* 제목 텍스트 색상 진하게 */
+    @media (min-width: 769px) {
+      font-size: 1rem; /* 데스크탑 제목 폰트 크기 */
+    }
+  }
+
+  @media (min-width: 769px) {
+    /* 데스크탑 화면 이상 */
+    font-size: 0.9rem; /* 데스크탑 부가 정보 폰트 크기 */
+  }
 `;
 
-// 상태(예정, 진행중, 종료)를 표시하는 배지
-const StatusBadge = styled.span`
-  display: inline-block;
-  margin-left: 8px; /* 날짜 텍스트와의 간격 */
-  padding: 2px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  color: white;
-  /* props로 전달된 color 값 사용, 없으면 기본 회색 */
-  background-color: ${(props) => props.color || "#888888"};
-  border-radius: 10px;
-  vertical-align: middle; /* 옆 텍스트와 수직 정렬 */
-`;
-
-// --- Helper 함수 (getEventStatus - 변경 없음) ---
+// --- Helper 함수 및 컴포넌트 로직 (변경 없음) ---
 const getEventStatus = (startDate, endDate) => {
+  // ... (기존 로직) ...
+  // StatusBadge 관련 로직이 없으므로 getEventStatus 함수는 현재 미사용 상태입니다.
+  // 필요시 StatusBadge 컴포넌트와 함께 복원할 수 있습니다.
   const now = new Date();
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
@@ -79,7 +101,6 @@ const getEventStatus = (startDate, endDate) => {
   }
 };
 
-// --- 컴포넌트 로직 (날짜 처리 등 - 변경 없음) ---
 const EventInfoDisplay = ({
   title,
   location,
@@ -89,7 +110,7 @@ const EventInfoDisplay = ({
 }) => {
   let parsedStartDate, parsedEndDate;
   let dateString = "날짜 정보 없음";
-  let status = null;
+  // let status = null; // 현재 상태 배지 미사용
 
   try {
     parsedStartDate = parseISO(startDate);
@@ -113,38 +134,47 @@ const EventInfoDisplay = ({
       dateString = `${formattedStartDate} ~ ${formattedEndDate}`;
     }
 
-    status = getEventStatus(parsedStartDate, parsedEndDate);
+    // status = getEventStatus(parsedStartDate, parsedEndDate); // 현재 미사용
   } catch (error) {
     console.error("날짜 처리 중 오류 발생:", error);
   }
 
-  // --- Styled Components를 사용하여 렌더링 ---
   return (
     <Wrapper>
+      {/* 제목 행 */}
       <InfoRow>
         <IconWrapper>
           <FiFileText />
         </IconWrapper>
-        <InfoText>{title}</InfoText>
+        {/* 제목 InfoText는 CSS 선택자로 스타일 자동 적용됨 */}
+        <InfoText>{title || "제목 없음"}</InfoText>
       </InfoRow>
 
+      {/* 장소 행 */}
       <InfoRow>
         <IconWrapper>
           <FiMapPin />
         </IconWrapper>
         <InfoText>{location || "장소 정보 없음"}</InfoText>
       </InfoRow>
+
+      {/* 날짜 행 */}
       <InfoRow>
         <IconWrapper>
           <FiCalendar />
         </IconWrapper>
         <InfoText>{dateString}</InfoText>
+        {/* 상태 배지가 필요하다면 여기에 추가 */}
+        {/* {status && <StatusBadge color={status.color}>{status.text}</StatusBadge>} */}
       </InfoRow>
+
+      {/* 관심 수 행 */}
       <InfoRow>
         <IconWrapper>
-          <FiCalendar />
+          {/* 하트 아이콘으로 변경 */}
+          <FiHeart />
         </IconWrapper>
-        <InfoText>{likeCount + "명이 관심있어 합니다"}</InfoText>
+        <InfoText>{likeCount}명이 관심있어 합니다</InfoText>
       </InfoRow>
     </Wrapper>
   );
@@ -152,11 +182,20 @@ const EventInfoDisplay = ({
 
 // --- PropTypes 정의 (변경 없음) ---
 EventInfoDisplay.propTypes = {
-  location: PropTypes.string.isRequired,
-  startDate: PropTypes.string.isRequired,
-  endDate: PropTypes.string.isRequired,
+  title: PropTypes.string, // title 추가
+  location: PropTypes.string,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  likeCount: PropTypes.number, // likeCount 추가
+};
+
+// 기본 Props 값 설정 (필수 아닌 값들)
+EventInfoDisplay.defaultProps = {
+  title: "제목 없음",
+  location: "장소 정보 없음",
+  startDate: "",
+  endDate: "",
+  likeCount: 0,
 };
 
 export default EventInfoDisplay;
-
-// 사용 예시는 이전과 동일합니다.

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
+import { useParams } from "react-router-dom";
 
 import MobileLayout from "../../components/Layout/MobileLayout";
 import Button from "../../components/Button/Button";
@@ -32,7 +33,9 @@ const BottomButton = styled(Button)`
 `;
 
 const ViewDetail = ({ mapReady }) => {
-  const eventId = 30;
+  const { eventId } = useParams();
+
+  /* const eventId = 30; */
   const { eventData, loading } = EventDetail(eventId);
 
   const {
@@ -100,6 +103,5 @@ const ViewDetail = ({ mapReady }) => {
     </MobileLayout>
   );
 };
-
 
 export default ViewDetail;

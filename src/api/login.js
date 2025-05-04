@@ -12,6 +12,8 @@ export const loginUser = async (userData) => {
       localStorage.setItem("userId", loginData.userId);
       localStorage.setItem("age", loginData.age);
       localStorage.setItem("gender", loginData.gender);
+      const categoryIdsString = JSON.stringify(loginData.memberCategoryIds);
+      localStorage.setItem("categoryId", categoryIdsString);
 
       return response.data;
     } else {

@@ -1,8 +1,10 @@
-import apiClient from "./index";
+import apiClient from "../../index";
 
-export const loginUser = async (userData) => {
+export const getRecentlyReviewedEvents = async (payload) => {
   try {
-    const response = await apiClient.get("events/recently/reviewed");
+    const response = await apiClient.get("events/recently/reviewed", {
+      params: payload,
+    });
     if (response.data && response.data.status === "SUCCESS") {
       return response.data;
     } else {
