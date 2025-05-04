@@ -31,7 +31,7 @@ const ReviewImage = styled.img`
   margin-left: 10px;
 `;
 
-const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imageUrl, modal = false }) => {
+const ReviewCard = ({ calendarDay, eventTitle, reviewContent, imageUrl, modal = false }) => {
   return (
     <ReviewListBox modal={modal}>
       <ReviewText>
@@ -40,7 +40,7 @@ const ReviewCard = ({ calenderDay, eventTitle, userNickname, reviewContent, imag
           color={Color.MC1}
           style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
         >
-          {calenderDay}
+          {calendarDay}
         </Typography>
         <Typography
           variant="h5"

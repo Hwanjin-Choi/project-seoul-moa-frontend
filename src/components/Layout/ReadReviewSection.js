@@ -64,9 +64,29 @@ const ModalContent = styled.div`
   overflow-y: auto;
 `;
 
-const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체 리뷰" }) => {
+const ReadReviewSection = ({
+  reviewData,
+  isOpen,
+  setIsOpen,
+  fetchMore,
+  hasMore,
+  loading,
+  modalTitle = "전체 리뷰",
+}) => {
   const hasData = Array.isArray(reviewData) && reviewData.length > 0;
   const firstReview = hasData ? reviewData[0] : null;
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (
+      scrollTop > 0 &&
+      scrollHeight - scrollTop <= clientHeight + 5 &&
+      hasMore &&
+      !loading
+    ) {
+      fetchMore();
+    }
+  };
 
   return (
     <>
@@ -80,7 +100,6 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
         />
       </FlexDiv>
 
-      {/* ✅ 리뷰가 있을 때만 카드 보여줌, 없으면 텍스트 */}
       <div onClick={() => setIsOpen(true)} style={{ cursor: "pointer" }}>
         {firstReview ? (
           <ReadReviewCard
@@ -89,7 +108,11 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
             reviewContent={firstReview.reviewContent}
           />
         ) : (
-          <Typography variant="body2" color={Color.BC3} style={{ marginTop: "10px" }}>
+          <Typography
+            variant="body2"
+            color={Color.BC3}
+            style={{ marginTop: "10px" }}
+          >
             작성된 리뷰가 없습니다.
           </Typography>
         )}
@@ -102,7 +125,7 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
               <Typography variant="h3">{modalTitle}</Typography>
               <CloseButton onClick={() => setIsOpen(false)}>닫기</CloseButton>
             </ModalHeader>
-            <ModalContent>
+            <ModalContent onScroll={handleScroll}>
               {hasData ? (
                 reviewData.map((review, idx) => (
                   <ReadReviewCard
@@ -118,6 +141,14 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
                   작성된 리뷰가 없습니다.
                 </Typography>
               )}
+              {loading && (
+                <Typography
+                  variant="body2"
+                  style={{ textAlign: "center", marginTop: "10px" }}
+                >
+                  로딩 중...
+                </Typography>
+              )}
             </ModalContent>
           </SlideModal>
         </ModalWrapper>
@@ -125,6 +156,5 @@ const ReadReviewSection = ({ reviewData, isOpen, setIsOpen, modalTitle = "전체
     </>
   );
 };
-
 
 export default ReadReviewSection;
