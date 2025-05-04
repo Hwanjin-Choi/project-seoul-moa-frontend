@@ -34,8 +34,6 @@ const BottomButton = styled(Button)`
 
 const ViewDetail = ({ mapReady }) => {
   const { eventId } = useParams();
-
-  /* const eventId = 30; */
   const { eventData, loading } = EventDetail(eventId);
 
   const {
@@ -101,6 +99,7 @@ const ViewDetail = ({ mapReady }) => {
           onClose={() => setIsReserveOpen(false)}
           date={currentDay}
           data={eventData}
+          eventId={eventId}
         />
       )}
     </MobileLayout>

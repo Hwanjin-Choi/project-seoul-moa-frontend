@@ -93,23 +93,18 @@ const Mypage = () => {
 
   useEffect(() => {
     const loadUserReviews = async () => {
-      try {
-        const result = await fetchUserReviews();
-        const mapped = result.map((item) => ({
-          reviewId: item.reviewId,
-          calendarDay: item.calendarDay,
-          eventTitle: item.eventTitle,
-          userNickname: user?.nickname || "회원",
-          reviewContent: item.content,
-          eventImageurl: item.imageUrl,
-        }));
-        console.log("👉 리뷰 데이터:", mapped);
-        setReviewList(mapped);
-      } catch (err) {
-        console.error("리뷰 로드 실패", err);
-      }
+      const result = await fetchUserReviews();
+      const mapped = result.map((item) => ({
+        reviewId: item.reviewId,
+        calendarDay: item.calendarDay,
+        eventTitle: item.eventTitle,
+        userNickname: user?.nickname || "회원",
+        reviewContent: item.content,
+        eventImageurl: item.imageUrl,
+      }));
+      setReviewList(mapped);
     };
-  
+
     if (user) {
       loadUserReviews();
     }
