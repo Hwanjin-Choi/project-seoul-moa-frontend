@@ -107,7 +107,7 @@ const ReviewSection = ({
     modalTitle = "전체 리뷰",
     fetchMore,
     hasMore,
-    loading
+    loading,
 }) => {
     const hasData = Array.isArray(reviewData) && reviewData.length > 0;
     const firstReview = hasData ? reviewData[0] : null;
@@ -126,15 +126,15 @@ const ReviewSection = ({
     const handleDelete = async (idx) => {
         const review = reviews[idx];
         if (!review?.reviewId) return;
-
+      
         try {
-            await deleteUserReview(review.reviewId);
-            setReviews((prev) => prev.filter((_, i) => i !== idx));
-            setSwipedIndex(null);
+          await deleteUserReview(review.reviewId);
+          setReviews((prev) => prev.filter((_, i) => i !== idx));
+          setSwipedIndex(null);
         } catch (err) {
-            alert(err.message || "리뷰 삭제 중 오류가 발생했습니다.");
+          alert(err.message || "리뷰 삭제 중 오류가 발생했습니다.");
         }
-    };
+      };
 
     const handleEdit = (review, idx) => {
         setCurrentReview({ ...review, idx });
@@ -260,18 +260,18 @@ const ReviewSection = ({
 
             {editModalOpen && (
                 <EditReviewModal
-                    isEditModalOpen={editModalOpen}
-                    selectedReview={currentReview}
-                    editedContent={editContent}
-                    setEditedContent={setEditContent}
-                    setIsEditModalOpen={setEditModalOpen}
-                    onSuccess={(updatedContent) => {
-                        const updated = [...reviews];
-                        updated[currentReview.idx].reviewContent = updatedContent;
-                        setReviews(updated);
-                        setSwipedIndex(null);
-                    }}
-                />
+                isEditModalOpen={editModalOpen}
+                selectedReview={currentReview}
+                editedContent={editContent}
+                setEditedContent={setEditContent}
+                setIsEditModalOpen={setEditModalOpen}
+                onSuccess={(updatedContent) => {
+                  const updated = [...reviews];
+                  updated[currentReview.idx].reviewContent = updatedContent;
+                  setReviews(updated);
+                  setSwipedIndex(null);
+                }}
+              />
             )}
         </>
     );

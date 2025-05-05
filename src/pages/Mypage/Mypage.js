@@ -20,6 +20,7 @@ import { EventData } from "./data";
 import useUserFetch from "../../api/UserFetch";
 import useMyReviewFetch from "../../hooks/useMyReviewFetch";
 import { fetchUserScheduleList } from "../../api/userScheduleList";
+import { updateUserSchedule, deleteUserSchedule } from "../../api/userScheduleUpdate";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -74,18 +75,18 @@ const Mypage = () => {
     deleteReview,
   } = useMyReviewFetch();
 
-  useEffect(() => {
-    const loadSchedules = async () => {
-      try {
-        const result = await fetchUserScheduleList();
-        setScheduleList(result);
-        setUpcoming(result.filter(s => !s.pastScheduled));
-        setPast(result.filter(s => s.pastScheduled));
-      } catch (e) {
-        console.error("일정 불러오기 실패:", e);
-      }
-    };
+  const loadSchedules = async () => {
+    try {
+      const result = await fetchUserScheduleList();
+      setScheduleList(result);
+      setUpcoming(result.filter(s => !s.pastScheduled));
+      setPast(result.filter(s => s.pastScheduled));
+    } catch (e) {
+      console.error("일정 불러오기 실패:", e);
+    }
+  };
 
+  useEffect(() => {
     loadSchedules();
   }, []);
 
@@ -95,18 +96,42 @@ const Mypage = () => {
     }
   }, [user]);
 
-  const handleEditSave = (newDate) => {
-    setScheduleList((prev) =>
-      prev.map((item) =>
-        item === editItem ? { ...item, scheduleTime: newDate } : item
-      )
-    );
-    setEditItem(null);
-  };
+  const handleEditSave = async (newDate) => {
+    try {
+      const newDateISO = new Date(newDate).toISOString(); // 정확한 ISO 포맷
+      await updateUserSchedule({
+        scheduleId: editItem.scheduleId,
+        scheduleTime: newDateISO,
+      });
 
-  const handleDelete = () => {
-    setScheduleList((prev) => prev.filter((item) => item !== deleteItem));
-    setDeleteItem(null);
+      // 상태 갱신
+      setScheduleList((prev) =>
+        prev.map((item) =>
+          item.scheduleId === editItem.scheduleId
+            ? { ...item, scheduleTime: newDateISO }
+            : item
+        )
+      );
+      setEditItem(null);
+      await loadSchedules();
+    } catch (err) {
+      alert("예약 수정 실패");
+      console.error(err);
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      await deleteUserSchedule(deleteItem.scheduleId);
+      setScheduleList((prev) =>
+        prev.filter((item) => item.scheduleId !== deleteItem.scheduleId)
+      );
+      setDeleteItem(null);
+      await loadSchedules();
+    } catch (err) {
+      alert("예약 삭제 실패");
+      console.error(err);
+    }
   };
 
   const handleDeleteReview = (targetReview) => {
@@ -211,7 +236,14 @@ const Mypage = () => {
         </Section>
 
         <EditReviewModal {...state} />
-        <CreateReviewModal {...state} />
+        <CreateReviewModal
+          {...state}
+          onSuccess={() => {
+            state.setSelectedCreateItem(null);
+            state.setCreateContent("");
+            fetchMoreReviews();
+          }}
+        />
       </Container>
     </MobileLayout>
   );
