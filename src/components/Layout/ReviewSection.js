@@ -6,6 +6,7 @@ import { Icons } from "../../assets/icons";
 import { Color } from "../../styles/colorsheet";
 import ReviewCard from "../Card/ReviewCard";
 import EditReviewModal from "../../pages/Mypage/EditReviewModal";
+import { deleteUserReview } from "../../api/userReviewDelete";
 
 const FlexDiv = styled.div`
   display: flex;
@@ -100,15 +101,10 @@ const ActionButton = styled.button`
 
 
 const ReviewSection = ({
-    userName,
     reviewData,
     isOpen,
     setIsOpen,
     modalTitle = "전체 리뷰",
-    showHeader = true,
-    showEdit = false,
-    onEditClick,
-    onDeleteClick,
     fetchMore,
     hasMore,
     loading
@@ -127,9 +123,17 @@ const ReviewSection = ({
         }
     }, [reviewData]);
 
-    const handleDelete = (idx) => {
-        setReviews((prev) => prev.filter((_, i) => i !== idx));
-        setSwipedIndex(null);
+    const handleDelete = async (idx) => {
+        const review = reviews[idx];
+        if (!review?.reviewId) return;
+
+        try {
+            await deleteUserReview(review.reviewId);
+            setReviews((prev) => prev.filter((_, i) => i !== idx));
+            setSwipedIndex(null);
+        } catch (err) {
+            alert(err.message || "리뷰 삭제 중 오류가 발생했습니다.");
+        }
     };
 
     const handleEdit = (review, idx) => {
@@ -261,6 +265,12 @@ const ReviewSection = ({
                     editedContent={editContent}
                     setEditedContent={setEditContent}
                     setIsEditModalOpen={setEditModalOpen}
+                    onSuccess={(updatedContent) => {
+                        const updated = [...reviews];
+                        updated[currentReview.idx].reviewContent = updatedContent;
+                        setReviews(updated);
+                        setSwipedIndex(null);
+                    }}
                 />
             )}
         </>
