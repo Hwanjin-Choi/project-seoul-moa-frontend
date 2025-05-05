@@ -143,14 +143,7 @@ const RegistrationPage = () => {
     });
   };
 
-  // 단계 1 (유저 정보 입력) 제출 핸들러
   const handleStep1Submit = (formData, setRegiFormErrors) => {
-    // RegiForm 내부 유효성 검사 로직을 여기서 다시 호출하거나,
-    // RegiForm이 자체적으로 유효성 검사를 통과했을 때만 onSubmit을 호출하도록 수정 필요.
-    // 여기서는 RegiForm이 유효한 데이터만 전달한다고 가정.
-    // (만약 RegiForm의 onSubmit이 유효성 실패 시 호출되지 않는다면 이 로직 사용)
-
-    // 간단한 필수 필드 추가 확인 (RegiForm 내부 검증 보강)
     let validationErrors = {};
     registrationFields.forEach((field) => {
       if (field.required && !formData[field.name]) {

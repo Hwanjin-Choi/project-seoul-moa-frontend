@@ -9,6 +9,9 @@ import { TopSearchBar } from "../../components/TopSearchBar/TopSearchBar";
 import BottomSearchResult from "../../components/BottomSearchResult/BottomSearchResult";
 import BottomFilterFormDrag from "../../components/BottomFilterForm/BottomFilterFormDrag";
 import ExpandableSearchFilter from "../../components/ExpandableSearchFilter/ExpandableSearchFilter";
+import MapSection from "../ViewDetail/MapSection";
+import KakaoMap from "../../components/Map/KakaoMap";
+
 // --- Layout Styled Components ---
 // 전체 페이지 컨텐츠를 감싸는 Wrapper
 const PageWrapper = styled.div`
@@ -27,90 +30,73 @@ const ContentArea = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #e0e0e0; /* 임시 배경색 */
-  min-height: 200px; /* 최소 높이 (임시) */
 `;
 
 // --- Map 컴포넌트 정의 ---
-const Map = () => {
+const Map = ({ mapReady }) => {
   // 필터 확장/축소 상태
-  const [isFilterExpanded, setIsFilterExpanded] = useState(true); // 기본값: 펼쳐짐
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false); // 기본값: 펼쳐짐
+  const [searchResult, setSearchResult] = useState([]);
+  const [searchParams, setSearchParams] = useState({
+    categoryId: [],
+    gu: [],
+    title: "",
+    offset: 0,
+    limit: 1,
+    isOpen: true,
+  });
+  const [totalCount, setTotalCount] = useState(0);
 
   // 필터 확장/축소 상태를 토글하는 함수
   const toggleFilterExpansion = () => {
     setIsFilterExpanded(!isFilterExpanded);
   };
+  const toggleAlwaysExpandResult = () => {
+    setIsFilterExpanded(true);
+  };
 
-  // 검색 바 관련 상태 및 핸들러
-  const [currentTags, setCurrentTags] = useState(["강남구"]); // 예시 태그
   const [filterForm, setFilterForm] = useState(false);
 
-  // 검색 실행 핸들러
-  const handleSearch = (term) => {
-    console.log("검색어:", term);
-    // 실제 검색 로직 구현 위치
-  };
-
-  // 필터 아이콘 클릭 핸들러
-  const handleFilterClick = () => {
-    console.log("필터 아이콘 클릭됨");
-    // 필터 옵션 표시 로직 구현 위치
-  };
-
-  // 태그 제거 핸들러
-  const handleRemoveTag = (tagToRemove) => {
-    console.log("제거할 태그:", tagToRemove);
-    setCurrentTags(currentTags.filter((tag) => tag !== tagToRemove));
-  };
-
-  // 필터 폼의 제목 변경 핸들러
-  const handleTitleChange = (newTitle) => {
-    console.log("제목 변경됨:", newTitle);
-    // 제목 변경 관련 로직 구현 위치
-  };
-
-  // 지역 선택 핸들러 (BottomFilterForm에 전달)
-  const handleRegionSelect = () => {
-    console.log("Map 컴포넌트에서 지역 선택 처리");
-    // 실제 지역 선택 관련 로직 구현 위치
-  };
-
-  // 카테고리 선택 핸들러 (BottomFilterForm에 전달)
-  const handleCategorySelect = () => {
-    console.log("Map 컴포넌트에서 카테고리 선택 처리");
-    // 실제 카테고리 선택 관련 로직 구현 위치
-  };
-  const handleSearchBarClick = () => {
-    setFilterForm(!filterForm);
-  };
-
   return (
-    // 전체 모바일 레이아웃 적용
     <MobileLayout>
-      {/* 페이지 전체를 감싸는 Wrapper */}
       <PageWrapper>
-        {/* 상단 검색 바 */}
-        <ExpandableSearchFilter />
-        {/* 중앙 컨텐츠 영역 (지도 등) */}
+        <ExpandableSearchFilter
+          handleResultExpand={toggleAlwaysExpandResult}
+          handleSearchResult={setSearchResult}
+          handleSearchParams={setSearchParams}
+          searchParams={searchParams}
+          handleTotalCount={setTotalCount}
+        />
+
         <ContentArea>
-          {/* 실제 지도 컴포넌트가 위치할 자리 */}
-          <h1>지도 표시 영역</h1>
+          {/* <MapSection
+            mapReady={mapReady}
+            mapData={{
+              latitude: searchResult.latitude,
+              longitude: searchResult.longitude,
+            }}
+            mapLocation={searchResult}
+          /> */}
+
+          {mapReady && searchResult.length > 0 && (
+            <>
+              <KakaoMap
+                lat={Number(searchResult[0].latitude)}
+                lng={Number(searchResult[0].longitude)}
+              />
+            </>
+          )}
         </ContentArea>
 
-        {/* 하단 필터 폼 */}
-        {filterForm ? (
-          <BottomFilterForm
-            onRegionSelect={handleRegionSelect} // 지역 선택 핸들러 전달
-            onCategorySelect={handleCategorySelect} // 카테고리 선택 핸들러 전달
-            onTitleChange={handleTitleChange} // 제목 변경 핸들러 전달
-            isExpanded={isFilterExpanded} // 확장/축소 상태 전달
-            onToggle={toggleFilterExpansion} // 토글 함수 전달
-          />
-        ) : (
-          <BottomSearchResult
-            isExpanded={isFilterExpanded} // 확장/축소 상태 전달
-            onToggle={toggleFilterExpansion} // 토글 함수 전달
-          />
-        )}
+        <BottomSearchResult
+          isExpanded={isFilterExpanded} // 확장/축소 상태 전달
+          onToggle={toggleFilterExpansion} // 토글 함수 전달
+          searchResult={searchResult} //검색결과
+          handleSearchResult={setSearchResult} //검색 결과 api
+          handleSearchParams={setSearchParams} //검색 params useState
+          searchParams={searchParams} //검색 params
+          totalCount={totalCount}
+        />
       </PageWrapper>
     </MobileLayout>
   );

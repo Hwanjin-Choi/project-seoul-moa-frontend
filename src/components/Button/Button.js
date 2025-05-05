@@ -33,6 +33,7 @@ const getVariantStyles = ({ variant }) => {
       return css`
         background-color: transparent;
         color: ${Color.MC1};
+        font-weight: 700;
       `;
     default:
       return css`
@@ -88,6 +89,9 @@ const StyledButton = styled.button`
   justify-content: center;
   gap: 8px;
   margin: 3px;
+  &:hover {
+    background-color: #eee;
+  }
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

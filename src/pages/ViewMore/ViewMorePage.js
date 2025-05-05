@@ -14,6 +14,9 @@ const ViewMorePageContainer = styled.div`
   align-items: center;
   justify-content: center; */
   padding: 20px 20px;
+  @media (max-width: 768px) {
+    padding: 5px 10px;
+  }
 `;
 
 const UpcomingEventsContainer = styled.div`
@@ -22,6 +25,10 @@ const UpcomingEventsContainer = styled.div`
   padding: 10px;
   background-color: white;
   border-radius: 10px;
+`;
+
+const TitleContainer = styled.div`
+  margin: 10px 0px;
 `;
 
 const RecentReviewEventsField = [];
@@ -35,9 +42,15 @@ const ViewMorePage = () => {
   return (
     <MobileLayout>
       <ViewMorePageContainer>
-        <Typography variant="h3">다가오는 문화행사</Typography>
+        <TitleContainer>
+          <Typography variant="h3">다가오는 문화행사</Typography>
+        </TitleContainer>
+
         <UpcomingEventsSection />
-        <Typography variant="h3">실시간 리뷰</Typography>
+        <TitleContainer>
+          <Typography variant="h3">실시간 리뷰</Typography>
+        </TitleContainer>
+
         <RecentlyReviewedEventsSection />
       </ViewMorePageContainer>
     </MobileLayout>

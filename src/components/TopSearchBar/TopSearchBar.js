@@ -85,6 +85,8 @@ export const TopSearchBar = ({
   onClick,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [gu, setGu] = useState(["강남구", "마포구"]);
+  const [categoryList, setCategoryList] = useState([]);
 
   const handleSearch = () => {
     if (onSearch) {
@@ -123,13 +125,10 @@ export const TopSearchBar = ({
       {/* 태그가 있을 경우에만 TagArea 표시 */}
       {tags.length > 0 && (
         <TagArea>
-          {tags.map((tag, index) => (
+          {gu.map((guItem, index) => (
             <Tag key={index}>
-              {tag}
-              <RemoveTagButton
-                onClick={() => onRemoveTag && onRemoveTag(tag)}
-                aria-label={`${tag} 태그 제거`}
-              >
+              {guItem}
+              <RemoveTagButton aria-label={`${guItem} 태그 제거`}>
                 <FiX size={14} />
               </RemoveTagButton>
             </Tag>

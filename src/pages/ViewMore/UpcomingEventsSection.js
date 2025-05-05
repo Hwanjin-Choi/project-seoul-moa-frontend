@@ -4,8 +4,9 @@ import { postToggleEventLike } from "../../api/interaction/event/like";
 
 import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard"; // 카드 컴포넌트 경로 가정
 import styled from "styled-components"; // 스타일 컴포넌트 사용 시
+import Button from "../../components/Button/Button";
+import { Color } from "../../styles/colorsheet";
 
-// --- 스타일 컴포넌트 정의 (기존 코드에 있다면 해당 파일에서 import) ---
 const UpcomingEventsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -14,27 +15,11 @@ const UpcomingEventsContainer = styled.div`
   border-radius: 10px;
 `;
 
-const LoadMoreButton = styled.button`
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  align-self: center;
-  margin-top: 1rem;
-  border: 1px solid #ccc;
-  background-color: #f8f8f8;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: #eee;
-  }
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-`;
-
 const LoadingIndicator = styled.div`
   text-align: center;
-  padding: 1rem;
+  padding: 8px 16px;
+  color: ${Color.MC1};
+  font-weight: 700;
 `;
 
 const ScrollableEventListContainer = styled.div`
@@ -43,7 +28,6 @@ const ScrollableEventListContainer = styled.div`
 
   padding-right: 5px;
 
-  /* 스크롤바 디자인 (선택 사항) */
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -62,12 +46,12 @@ const ScrollableEventListContainer = styled.div`
 const EmptyStateMessage = styled.div`
   text-align: center;
   padding: 2rem 1rem;
-  color: #777;
-  /* 스크롤 컨테이너 대신 표시될 때 높이를 어느 정도 유지 */
   min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${Color.MC1};
+  font-weight: 700;
 `;
 
 function UpcomingEventsSection() {
@@ -155,7 +139,6 @@ function UpcomingEventsSection() {
     try {
       // API 호출
       const res = await postToggleEventLike(eventId);
-      console.log(res, "like toggle api");
       if (res !== "SUCCESS") {
         // 실패 시 롤백
         console.error("Error occured during toggleLikeEvent, rolling back UI.");
@@ -197,9 +180,9 @@ function UpcomingEventsSection() {
 
       {/* 더보기 버튼 (로딩 중 아닐 때, 더 로드할 게 있을 때, 이벤트가 하나라도 있을 때) */}
       {!isLoading && hasMore && upcomingEventsField.length > 0 && (
-        <LoadMoreButton onClick={handleLoadMore} disabled={isLoading}>
+        <Button variant={"text"} onClick={handleLoadMore} disabled={isLoading}>
           더보기
-        </LoadMoreButton>
+        </Button>
       )}
 
       {/* 이벤트가 없고 로딩 중도 아닐 때 빈 상태 메시지 */}

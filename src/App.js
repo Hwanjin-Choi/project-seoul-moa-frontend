@@ -40,7 +40,7 @@ const App = () => {
         <Route path="/registration-page" element={<RegistrationPage />} />
         <Route path="/demo-page" element={<DemoPage />} />
         <Route path="/" element={<DemoPage />} /> {/* 기본 경로도 DemoPage로 */}
-        <Route path="/map" element={<Map />} />
+        <Route path="/map" element={<Map mapReady={mapLoaded} />} />
         <Route
           path="/view-detail-page/:eventId"
           element={<ViewDetail mapReady={mapLoaded} />}

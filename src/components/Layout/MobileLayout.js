@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Navigation from "../Navigation/Navigation";
 import BackHeader from "../BackHeader/BackHeader"; // BackHeader만 import
-// logo, useLocation, useNavigate, Header, HeaderContent, Logo 등 제거
 import { Color } from "../../styles/colorsheet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
+import ChatModal from "../Chatbot/ChatModal"; // Import ChatModal
+import { GlobalChatStyle, FabButton } from "../Chatbot/styles"; // Import styles
 
 const LayoutWrapper = styled.div`
   margin: 0 auto;
@@ -59,13 +62,24 @@ const Header = styled.header`
 `; */
 
 const MobileLayout = ({ children }) => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
   return (
     <LayoutWrapper>
+      <GlobalChatStyle /> {/* Apply global styles */}
       <BackHeader />
+      <FabButton onClick={toggleChat} aria-label="챗봇 열기">
+        <FontAwesomeIcon icon={faCommentDots} size="lg" /> {/* Use FA icon */}
+      </FabButton>
+      {/* Chat Modal */}
       <Content>{children}</Content>
       <NavigationWrapper>
         <Navigation />
       </NavigationWrapper>
+      <ChatModal isOpen={isChatOpen} onClose={toggleChat} />
     </LayoutWrapper>
   );
 };
