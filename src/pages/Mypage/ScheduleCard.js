@@ -54,6 +54,11 @@ const InfoBox = styled.div`
 const Title = styled(Typography)`
   white-space: normal;
   overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Poster = styled.img`
@@ -95,7 +100,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
 const ButtonSection = styled.div`
   display: flex;
   gap: 8px;
-  padding: 12px 16px 16px;
+  padding: 0 10px 10px;
 `;
 
 const StyledButton = styled(Button)`

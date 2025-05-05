@@ -19,6 +19,7 @@ import EditCategoryModal from "./EditCategoryModal.js";
 import { EventData } from "./data";
 import useUserFetch from "../../api/UserFetch";
 import useMyReviewFetch from "../../hooks/useMyReviewFetch";
+import { fetchUserScheduleList } from "../../api/userScheduleList";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -57,8 +58,9 @@ const splitEventDataByDate = (data) => {
 
 const Mypage = () => {
   const state = useMypage();
-  const [eventList, setEventList] = useState(EventData);
-  const { upcoming, past } = splitEventDataByDate(eventList);
+  const [scheduleList, setScheduleList] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [past, setPast] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
   const { user, loading } = useUserFetch();
@@ -72,25 +74,40 @@ const Mypage = () => {
     deleteReview,
   } = useMyReviewFetch();
 
-  const handleEditSave = (newDate) => {
-    setEventList((prev) =>
-      prev.map((item) =>
-        item === editItem ? { ...item, calenderDay: newDate } : item
-      )
-    );
-    setEditItem(null);
-  };
+  useEffect(() => {
+    const loadSchedules = async () => {
+      try {
+        const result = await fetchUserScheduleList();
+        setScheduleList(result);
+        setUpcoming(result.filter(s => !s.pastScheduled));
+        setPast(result.filter(s => s.pastScheduled));
+      } catch (e) {
+        console.error("일정 불러오기 실패:", e);
+      }
+    };
 
-  const handleDelete = () => {
-    setEventList((prev) => prev.filter((item) => item !== deleteItem));
-    setDeleteItem(null);
-  };
+    loadSchedules();
+  }, []);
 
   useEffect(() => {
     if (user) {
       setSelectedCategories(user.categories);
     }
   }, [user]);
+
+  const handleEditSave = (newDate) => {
+    setScheduleList((prev) =>
+      prev.map((item) =>
+        item === editItem ? { ...item, scheduleTime: newDate } : item
+      )
+    );
+    setEditItem(null);
+  };
+
+  const handleDelete = () => {
+    setScheduleList((prev) => prev.filter((item) => item !== deleteItem));
+    setDeleteItem(null);
+  };
 
   const handleDeleteReview = (targetReview) => {
     deleteReview(targetReview.reviewId);
@@ -123,7 +140,15 @@ const Mypage = () => {
           <Section>
             <Typography variant="h3">다가오는 일정</Typography>
             <ScheduleCarousel
-              data={upcoming}
+              data={upcoming.map(s => ({
+                ...s,
+                calenderDay: s.scheduleTime?.slice(0, 10),
+                eventTitle: s.event.title,
+                eventStartdate: s.event.startDate?.slice(0, 10),
+                eventEnddate: s.event.endDate?.slice(0, 10),
+                eventLocation: s.event.location,
+                eventImageurl: s.event.imageUrl,
+              }))}
               onEditClick={setEditItem}
               onDeleteClick={setDeleteItem}
             />
@@ -146,7 +171,15 @@ const Mypage = () => {
           <Section>
             <Typography variant="h3">리뷰 작성하기</Typography>
             <ReviewCarousel
-              reviewCreateData={past}
+              reviewCreateData={past.map(s => ({
+                ...s,
+                calenderDay: s.scheduleTime?.slice(0, 10),
+                eventTitle: s.event.title,
+                eventImageurl: s.event.imageUrl,
+                eventStartdate: s.event.startDate?.slice(0, 10),
+                eventEnddate: s.event.endDate?.slice(0, 10),
+                eventLocation: s.event.location,
+              }))}
               onReviewClick={(item) => {
                 state.setSelectedCreateItem(item);
                 state.setCreateContent("");
