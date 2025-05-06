@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Typography from "../../components/Typography/Typography.js";
 import Button from "../../components/Button/Button.js";
 import { Color } from "../../styles/colorsheet.js";
+import { updateUserReview } from "../../api/userReviewUpdate";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -90,8 +91,32 @@ const EditReviewModal = ({
   editedContent,
   setEditedContent,
   setIsEditModalOpen,
+  onSuccess,
 }) => {
   if (!isEditModalOpen || !selectedReview) return null;
+
+  const handleSave = async () => {
+    try {
+      console.log("수정 요청 데이터", {
+        reviewId: selectedReview.reviewId,
+        eventId: selectedReview.eventId,
+        content: editedContent,
+      });
+  
+      await updateUserReview({
+        reviewId: selectedReview.reviewId,
+        eventId: selectedReview.eventId,
+        content: editedContent,
+      });
+  
+      onSuccess?.(editedContent);
+      setIsEditModalOpen(false);
+    } catch (err) {
+      console.error("리뷰 수정 실패:", err);
+      alert("리뷰 수정 실패");
+    }
+  };
+  
 
   return (
     <ModalWrapper onClick={() => setIsEditModalOpen(false)}>
@@ -123,20 +148,10 @@ const EditReviewModal = ({
         />
 
         <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
-          <Button
-            variant="secondary"
-            fullWidth
-            onClick={() => setIsEditModalOpen(false)}
-          >
+          <Button variant="secondary" fullWidth onClick={() => setIsEditModalOpen(false)}>
             취소
           </Button>
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() => {
-              setIsEditModalOpen(false);
-            }}
-          >
+          <Button variant="primary" fullWidth onClick={handleSave}>
             수정하기
           </Button>
         </div>

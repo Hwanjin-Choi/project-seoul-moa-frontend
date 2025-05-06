@@ -11,15 +11,16 @@ import InterestSection from "./InterestSection.js";
 import CreateReviewModal from "./CreateReviewModal.js";
 import EditReviewModal from "./EditReviewModal.js";
 import ReviewCarousel from "./ReviewCarousel.js";
-import ReviewModal from "./ReviewModal.js";
+import ReviewSection from "../../components/Layout/ReviewSection.js";
 import { ScheduleCarousel } from "./ScheduleCard.js";
 import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
 import EditCategoryModal from "./EditCategoryModal.js";
-
 import { EventData } from "./data";
 import useUserFetch from "../../api/UserFetch";
-import { fetchUserReviews } from "../../api/userReview.js";
+import useMyReviewFetch from "../../hooks/useMyReviewFetch";
+import { fetchUserScheduleList } from "../../api/userScheduleList";
+import { updateUserSchedule, deleteUserSchedule } from "../../api/userScheduleUpdate";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -58,28 +59,36 @@ const splitEventDataByDate = (data) => {
 
 const Mypage = () => {
   const state = useMypage();
-  const [eventList, setEventList] = useState(EventData);
-  const { upcoming, past } = splitEventDataByDate(eventList);
+  const [scheduleList, setScheduleList] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [past, setPast] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
   const { user, loading } = useUserFetch();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
-  const [reviewList, setReviewList] = useState([]);
+  const {
+    reviews: reviewList,
+    fetchMoreReviews,
+    hasMore,
+    loading: reviewLoading,
+    deleteReview,
+  } = useMyReviewFetch();
 
-  const handleEditSave = (newDate) => {
-    setEventList(prev =>
-      prev.map(item =>
-        item === editItem ? { ...item, calenderDay: newDate } : item
-      )
-    );
-    setEditItem(null);
+  const loadSchedules = async () => {
+    try {
+      const result = await fetchUserScheduleList();
+      setScheduleList(result);
+      setUpcoming(result.filter(s => !s.pastScheduled));
+      setPast(result.filter(s => s.pastScheduled));
+    } catch (e) {
+      console.error("일정 불러오기 실패:", e);
+    }
   };
 
-  const handleDelete = () => {
-    setEventList(prev => prev.filter(item => item !== deleteItem));
-    setDeleteItem(null);
-  };
+  useEffect(() => {
+    loadSchedules();
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -87,33 +96,47 @@ const Mypage = () => {
     }
   }, [user]);
 
-  const handleDeleteReview = (targetReview) => {
-    setReviewList((prev) => prev.filter((r) => r.reviewId !== targetReview.reviewId));
+  const handleEditSave = async (newDate) => {
+    try {
+      const newDateISO = new Date(newDate).toISOString(); // 정확한 ISO 포맷
+      await updateUserSchedule({
+        scheduleId: editItem.scheduleId,
+        scheduleTime: newDateISO,
+      });
+
+      // 상태 갱신
+      setScheduleList((prev) =>
+        prev.map((item) =>
+          item.scheduleId === editItem.scheduleId
+            ? { ...item, scheduleTime: newDateISO }
+            : item
+        )
+      );
+      setEditItem(null);
+      await loadSchedules();
+    } catch (err) {
+      alert("예약 수정 실패");
+      console.error(err);
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      await deleteUserSchedule(deleteItem.scheduleId);
+      setScheduleList((prev) =>
+        prev.filter((item) => item.scheduleId !== deleteItem.scheduleId)
+      );
+      setDeleteItem(null);
+      await loadSchedules();
+    } catch (err) {
+      alert("예약 삭제 실패");
+      console.error(err);
+    }
   };
 
-  useEffect(() => {
-    const loadUserReviews = async () => {
-      try {
-        const result = await fetchUserReviews();
-        const mapped = result.map((item) => ({
-          reviewId: item.reviewId,
-          calendarDay: item.calendarDay,
-          eventTitle: item.eventTitle,
-          userNickname: user?.nickname || "회원",
-          reviewContent: item.content,
-          eventImageurl: item.imageUrl,
-        }));
-        console.log("👉 리뷰 데이터:", mapped);
-        setReviewList(mapped);
-      } catch (err) {
-        console.error("리뷰 로드 실패", err);
-      }
-    };
-  
-    if (user) {
-      loadUserReviews();
-    }
-  }, [user]);
+  const handleDeleteReview = (targetReview) => {
+    deleteReview(targetReview.reviewId);
+  };
 
   if (loading) return <div>로딩 중...</div>;
 
@@ -142,7 +165,15 @@ const Mypage = () => {
           <Section>
             <Typography variant="h3">다가오는 일정</Typography>
             <ScheduleCarousel
-              data={upcoming}
+              data={upcoming.map(s => ({
+                ...s,
+                calenderDay: s.scheduleTime?.slice(0, 10),
+                eventTitle: s.event.title,
+                eventStartdate: s.event.startDate?.slice(0, 10),
+                eventEnddate: s.event.endDate?.slice(0, 10),
+                eventLocation: s.event.location,
+                eventImageurl: s.event.imageUrl,
+              }))}
               onEditClick={setEditItem}
               onDeleteClick={setDeleteItem}
             />
@@ -165,7 +196,15 @@ const Mypage = () => {
           <Section>
             <Typography variant="h3">리뷰 작성하기</Typography>
             <ReviewCarousel
-              reviewCreateData={past}
+              reviewCreateData={past.map(s => ({
+                ...s,
+                calenderDay: s.scheduleTime?.slice(0, 10),
+                eventTitle: s.event.title,
+                eventImageurl: s.event.imageUrl,
+                eventStartdate: s.event.startDate?.slice(0, 10),
+                eventEnddate: s.event.endDate?.slice(0, 10),
+                eventLocation: s.event.location,
+              }))}
               onReviewClick={(item) => {
                 state.setSelectedCreateItem(item);
                 state.setCreateContent("");
@@ -176,22 +215,35 @@ const Mypage = () => {
         )}
 
         <Section>
-          <ReviewModal
+          <ReviewSection
             userName={user?.nickname || "회원"}
             reviewData={reviewList}
             isOpen={state.isReviewModalOpen}
             setIsOpen={state.setIsReviewModalOpen}
+            modalTitle="나의 리뷰 모아보기"
+            showHeader={true}
+            showEdit={true}
             onEditClick={(review) => {
               state.setSelectedReview(review);
               state.setEditedContent(review.reviewContent);
               state.setIsEditModalOpen(true);
             }}
             onDeleteClick={handleDeleteReview}
+            fetchMore={fetchMoreReviews}
+            hasMore={hasMore}
+            loading={reviewLoading}
           />
         </Section>
 
         <EditReviewModal {...state} />
-        <CreateReviewModal {...state} />
+        <CreateReviewModal
+          {...state}
+          onSuccess={() => {
+            state.setSelectedCreateItem(null);
+            state.setCreateContent("");
+            fetchMoreReviews();
+          }}
+        />
       </Container>
     </MobileLayout>
   );

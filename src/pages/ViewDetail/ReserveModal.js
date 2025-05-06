@@ -5,6 +5,7 @@ import Button from "../../components/Button/Button";
 import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { scheduleEvent } from "../../api/schedule";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -96,8 +97,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
   flex-shrink: 0;
 `;
 
-
-const ReserveModal = ({ onClose, data, date }) => {
+const ReserveModal = ({ onClose, data, date, eventId }) => {
   const today = new Date().toISOString().split("T")[0];
   const eventStart = data.startDate.split("T")[0];
   const eventEnd = data.endDate.split("T")[0];
@@ -116,6 +116,21 @@ const ReserveModal = ({ onClose, data, date }) => {
   const formatDateRange = (start, end) => {
     const format = (dateStr) => dateStr.split("T")[0];
     return `${format(start)} ~ ${format(end)}`;
+  };
+
+  const handleAddSchedule = async () => {
+    if (!selectedDate) return;
+    const payload = {
+      eventId: Number(eventId),
+      scheduleTime: new Date(selectedDate).toISOString(),
+    };
+    console.log("scheduleEvent payload:", payload);
+    try {
+      await scheduleEvent(payload);
+      onClose();
+    } catch (error) {
+      console.error("일정 추가 실패:", error);
+    }
   };
 
   return (
@@ -166,7 +181,7 @@ const ReserveModal = ({ onClose, data, date }) => {
           <Button variant="secondary" fullWidth onClick={onClose}>
             취소
           </Button>
-          <Button variant="primary" fullWidth onClick={onClose}>
+          <Button variant="primary" fullWidth onClick={handleAddSchedule}>
             일정 추가
           </Button>
         </div>

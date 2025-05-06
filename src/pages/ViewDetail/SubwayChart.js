@@ -57,7 +57,7 @@ const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
         </ResponsiveContainer>
       </ChartBox>
 
-      <Typography variant="h6" style={{ textAlign: "center" }}>
+      <Typography variant="h6" style={{ textAlign: "center", marginBottom: 10 }}>
         {currentHour}시의 {subwayName}({subwayLine})은 <Tag>{state}</Tag> 단계입니다
       </Typography>
     </>

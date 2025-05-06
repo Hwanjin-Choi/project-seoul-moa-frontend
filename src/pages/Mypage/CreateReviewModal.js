@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Typography from "../../components/Typography/Typography.js";
 import Button from "../../components/Button/Button.js";
 import { Color } from "../../styles/colorsheet.js";
+import { updateUserReview } from "../../api/userReviewUpdate";
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -90,8 +91,25 @@ const CreateReviewModal = ({
   createContent,
   setCreateContent,
   setIsCreateModalOpen,
+  onReviewCreated,
 }) => {
   if (!isCreateModalOpen || !selectedCreateItem) return null;
+
+  const handleSubmit = async () => {
+    try {
+      await updateUserReview({
+        reviewId: -1,
+        eventId: selectedCreateItem.event?.eventId || selectedCreateItem.eventId,
+        content: createContent,
+      });
+
+      onReviewCreated(selectedCreateItem.scheduleId);
+      setIsCreateModalOpen(false);
+      setCreateContent("");
+    } catch (err) {
+      alert("리뷰 작성 실패");
+    }
+  };
 
   return (
     <ModalWrapper onClick={() => setIsCreateModalOpen(false)}>
@@ -106,13 +124,8 @@ const CreateReviewModal = ({
           </PosterWrapper>
 
           <InfoWrapper>
-            <DateText variant="h4">
-              {selectedCreateItem.calenderDay}
-            </DateText>
-
-            <TitleText variant="h3">
-              {selectedCreateItem.eventTitle}
-            </TitleText>
+            <DateText variant="h4">{selectedCreateItem.calenderDay}</DateText>
+            <TitleText variant="h3">{selectedCreateItem.eventTitle}</TitleText>
           </InfoWrapper>
         </ContentWrapper>
 
@@ -123,23 +136,10 @@ const CreateReviewModal = ({
         />
 
         <div style={{ display: "flex", gap: "8px", marginTop: "24px" }}>
-          <Button
-            variant="secondary"
-            fullWidth
-            onClick={() => setIsCreateModalOpen(false)}
-          >
+          <Button variant="secondary" fullWidth onClick={() => setIsCreateModalOpen(false)}>
             취소
           </Button>
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() => {
-              console.log("날짜:", selectedCreateItem.calenderDay);
-              console.log("제목:", selectedCreateItem.eventTitle);
-              console.log("내용:", createContent);
-              setIsCreateModalOpen(false);
-            }}
-          >
+          <Button variant="primary" fullWidth onClick={handleSubmit}>
             작성하기
           </Button>
         </div>

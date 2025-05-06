@@ -7,7 +7,6 @@ const useReviewFetch = (eventId, limit = 5) => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // 1) 초기 한 번만
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -27,7 +26,6 @@ const useReviewFetch = (eventId, limit = 5) => {
     return () => { active = false; };
   }, [eventId, limit]);
 
-  // 2) 스크롤 바닥 닿을 때마다
   const fetchMore = useCallback(() => {
     if (!hasMore || loading) return;
     setLoading(true);

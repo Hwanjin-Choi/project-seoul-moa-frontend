@@ -14,6 +14,7 @@ import Container from "../../components/Layout/Container.js";
 import EventDetail from "../../api/EventDetail.js";
 import useReviewFetch from "../../hooks/useReviewFetch";
 import EventDescriptionSection from "./EventDescriptionSection.js";
+import WeatherSection from "./WeatherSection";
 
 const BottomButton = styled(Button)`
   width: 100%;
@@ -34,8 +35,6 @@ const BottomButton = styled(Button)`
 
 const ViewDetail = ({ mapReady }) => {
   const { eventId } = useParams();
-
-  /* const eventId = 30; */
   const { eventData, loading } = EventDetail(eventId);
 
   const {
@@ -91,6 +90,8 @@ const ViewDetail = ({ mapReady }) => {
           state={state}
         />
 
+        <WeatherSection gu={eventData.gu} />
+
         <BottomButton onClick={() => setIsReserveOpen(true)}>
           일정 추가
         </BottomButton>
@@ -101,6 +102,7 @@ const ViewDetail = ({ mapReady }) => {
           onClose={() => setIsReserveOpen(false)}
           date={currentDay}
           data={eventData}
+          eventId={eventId}
         />
       )}
     </MobileLayout>

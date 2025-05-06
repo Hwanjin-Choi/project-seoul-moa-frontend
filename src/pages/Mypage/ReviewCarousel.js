@@ -40,7 +40,7 @@ const CarouselItem = styled.div`
 `;
 
 const Thumb = styled.img`
-  width: 45%;
+  width: 40%;
   aspect-ratio: 3 / 4;
   border-radius: 10px;
   object-fit: contain;
@@ -101,7 +101,7 @@ const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => (
             <InfoRow>
               <StyledIcon icon={faCalendarAlt} />
               <Typography variant="h6" color={Color.BC3}>
-                {event.eventStartdate} ~ {event.eventEnddate}
+              {event.eventStartdate} ~ {event.eventEnddate}
               </Typography>
             </InfoRow>
 
