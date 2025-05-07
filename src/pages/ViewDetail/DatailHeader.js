@@ -56,7 +56,7 @@ const PosterImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  //object-fit: contain;
+  object-fit: contain;
   background-color: rgba(255, 255, 255, 0.7);
 
   @media (min-width: 768px) {

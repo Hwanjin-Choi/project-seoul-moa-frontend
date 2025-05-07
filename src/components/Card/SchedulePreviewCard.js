@@ -4,6 +4,7 @@ import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import DdayBadge from "../Badge/DdayBadge";
+import { useNavigate } from "react-router-dom";
 
 const CarouselWrapper = styled.div`
   display: flex;
@@ -89,11 +90,15 @@ const StyledIcon = styled(FontAwesomeIcon)`
 `;
 
 const SchedulePreviewCard  = ({ item }) => {
+  const navigate = useNavigate();
   if (!item) return null;
-  const formatDate = (dateStr) => dateStr?.split("T")[0] || "";
+  const handleCardClick = () => {
+    navigate("/my-page");
+  };
+
 
   return (
-    <Card>
+    <Card onClick={handleCardClick} style={{ cursor: "pointer" }}>
       <InfoSection>
       <InfoBox>
         <DateRow>
@@ -108,7 +113,7 @@ const SchedulePreviewCard  = ({ item }) => {
         <InfoRow>
           <StyledIcon icon={faCalendarAlt} />
           <Typography variant="h6" color={Color.BC3}>
-            {formatDate(item.eventStartdate)} ~ {formatDate(item.eventEnddate)}
+            {item.eventStartdate} ~ {item.eventEnddate}
           </Typography>
         </InfoRow>
         <InfoRow>

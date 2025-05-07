@@ -27,13 +27,21 @@ const Slide = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  @media (min-width: 768px) {
+    flex: 0 0 50%;
+    padding: 20px;
+  };
+  @media (min-width: 1024px) {
+    flex: 0 0 45%;
+    padding: 30px;
+  };
 `;
 
 const InfoBox = styled.div`
   color: ${Color.BC1};
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 `;
 
 const DotsWrapper = styled.div`
@@ -55,74 +63,83 @@ const GradientOverlay = styled.div`
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 60%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 70%);
 `;
 
 const AutoCarousel = ({ items }) => {
-    const carouselRef = useRef(null);
-    const [current, setCurrent] = useState(0);
-    const navigate = useNavigate();
+  const carouselRef = useRef(null);
+  const [current, setCurrent] = useState(0);
+  const navigate = useNavigate();
 
   const handleClick = (eventId) => {
     navigate(`/view-detail-page/${eventId}`);
   };
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (!carouselRef.current) return;
-            const container = carouselRef.current;
-            const slideWidth = container.firstChild?.offsetWidth || 0;
-            const next = (current + 1) % items.length;
-            container.scrollTo({
-                left: slideWidth * next,
-                behavior: "smooth",
-            });
-            setCurrent(next);
-        }, 2000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!carouselRef.current) return;
+      const container = carouselRef.current;
+      const slideWidth = container.firstChild?.offsetWidth || 0;
+      const next = (current + 1) % items.length;
+      container.scrollTo({
+        left: slideWidth * next,
+        behavior: "smooth",
+      });
+      setCurrent(next);
+    }, 2000);
 
-        return () => clearInterval(interval);
-    }, [current, items.length]);
+    return () => clearInterval(interval);
+  }, [current, items.length]);
 
-    return (
-        <>
-            <CarouselWrapper ref={carouselRef}>
-                {items.map((item, idx) => (
-                    <Slide key={idx} onClick={() => handleClick(item.eventId)}>
-                        {item.image && (
-                            <img
-                                src={item.image}
-                                alt={`slide-${idx}`}
-                                style={{
-                                    position: "absolute",
-                                    inset: 0,
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                    zIndex: 0,
-                                }}
-                            />
-                        )}
-                        <GradientOverlay />
+  return (
+    <>
+      <CarouselWrapper ref={carouselRef}>
+        {items.map((item, idx) => (
+          <Slide key={idx} onClick={() => handleClick(item.eventId)}>
+            {item.image && (
+              <img
+                src={item.image}
+                alt={`slide-${idx}`}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  zIndex: 0,
+                  borderRadius: "inherit"
+                }}
+              />
+            )}
+            <GradientOverlay />
 
-                        <InfoBox style={{ position: "relative", zIndex: 1 }}>
-                            <Typography variant="h6" style={{ color: "white" }}>{item.location}</Typography>
-                            <Typography variant="h6" style={{ color: "white" }}>
-                                {item.startdate} - {item.enddate}
-                            </Typography>
-                            <Typography variant="h4" style={{ fontWeight: 700, color: "white" }}>
-                                {item.title}
-                            </Typography>
-                        </InfoBox>
-                    </Slide>
-                ))}
-            </CarouselWrapper>
-            <DotsWrapper>
-                {items.map((_, idx) => (
-                    <Dot key={idx} active={idx === current} />
-                ))}
-            </DotsWrapper>
-        </>
-    );
+            <InfoBox style={{ position: "relative", zIndex: 1 }}>
+              <Typography variant="h6" color={Color.BC5}>{item.location}</Typography>
+              <Typography variant="h6" color={Color.BC5}>
+                {item.startdate} - {item.enddate}
+              </Typography>
+              <Typography
+                variant="h3"
+                style={{
+                  fontWeight: 700,
+                  color: "white",
+                  whiteSpace: "normal",
+                  wordBreak: "keep-all",
+                }}
+              >
+                {item.title}
+              </Typography>
+            </InfoBox>
+          </Slide>
+        ))}
+      </CarouselWrapper>
+      <DotsWrapper>
+        {items.map((_, idx) => (
+          <Dot key={idx} active={idx === current} />
+        ))}
+      </DotsWrapper>
+    </>
+  );
 };
 
 export default AutoCarousel;

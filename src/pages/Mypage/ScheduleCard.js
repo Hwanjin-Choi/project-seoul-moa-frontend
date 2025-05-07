@@ -4,6 +4,7 @@ import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button/Button";
+import DdayBadge from "../../components/Badge/DdayBadge";
 
 const CarouselWrapper = styled.div`
   display: flex;
@@ -122,7 +123,7 @@ const ScheduleCard = ({ item, onEditClick, onDeleteClick }) => {
             <Typography variant="h4" color={Color.MC1} style={{ fontWeight: "bold" }}>
               {item.calenderDay}
             </Typography>
-            <DdayTag>D-{dday}</DdayTag>
+            <DdayBadge startDate={item.eventStartdate} endDate={item.eventEnddate} />
           </DateRow>
           <Title variant="h3" style={{ fontWeight: 700 }}>
             {item.eventTitle}
