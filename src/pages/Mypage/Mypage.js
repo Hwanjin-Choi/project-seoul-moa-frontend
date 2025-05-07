@@ -189,6 +189,7 @@ const Mypage = () => {
                 .filter(s => !s.event.hasReview)
                 .map(s => ({
                   ...s,
+                  eventId: s.event.eventId,
                   calenderDay: s.scheduleTime?.slice(0, 10),
                   eventTitle: s.event.title,
                   eventImageurl: s.event.imageUrl,
