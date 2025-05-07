@@ -71,7 +71,7 @@ const TabContentContainer = styled.div`
 `;
 
 const ViewMorePage = () => {
-  const [activeTab, setActiveTab] = useState("upcoming"); // 현재 활성화된 탭 상태 ('upcoming' 또는 'reviews')
+  const [activeTab, setActiveTab] = useState("saved"); // 현재 활성화된 탭 상태 ('upcoming' 또는 'reviews')
 
   return (
     <MobileLayout>

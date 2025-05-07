@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 // BottomFilterForm을 기본으로 불러옵니다.
 import BottomFilterForm from "../../components/BottomFilterForm/BottomFilterForm";
@@ -47,6 +47,61 @@ const Map = ({ mapReady }) => {
   });
   const [totalCount, setTotalCount] = useState(0);
 
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [error, setError] = useState(null);
+
+  const mapContainer = useRef(null);
+
+  useEffect(() => {
+    // 브라우저가 Geolocation API를 지원하는지 확인합니다.
+    if (!navigator.geolocation) {
+      setError("브라우저 위치 정보 오류");
+      return;
+    }
+
+    // 사용자의 현재 위치를 가져옵니다.
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (err) => {
+        // 오류 처리: 사용자가 권한을 거부했거나 다른 오류가 발생한 경우
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            setError("전하, 위치 정보 접근 권한을 허용해주셔야 합니다.");
+            break;
+          case err.POSITION_UNAVAILABLE:
+            setError("전하, 현재 위치 정보를 가져올 수 없습니다.");
+            break;
+          case err.TIMEOUT:
+            setError(
+              "전하, 위치 정보를 가져오는 데 시간이 너무 오래 걸립니다."
+            );
+            break;
+          default:
+            setError(
+              "전하, 알 수 없는 오류로 위치 정보를 가져오는 데 실패했습니다."
+            );
+            break;
+        }
+      }
+    );
+  }, []); // 컴포넌트가 마운트될 때 한 번만 실행합니다.
+
+  useEffect(() => {
+    // window.kakao와 kakao.maps가 로드되었는지, 그리고 mapContainer.current가 존재하는지 확인
+    if (window.kakao && window.kakao.maps && mapContainer.current) {
+      const mapOption = {
+        center: new window.kakao.maps.LatLng(latitude, longitude), // 중심 좌표
+        level: 3, // 확대 레벨
+      };
+      const map = new window.kakao.maps.Map(mapContainer.current, mapOption);
+      // 추가적인 마커, 컨트롤 등을 설정할 수 있습니다.
+    }
+  }, [latitude, longitude]); // lat, lng가 변경될 때 지도를 다시 그리거나 업데이트 할 수 있습니다.
+
   // 필터 확장/축소 상태를 토글하는 함수
   const toggleFilterExpansion = () => {
     setIsFilterExpanded(!isFilterExpanded);
@@ -69,22 +124,29 @@ const Map = ({ mapReady }) => {
         />
 
         <ContentArea>
-          {/* <MapSection
-            mapReady={mapReady}
-            mapData={{
-              latitude: searchResult.latitude,
-              longitude: searchResult.longitude,
-            }}
-            mapLocation={searchResult}
-          /> */}
-
-          {mapReady && searchResult.length > 0 && (
+          {/* 조건 1: 검색 결과가 있고, 해당 결과에 유효한 위도/경도 값이 있는 경우 */}
+          {mapReady &&
+          searchResult.length > 0 &&
+          searchResult[0]?.latitude != null &&
+          searchResult[0]?.longitude != null ? (
             <>
               <KakaoMap
                 lat={Number(searchResult[0].latitude)}
                 lng={Number(searchResult[0].longitude)}
               />
             </>
+          ) : // 조건 2: 사용자 현재 위치의 위도/경도 값이 유효한 경우
+          latitude != null && longitude != null ? ( // null/undefined 확인
+            <>
+              <KakaoMap lat={Number(latitude)} lng={Number(longitude)} />
+            </>
+          ) : (
+            // 조건 1과 2 모두 해당하지 않는 경우 (오류 또는 데이터 없음)
+            // error 상태에 메시지가 있으면 해당 메시지를, 없으면 기본 메시지를 표시
+            <p>
+              {error ||
+                "지도를 표시할 위치 정보를 가져오고 있거나 현재 사용할 수 없습니다."}
+            </p>
           )}
         </ContentArea>
 

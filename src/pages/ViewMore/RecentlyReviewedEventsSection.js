@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import InfiniteScroll from "react-infinite-scroll-component"; // 라이브러리 임포트
 import { getRecentlyReviewedEvents } from "../../api/event/recently/reviewed";
 import { postToggleEventLike } from "../../api/interaction/event/like";
 
@@ -6,7 +7,7 @@ import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBord
 import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 
-// ReviewedEventsContainer, ReviewList, LoadingIndicator, EmptyStateMessage styled-components는 동일하게 유지됩니다.
+// Styled-components (ReviewedEventsContainer, ReviewList, LoadingIndicator, EmptyStateMessage)는 기존과 동일
 const ReviewedEventsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,7 +24,6 @@ const ReviewedEventsContainer = styled.div`
 const ReviewList = styled.div`
   flex-grow: 1;
   overflow-y: auto;
-
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -66,7 +66,6 @@ const EmptyStateMessage = styled.div`
   height: 100%;
 `;
 
-// 한 번에 불러올 아이템 수
 const ITEMS_PER_PAGE = 7;
 
 const RecentlyReviewedEventsSection = () => {
@@ -74,28 +73,28 @@ const RecentlyReviewedEventsSection = () => {
     useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [fetchLimitTracker, setFetchLimitTracker] = useState(ITEMS_PER_PAGE);
-  const isOpen = true; // 이 값이 동적으로 변경될 수 있다면 state 또는 props로 관리해야 합니다.
-
-  const observer = useRef();
-  const reviewListRef = useRef(null); // 스크롤 컨테이너 ref
+  const [page, setPage] = useState(0);
+  const isOpen = true;
 
   const fetchRecentlyReviewedEvents = useCallback(
     async (isInitialLoad = false) => {
-      if (isLoading) return;
+      if (isLoading && !isInitialLoad) return;
       if (!isInitialLoad && !hasMore) return;
 
       setIsLoading(true);
-      const offset = isInitialLoad ? 0 : recentlyReviewedEventsField.length;
+      const currentOffset = isInitialLoad
+        ? 0
+        : recentlyReviewedEventsField.length;
 
       const payload = {
-        offset: offset,
+        offset: currentOffset,
         limit: ITEMS_PER_PAGE,
-        isOpen: isOpen, // API 페이로드에 isOpen 포함
+        isOpen: isOpen,
       };
 
       try {
         const res = await getRecentlyReviewedEvents(payload);
+        console.log(res);
         if (res && res.data && Array.isArray(res.data.eventList)) {
           const newEvents = res.data.eventList;
           const totalCount = res.data.totalCount;
@@ -104,14 +103,13 @@ const RecentlyReviewedEventsSection = () => {
             isInitialLoad ? newEvents : [...prevEvents, ...newEvents]
           );
 
-          if (newEvents.length > 0) {
-            setFetchLimitTracker((prevTracker) =>
-              isInitialLoad ? ITEMS_PER_PAGE : prevTracker + ITEMS_PER_PAGE
-            );
-          }
-
-          const totalItemsLoaded = offset + newEvents.length;
+          const totalItemsLoaded = currentOffset + newEvents.length;
           setHasMore(totalItemsLoaded < totalCount);
+          if (isInitialLoad) {
+            setPage(1);
+          } else {
+            setPage((prevPage) => prevPage + 1);
+          }
         } else {
           setHasMore(false);
         }
@@ -128,47 +126,10 @@ const RecentlyReviewedEventsSection = () => {
   useEffect(() => {
     setRecentlyReviewedEventsField([]);
     setHasMore(true);
-    setFetchLimitTracker(ITEMS_PER_PAGE);
+    setPage(0);
     fetchRecentlyReviewedEvents(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]); // isOpen 값이 변경될 때마다 초기 로드를 다시 실행 (만약 isOpen이 동적이라면)
-
-  const handleLoadMore = useCallback(() => {
-    if (!isLoading && hasMore) {
-      fetchRecentlyReviewedEvents(false);
-    }
-  }, [isLoading, hasMore, fetchRecentlyReviewedEvents]);
-
-  const lastReviewElementRef = useCallback(
-    (node) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMore) {
-            handleLoadMore();
-          }
-        },
-        {
-          root: reviewListRef.current,
-          rootMargin: "0px 0px 100px 0px", // 기존 값 유지
-          threshold: 0.01,
-        }
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, hasMore, handleLoadMore]
-  );
-
-  useEffect(() => {
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, []);
+  }, [isOpen]);
 
   const handleLikeToggle = async (eventId) => {
     const eventIndex = recentlyReviewedEventsField.findIndex(
@@ -205,6 +166,8 @@ const RecentlyReviewedEventsSection = () => {
     }
   };
 
+  const scrollableContainerId = "recently-reviewed-scrollable-list";
+
   return (
     <ReviewedEventsContainer>
       {recentlyReviewedEventsField.length === 0 && !isLoading && !hasMore ? (
@@ -212,50 +175,48 @@ const RecentlyReviewedEventsSection = () => {
           최근 리뷰가 작성된 이벤트가 없습니다.
         </EmptyStateMessage>
       ) : (
-        <ReviewList ref={reviewListRef}>
-          {recentlyReviewedEventsField.map((item, index) => {
-            if (recentlyReviewedEventsField.length === index + 1) {
-              return (
-                <div ref={lastReviewElementRef} key={item.eventId}>
-                  <NoBorderLandscapeCard
-                    eventId={item.eventId}
-                    image={item.imageUrl}
-                    title={item.title}
-                    endDate={item.endDate}
-                    startDate={item.startDate}
-                    location={item.location}
-                    category={item.categoryId?.name || "분류 없음"}
-                    gu={item.gu}
-                    isLiked={item.isLiked}
-                    likeCount={item.likeCount}
-                    onLikeToggle={() => handleLikeToggle(item.eventId)}
-                  />
-                </div>
-              );
-            } else {
-              return (
-                <NoBorderLandscapeCard
-                  key={item.eventId}
-                  eventId={item.eventId}
-                  image={item.imageUrl}
-                  title={item.title}
-                  endDate={item.endDate}
-                  startDate={item.startDate}
-                  location={item.location}
-                  category={item.categoryId?.name || "분류 없음"}
-                  gu={item.gu}
-                  isLiked={item.isLiked}
-                  likeCount={item.likeCount}
-                  onLikeToggle={() => handleLikeToggle(item.eventId)}
-                />
-              );
+        <ReviewList id={scrollableContainerId}>
+          <InfiniteScroll
+            dataLength={recentlyReviewedEventsField.length}
+            next={() => fetchRecentlyReviewedEvents(false)}
+            hasMore={hasMore}
+            loader={
+              <LoadingIndicator>
+                <span>로딩 중...</span>
+              </LoadingIndicator>
             }
-          })}
-          {isLoading && (
-            <LoadingIndicator>
-              <span>로딩 중...</span>
-            </LoadingIndicator>
-          )}
+            scrollableTarget={scrollableContainerId}
+            endMessage={
+              recentlyReviewedEventsField.length > 0 ? (
+                <p
+                  style={{
+                    textAlign: "center",
+                    padding: "20px",
+                    color: Color.N2,
+                  }}
+                >
+                  <b>모든 리뷰를 다 보셨습니다.</b>
+                </p>
+              ) : null
+            }
+          >
+            {recentlyReviewedEventsField.map((item) => (
+              <NoBorderLandscapeCard
+                key={item.eventId}
+                eventId={item.eventId}
+                image={item.imageUrl}
+                title={item.title}
+                endDate={item.endDate}
+                startDate={item.startDate}
+                location={item.location}
+                category={item.categoryId?.name || "분류 없음"}
+                gu={item.gu}
+                isLiked={item.isLiked}
+                likeCount={item.likeCount}
+                onLikeToggle={() => handleLikeToggle(item.eventId)}
+              />
+            ))}
+          </InfiniteScroll>
         </ReviewList>
       )}
     </ReviewedEventsContainer>
