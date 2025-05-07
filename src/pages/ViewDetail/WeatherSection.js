@@ -14,7 +14,7 @@ import { fetchWeatherForecast } from "../../api/weather";
 
 const List = styled.div`
   display: flex;
-  margin: 10px 0;
+  margin-top: 15px;
 `;
 const Item = styled.div`
   flex: 0 0 calc(100% / 6);
@@ -22,20 +22,26 @@ const Item = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 8px 0;
+  transition: transform 0.2s ease;
+  cursor: default;
+  opacity: 0.8;
+
+  &.active {
+    transform: translateY(-2px) scale(1.1);
+    opacity: 1;
+  }
 `;
+
 const IconWrapper = styled.div`
   font-size: 30px;
   color: ${Color.MC1};
   margin-bottom: 4px;
-`;
-const StatusText = styled(Typography)`
-  font-size: 12px;
-  color: ${Color.BC2};
-  margin-bottom: 2px;
-`;
-const TimeText = styled(Typography)`
-  font-size: 10px;
-  color: ${Color.BC3};
+  transition: transform 0.2s ease;
+
+  .active & {
+    transform: scale(1.2);
+  }
 `;
 
 const getIconComponent = (status) => {
@@ -62,6 +68,11 @@ const formatHour = (dateStr, timeStr) => {
   return `${dt.getHours()}시`;
 };
 
+const getCurrentHourStr = () => {
+  const now = new Date();
+  return `${now.getHours()}시`;
+};
+
 const WeatherSection = ({ gu }) => {
   const [list, setList] = useState([]);
 
@@ -69,7 +80,7 @@ const WeatherSection = ({ gu }) => {
     if (!gu) return;
     fetchWeatherForecast(gu)
       .then((data) => setList(data))
-      .catch(() => {});
+      .catch(() => { });
   }, [gu]);
 
   return (
@@ -80,15 +91,22 @@ const WeatherSection = ({ gu }) => {
       <List>
         {list.map((o, idx) => {
           const IconComponent = getIconComponent(o.weatherStatus);
+          const currentHour = getCurrentHourStr();
+          const hourStr = formatHour(o.fcscDate, o.time);
+          const isNow = hourStr === currentHour;
+
           return (
-            <Item key={idx}>
+            <Item key={idx} className={isNow ? "active" : ""}>
               <IconWrapper>
                 <IconComponent />
               </IconWrapper>
-              <StatusText variant="caption">{o.weatherStatus}</StatusText>
-              <TimeText variant="caption">
-                {formatHour(o.fcscDate, o.time)}
-              </TimeText>
+              <Typography variant="h6" color={Color.BC3} style={{ marginBottom: 5 }}>
+                {hourStr}
+              </Typography>
+              <Typography variant="h6" color={Color.BC2}>{o.weatherStatus}</Typography>
+              <Typography variant="h6" color={Color.BC2}>
+                {o.temperture}°
+              </Typography>
             </Item>
           );
         })}
