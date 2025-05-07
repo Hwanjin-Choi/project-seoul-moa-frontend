@@ -35,6 +35,7 @@ const Card = styled.div`
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const InfoSection = styled.div`
@@ -63,11 +64,18 @@ const Title = styled(Typography)`
 `;
 
 const Poster = styled.img`
-  width: 35%;
+  width: 32%;
   aspect-ratio: 3 / 4;
   border-radius: 10px;
-  object-fit: contain;
-  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    width: 28%;
+    aspect-ratio: 3 / 4;
+  }
+
+  @media (min-width: 1024px) {
+    width: 25%;
+  }
 `;
 
 const DateRow = styled.div`
@@ -102,7 +110,7 @@ const SchedulePreviewCard  = ({ item }) => {
       <InfoSection>
       <InfoBox>
         <DateRow>
-          <Typography variant="h4" color={Color.MC1} style={{ fontWeight: "bold" }}>
+          <Typography variant="h3" color={Color.MC1} style={{ fontWeight: "bold" }}>
             {item.calenderDay}
           </Typography>
           <DdayBadge startDate={item.eventStartdate} endDate={item.eventEnddate} />
