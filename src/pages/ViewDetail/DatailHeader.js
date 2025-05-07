@@ -5,8 +5,15 @@ import Typography from "../../components/Typography/Typography";
 import Button from "../../components/Button/Button";
 import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faMapMarkerAlt, faUser, faWonSign } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarAlt,
+  faMapMarkerAlt,
+  faUser,
+  faWonSign,
+  faBookmark,
+} from "@fortawesome/free-solid-svg-icons";
 import CategoryChip from "../../components/CategoryChip/CategoryChip";
+import { postToggleEventLike } from "../../api/interaction/event/like";
 
 const InfoBox = styled.div`
   display: flex;
@@ -22,6 +29,7 @@ const InfoBox = styled.div`
 const PosterWrapper = styled.div`
   position: relative;
   flex-basis: 55%;
+  margin-top: 8px;
 `;
 
 const StyledIcon = styled(FontAwesomeIcon)`
@@ -47,13 +55,23 @@ const CloseTextButton = styled.button`
 const PosterImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain;
   border-radius: 10px;
+  //object-fit: contain;
   background-color: rgba(255, 255, 255, 0.7);
 
   @media (min-width: 768px) {
     aspect-ratio: 3 / 4;
   }
+`;
+
+const BookmarkIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  font-size: 40px;
+  top: -5px;
+  right: 15px;
+  cursor: pointer;
+  z-index: 10;
+  color: ${({ isliked }) => (isliked ? Color.MC1 : Color.BC3)};
 `;
 
 const InfoContent = styled.div`
@@ -88,7 +106,7 @@ const InfoCard = styled.div`
   gap: 10px;
 
   @media (min-width: 768px) {
-    padding: 30px 0 30px ;
+    padding: 30px 0 30px;
     margin: 0 auto;
   }
 `;
@@ -145,6 +163,30 @@ const ModalImage = styled.img`
 
 const DetailHeader = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLiked, setIsLiked] = useState(data.isLiked);
+  const [likeCount, setLikeCount] = useState(data.likeCount || 0);
+
+  const handleBookmarkClick = async () => {
+    const prevLiked = isLiked;
+    const newLiked = !prevLiked;
+    const newCount = newLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+
+    setIsLiked(newLiked);
+    setLikeCount(newCount);
+
+    try {
+      const result = await postToggleEventLike(data.eventId);
+      if (result !== "SUCCESS") {
+        setIsLiked(prevLiked);
+        setLikeCount(likeCount);
+      }
+    } catch (err) {
+      console.error("북마크 토글 실패, 롤백", err);
+      setIsLiked(prevLiked);
+      setLikeCount(likeCount);
+    }
+  };
+
   return (
     <>
       <InfoBox>
@@ -156,9 +198,13 @@ const DetailHeader = ({ data }) => {
               onClick={() => setIsModalOpen(true)}
               style={{ cursor: "pointer" }}
             />
+            <BookmarkIcon
+              icon={faBookmark}
+              isliked={isLiked}
+              onClick={handleBookmarkClick}
+            />
           </div>
         </PosterWrapper>
-
 
         <InfoContent>
           <div>
@@ -190,7 +236,6 @@ const DetailHeader = ({ data }) => {
                 <ValueText>{data.isFree ? "무료" : data.fee || "정보 없음"}</ValueText>
               </InfoRow>
             </InfoCard>
-
           </div>
 
           <StyledHomeButton
@@ -209,10 +254,8 @@ const DetailHeader = ({ data }) => {
             <CloseTextButton onClick={() => setIsModalOpen(false)}>닫기</CloseTextButton>
             <ModalImage src={data.imageUrl} />
           </ModalContent>
-
         </ModalOverlay>
       )}
-
     </>
   );
 };

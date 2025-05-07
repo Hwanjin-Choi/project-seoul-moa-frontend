@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Banner from "../../assets/img/Mypage_View1.png";
 import MobileLayout from "../../components/Layout/MobileLayout";
@@ -39,6 +40,7 @@ const Section = styled.div`
 
 const Mypage = () => {
   const state = useMypage();
+  const navigate = useNavigate();
   const [scheduleList, setScheduleList] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [past, setPast] = useState([]);
@@ -47,6 +49,13 @@ const Mypage = () => {
   const { user, loading } = useUserFetch();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login-page");
+    }
+  }, [loading, user, navigate]);
+
   const {
     reviews: reviewList,
     refetchReviews,
