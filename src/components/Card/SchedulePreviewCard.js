@@ -3,13 +3,43 @@ import Typography from "../../components/Typography/Typography";
 import { Color } from "../../styles/colorsheet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import DdayBadge from "../Badge/DdayBadge";
+
+const CarouselWrapper = styled.div`
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 15px;
+  padding: 10px 0;
+  -ms-overflow-style: auto;
+  scrollbar-width: auto;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${Color.BC4};
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+`;
 
 const Card = styled.div`
+  flex: 0 0 100%;
+  scroll-snap-align: start;
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   overflow: hidden;
-  padding: 16px;
+`;
+
+const InfoSection = styled.div`
   display: flex;
+  padding: 16px;
+  align-items: flex-start;
   gap: 16px;
 `;
 
@@ -19,6 +49,16 @@ const InfoBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+
+const Title = styled(Typography)`
+  white-space: normal;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Poster = styled.img`
@@ -35,15 +75,6 @@ const DateRow = styled.div`
   gap: 10px;
 `;
 
-const DdayTag = styled.span`
-  background-color: ${Color.MC1};
-  color: white;
-  padding: 2px 10px;
-  font-size: 12px;
-  border-radius: 9999px;
-  font-weight: 600;
-`;
-
 const InfoRow = styled.div`
   display: flex;
   align-items: center;
@@ -57,26 +88,19 @@ const StyledIcon = styled(FontAwesomeIcon)`
   flex-shrink: 0;
 `;
 
-const Title = styled(Typography)`
-  white-space: normal;
-  overflow-wrap: break-word;
-`;
-
 const SchedulePreviewCard  = ({ item }) => {
   if (!item) return null;
-
-  const today = new Date();
-  const targetDate = new Date(item.calenderDay);
-  const dday = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+  const formatDate = (dateStr) => dateStr?.split("T")[0] || "";
 
   return (
     <Card>
+      <InfoSection>
       <InfoBox>
         <DateRow>
           <Typography variant="h4" color={Color.MC1} style={{ fontWeight: "bold" }}>
             {item.calenderDay}
           </Typography>
-          <DdayTag>D-{dday}</DdayTag>
+          <DdayBadge startDate={item.eventStartdate} endDate={item.eventEnddate} />
         </DateRow>
         <Title variant="h3" style={{ fontWeight: 700 }}>
           {item.eventTitle}
@@ -84,7 +108,7 @@ const SchedulePreviewCard  = ({ item }) => {
         <InfoRow>
           <StyledIcon icon={faCalendarAlt} />
           <Typography variant="h6" color={Color.BC3}>
-            {item.eventStartdate} ~ {item.eventEnddate}
+            {formatDate(item.eventStartdate)} ~ {formatDate(item.eventEnddate)}
           </Typography>
         </InfoRow>
         <InfoRow>
@@ -94,9 +118,18 @@ const SchedulePreviewCard  = ({ item }) => {
           </Typography>
         </InfoRow>
       </InfoBox>
-      <Poster src={item.eventImageurl} alt={item.eventTitle} />
+        <Poster src={item.eventImageurl} alt={item.eventTitle} />
+      </InfoSection>
     </Card>
   );
 };
 
-export default SchedulePreviewCard ;
+export const SchedulePreviewCarousel = ({ items = [] }) => (
+  <CarouselWrapper>
+    {items.filter(Boolean).map((item, idx) => (
+      <SchedulePreviewCard key={idx} item={item} />
+    ))}
+  </CarouselWrapper>
+);
+
+export default SchedulePreviewCarousel;

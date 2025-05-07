@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 import Typography from "../../components/Typography/Typography";
+import { useNavigate } from "react-router-dom";
 
 const CarouselWrapper = styled.div`
   overflow-x: auto;
@@ -60,6 +61,11 @@ const GradientOverlay = styled.div`
 const AutoCarousel = ({ items }) => {
     const carouselRef = useRef(null);
     const [current, setCurrent] = useState(0);
+    const navigate = useNavigate();
+
+  const handleClick = (eventId) => {
+    navigate(`/view-detail-page/${eventId}`);
+  };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -81,7 +87,7 @@ const AutoCarousel = ({ items }) => {
         <>
             <CarouselWrapper ref={carouselRef}>
                 {items.map((item, idx) => (
-                    <Slide key={idx}>
+                    <Slide key={idx} onClick={() => handleClick(item.eventId)}>
                         {item.image && (
                             <img
                                 src={item.image}
