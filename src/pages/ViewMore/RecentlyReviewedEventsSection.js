@@ -1,118 +1,175 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { getRecentlyReviewedEvents } from "../../api/event/recently/reviewed";
 import { postToggleEventLike } from "../../api/interaction/event/like";
 
-import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard"; // 카드 컴포넌트 경로 가정
-import styled from "styled-components"; // 스타일 컴포넌트 사용 시
-import Button from "../../components/Button/Button";
+import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard";
+import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 
-const UpcomingEventsContainer = styled.div`
+// ReviewedEventsContainer, ReviewList, LoadingIndicator, EmptyStateMessage styled-components는 동일하게 유지됩니다.
+const ReviewedEventsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  height: 100%;
   background-color: white;
-  border-radius: 10px;
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+  @media (min-width: 769px) {
+    padding: 0;
+  }
+`;
+
+const ReviewList = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 2.5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  @media (min-width: 769px) {
+    padding-right: 5px;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
 `;
 
 const LoadingIndicator = styled.div`
   text-align: center;
-  padding: 8px 16px;
+  padding: 16px;
   color: ${Color.MC1};
   font-weight: 700;
-`;
-
-const ScrollableEventListContainer = styled.div`
-  max-height: 800px;
-  overflow-y: auto;
-
-  padding-right: 5px;
-
-  /* 스크롤바 디자인 (선택 사항) */
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-  }
-  @media (max-width: 769px) {
-    max-height: 400px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 `;
 
 const EmptyStateMessage = styled.div`
   text-align: center;
-  padding: 2rem 1rem;
-  min-height: 100px;
+  padding: 32px 16px;
+  min-height: 150px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: ${Color.MC1};
-  font-weight: 700;
+  font-weight: 500;
+  height: 100%;
 `;
+
+// 한 번에 불러올 아이템 수
+const ITEMS_PER_PAGE = 7;
 
 const RecentlyReviewedEventsSection = () => {
   const [recentlyReviewedEventsField, setRecentlyReviewedEventsField] =
     useState([]);
-  const [limit, setLimit] = useState(3); // 초기 limit 값
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [totalCount, setTotalCount] = useState(0);
+  const [fetchLimitTracker, setFetchLimitTracker] = useState(ITEMS_PER_PAGE);
+  const isOpen = true; // 이 값이 동적으로 변경될 수 있다면 state 또는 props로 관리해야 합니다.
 
-  const fetchEventsByLimit = useCallback(
-    async (currentLimit, isLoadMore = false) => {
+  const observer = useRef();
+  const reviewListRef = useRef(null); // 스크롤 컨테이너 ref
+
+  const fetchRecentlyReviewedEvents = useCallback(
+    async (isInitialLoad = false) => {
       if (isLoading) return;
+      if (!isInitialLoad && !hasMore) return;
 
       setIsLoading(true);
+      const offset = isInitialLoad ? 0 : recentlyReviewedEventsField.length;
+
       const payload = {
-        offset: 0,
-        limit: currentLimit,
+        offset: offset,
+        limit: ITEMS_PER_PAGE,
+        isOpen: isOpen, // API 페이로드에 isOpen 포함
       };
 
       try {
-        console.log("API 요청 페이로드:", payload);
         const res = await getRecentlyReviewedEvents(payload);
-        console.log("API 응답:", res);
-
         if (res && res.data && Array.isArray(res.data.eventList)) {
           const newEvents = res.data.eventList;
-          setRecentlyReviewedEventsField(res.data.eventList);
-          setTotalCount(res.data.totalCount);
+          const totalCount = res.data.totalCount;
 
-          if (res.data.totalCount === currentLimit) {
-            setHasMore(true);
-          } else {
-            setHasMore(false);
+          setRecentlyReviewedEventsField((prevEvents) =>
+            isInitialLoad ? newEvents : [...prevEvents, ...newEvents]
+          );
+
+          if (newEvents.length > 0) {
+            setFetchLimitTracker((prevTracker) =>
+              isInitialLoad ? ITEMS_PER_PAGE : prevTracker + ITEMS_PER_PAGE
+            );
           }
+
+          const totalItemsLoaded = offset + newEvents.length;
+          setHasMore(totalItemsLoaded < totalCount);
         } else {
-          console.error("API 응답 형식이 올바르지 않습니다:", res);
           setHasMore(false);
         }
       } catch (error) {
-        console.error("이벤트 조회 중 오류 발생:", error);
+        console.error("이벤트 조회 중 오류 발생 (실시간 리뷰):", error);
         setHasMore(false);
       } finally {
         setIsLoading(false);
       }
     },
-    [isLoading, recentlyReviewedEventsField.length]
+    [isLoading, hasMore, isOpen, recentlyReviewedEventsField.length]
   );
+
   useEffect(() => {
-    fetchEventsByLimit(3, false);
+    setRecentlyReviewedEventsField([]);
+    setHasMore(true);
+    setFetchLimitTracker(ITEMS_PER_PAGE);
+    fetchRecentlyReviewedEvents(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]); // isOpen 값이 변경될 때마다 초기 로드를 다시 실행 (만약 isOpen이 동적이라면)
+
+  const handleLoadMore = useCallback(() => {
+    if (!isLoading && hasMore) {
+      fetchRecentlyReviewedEvents(false);
+    }
+  }, [isLoading, hasMore, fetchRecentlyReviewedEvents]);
+
+  const lastReviewElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasMore) {
+            handleLoadMore();
+          }
+        },
+        {
+          root: reviewListRef.current,
+          rootMargin: "0px 0px 100px 0px", // 기존 값 유지
+          threshold: 0.01,
+        }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore, handleLoadMore]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
   }, []);
 
-  const handleLoadMore = () => {
-    const newLimit = limit + 3;
-    setLimit(newLimit);
-    fetchEventsByLimit(newLimit, true);
-  };
-
-  // 좋아요 토글 핸들러
   const handleLikeToggle = async (eventId) => {
     const eventIndex = recentlyReviewedEventsField.findIndex(
       (event) => event.eventId === eventId
@@ -138,61 +195,70 @@ const RecentlyReviewedEventsSection = () => {
     );
 
     try {
-      // API 호출
       const res = await postToggleEventLike(eventId);
       if (res !== "SUCCESS") {
-        // 실패 시 롤백
-        console.error("Error occured during toggleLikeEvent, rolling back UI.");
         setRecentlyReviewedEventsField(originalEvents);
       }
     } catch (error) {
-      console.error(
-        "Error occured during toggleLikeEvent API call, rolling back UI.",
-        error
-      );
+      console.error("좋아요 토글 중 오류 발생 (실시간 리뷰):", error);
       setRecentlyReviewedEventsField(originalEvents);
     }
   };
 
   return (
-    <UpcomingEventsContainer>
-      {recentlyReviewedEventsField.length > 0 && (
-        <ScrollableEventListContainer>
-          {recentlyReviewedEventsField.map((item) => (
-            <NoBorderLandscapeCard
-              key={item.eventId}
-              eventId={item.eventId}
-              image={item.imageUrl}
-              title={item.title}
-              endDate={item.endDate}
-              startDate={item.startDate}
-              location={item.location}
-              // category가 객체일 수 있으므로 Optional Chaining 사용
-              category={item.categoryId?.name || "분류 없음"}
-              gu={item.gu}
-              isLiked={item.isLiked}
-              likeCount={item.likeCount}
-              onLikeToggle={() => handleLikeToggle(item.eventId)}
-            />
-          ))}
-        </ScrollableEventListContainer>
-      )}
-      {isLoading && <LoadingIndicator>로딩 중...</LoadingIndicator>}
-
-      {/* 더보기 버튼 (로딩 중 아닐 때, 더 로드할 게 있을 때, 이벤트가 하나라도 있을 때) */}
-      {!isLoading && hasMore && recentlyReviewedEventsField.length > 0 && (
-        <Button variant={"text"} onClick={handleLoadMore} disabled={isLoading}>
-          더보기
-        </Button>
-      )}
-
-      {/* 이벤트가 없고 로딩 중도 아닐 때 빈 상태 메시지 */}
-      {!isLoading && recentlyReviewedEventsField.length === 0 && (
+    <ReviewedEventsContainer>
+      {recentlyReviewedEventsField.length === 0 && !isLoading && !hasMore ? (
         <EmptyStateMessage>
-          최근의 리뷰가 작성된 이벤트가 없습니다.
+          최근 리뷰가 작성된 이벤트가 없습니다.
         </EmptyStateMessage>
+      ) : (
+        <ReviewList ref={reviewListRef}>
+          {recentlyReviewedEventsField.map((item, index) => {
+            if (recentlyReviewedEventsField.length === index + 1) {
+              return (
+                <div ref={lastReviewElementRef} key={item.eventId}>
+                  <NoBorderLandscapeCard
+                    eventId={item.eventId}
+                    image={item.imageUrl}
+                    title={item.title}
+                    endDate={item.endDate}
+                    startDate={item.startDate}
+                    location={item.location}
+                    category={item.categoryId?.name || "분류 없음"}
+                    gu={item.gu}
+                    isLiked={item.isLiked}
+                    likeCount={item.likeCount}
+                    onLikeToggle={() => handleLikeToggle(item.eventId)}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <NoBorderLandscapeCard
+                  key={item.eventId}
+                  eventId={item.eventId}
+                  image={item.imageUrl}
+                  title={item.title}
+                  endDate={item.endDate}
+                  startDate={item.startDate}
+                  location={item.location}
+                  category={item.categoryId?.name || "분류 없음"}
+                  gu={item.gu}
+                  isLiked={item.isLiked}
+                  likeCount={item.likeCount}
+                  onLikeToggle={() => handleLikeToggle(item.eventId)}
+                />
+              );
+            }
+          })}
+          {isLoading && (
+            <LoadingIndicator>
+              <span>로딩 중...</span>
+            </LoadingIndicator>
+          )}
+        </ReviewList>
       )}
-    </UpcomingEventsContainer>
+    </ReviewedEventsContainer>
   );
 };
 

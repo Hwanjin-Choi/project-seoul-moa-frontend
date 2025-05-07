@@ -61,17 +61,12 @@ const ConfirmButton = styled.button`
 // 모달 컴포넌트
 const PrivateRedirectionModal = ({ isOpen, onClose, message, onConfirm }) => {
   if (!isOpen) return null;
-
   return (
     // 스타일 컴포넌트 사용
     <ModalOverlay>
       <ModalContent>
-        <Message>{message}</Message> {/* 스타일링된 p 태그 사용 */}
-        <ConfirmButton onClick={onConfirm}>
-          로그인 페이지로 이동
-        </ConfirmButton>{" "}
-        {/* 스타일링된 button 사용 */}
-        {/* <button onClick={onClose}>닫기</button> // 필요시 닫기 버튼 추가 (별도 스타일링 필요) */}
+        <Message>{message}</Message>
+        <ConfirmButton onClick={onConfirm}>로그인</ConfirmButton>
       </ModalContent>
     </ModalOverlay>
   );

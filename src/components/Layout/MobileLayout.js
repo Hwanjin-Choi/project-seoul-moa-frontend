@@ -42,44 +42,30 @@ const NavigationWrapper = styled.div`
   left: 0;
   right: 0;
 `;
-/* const Logo = styled.img`
-  width: 30px;
-  height: 30px;
-  margin-left: 20px;
-  cursor: pointer;
-`;
-const HeaderContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-const Header = styled.header`
-  background-color: white;
-  padding: 10px 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-`; */
 
 const MobileLayout = ({ children }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true" ? true : false
+  );
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
   return (
     <LayoutWrapper>
-      <GlobalChatStyle /> {/* Apply global styles */}
+      <GlobalChatStyle />
       <BackHeader />
-      <FabButton onClick={toggleChat} aria-label="챗봇 열기">
-        <FontAwesomeIcon icon={faCommentDots} size="lg" /> {/* Use FA icon */}
-      </FabButton>
+      {isLoggedIn && (
+        <FabButton onClick={toggleChat} aria-label="챗봇 열기">
+          <FontAwesomeIcon icon={faCommentDots} size="lg" />
+        </FabButton>
+      )}
       {/* Chat Modal */}
       <Content>{children}</Content>
       <NavigationWrapper>
         <Navigation />
       </NavigationWrapper>
-      <ChatModal isOpen={isChatOpen} onClose={toggleChat} />
+      {isLoggedIn && <ChatModal isOpen={isChatOpen} onClose={toggleChat} />}
     </LayoutWrapper>
   );
 };

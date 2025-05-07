@@ -4,7 +4,7 @@ import apiClient from "./index";
 export const fetchWeatherForecast = async (gu) => {
   try {
     const res = await apiClient.get("/weather", {
-      params: { gu }
+      params: { gu },
     });
     if (res.data.status === "SUCCESS") {
       return res.data.data;

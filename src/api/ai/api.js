@@ -1,3 +1,5 @@
+import apiClient from "../chatbot";
+
 export const dummyApiResponse = {
   success: true,
   meta: {
@@ -55,4 +57,33 @@ export const dummyApiResponse = {
   ],
   result:
     "저는 당신이 우울한 상태라는 것을 알고 있습니다. 이런 상황에서는 미술전시회를 방문하는 것이 좋은 방법 중 하나일 수 있습니다. 서울시립 북서울미술관에서 2024 유휴공간 전시인 《멀리서 손바닥으로, 반짝》 전시회가 있습니다. 이 전시는 2024년 12월 17일부터 2025년 8월 17일까지 진행되며, 노원구에 위치한 북서울미술관에서 열립니다. 또한, 마포구립서강도서관에서는 4-5월 동안 어린이갤러리 전시가 열릴 예정이며, 이 역시 미술전시로 방문하실 수 있습니다. 이 두 전시 중 하나를 선택하여 방문하시면 새로운 환경과 예술 작품을 통해 마음을 치유하고 즐거운 시간을 보낼 수 있을 것입니다.",
+};
+
+export const postEventRecommendationChatbot = async (prompt) => {
+  try {
+    const serverResponse = await apiClient.post("/api/events", prompt);
+
+    if (
+      serverResponse &&
+      serverResponse.data.success &&
+      serverResponse.data.data &&
+      serverResponse.data.data.length > 0
+    ) {
+      return serverResponse.data;
+    } else {
+      console.error("Error extracting data from response:", serverResponse);
+      throw new Error(
+        serverResponse?.result ||
+          "챗봇으로부터 유효한 추천 데이터를 받지 못했습니다."
+      );
+    }
+  } catch (error) {
+    console.error(
+      "postEventRecommendationChatbot failed:",
+      error,
+      "Prompt:",
+      prompt
+    );
+    return []; // 또는 throw error;
+  }
 };

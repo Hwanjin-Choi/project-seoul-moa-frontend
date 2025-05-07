@@ -203,16 +203,13 @@ const BackHeader = () => {
   const navigate = useNavigate();
   const isDefaultPage = location.pathname === "/";
 
-  // --- 상태 관리 ---
-  // TODO: 실제 로그인 상태는 전역 상태 관리(Context API, Redux 등) 또는 props로 받아와야 합니다.
-  const [isLoggedIn] = useState(
+  const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem("isLoggedIn") === "true" ? true : false
   );
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [nickname] = useState(localStorage.getItem("nickname") || "");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  // --- 드롭다운 토글 핸들러 ---
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -230,9 +227,13 @@ const BackHeader = () => {
   // --- 로그아웃 핸들러 ---
   const handleLogout = async () => {
     const res = await logoutUser();
-    if (res.status === "SUCCESS") {
+    console.log(res);
+    if (res && res.status === "SUCCESS") {
       closeLogoutModal(); // 모달 닫기
+      setIsLoggedIn(false);
       navigate("/"); // 홈으로 이동
+    } else {
+      console.log("api client handling");
     }
   };
 
@@ -267,7 +268,6 @@ const BackHeader = () => {
       )}
 
       <LoginStatusWrapper ref={dropdownRef}>
-        {" "}
         {isLoggedIn ? (
           <>
             <NicknameDisplay onClick={toggleDropdown}>
@@ -291,7 +291,7 @@ const BackHeader = () => {
         isOpen={isLogoutModalOpen}
         onClose={closeLogoutModal}
         onConfirm={handleLogout}
-        message="정말로 로그아웃 하시겠습니까?" // 메시지는 필요에 따라 변경 가능
+        message="정말로 로그아웃 하시겠습니까?"
       />
     </BackHeaderContainer>
   );

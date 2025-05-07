@@ -18,11 +18,11 @@ const ChatModal = ({ isOpen, onClose }) => {
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
           <ModalTitle>
-            <FontAwesomeIcon icon={faCommentDots} /> {/* Use FA icon */}
+            <FontAwesomeIcon icon={faCommentDots} />
             서울 모아 도우미
           </ModalTitle>
           <CloseButton onClick={onClose} aria-label="챗봇 닫기">
-            <FontAwesomeIcon icon={faTimes} size="lg" /> {/* Use FA icon */}
+            <FontAwesomeIcon icon={faTimes} size="lg" />
           </CloseButton>
         </ModalHeader>
         <ChatInterface />

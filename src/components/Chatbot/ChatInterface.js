@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { MessageBubble, LoadingIndicator } from "./MessageBubble"; // Import MessageBubble and LoadingIndicator
 
-import { dummyApiResponse } from "../../api/ai/api";
+import { postEventRecommendationChatbot } from "../../api/ai/api";
 import {
   MessageListArea,
   InputArea,
@@ -52,7 +52,7 @@ const ChatInterface = () => {
   const handleSendMessage = useCallback(async () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput || isLoading) return;
-
+    console.log(trimmedInput, "from chatbot");
     const newUserMessage = {
       id: Date.now(),
       sender: "user",
@@ -63,13 +63,19 @@ const ChatInterface = () => {
     setInputValue("");
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate API delay
-
+    const prompt = {
+      prompt: trimmedInput,
+      limit: 2,
+      member_id: Number(localStorage.getItem("userId")),
+    };
+    console.log(prompt);
+    const response = await postEventRecommendationChatbot(prompt);
+    console.log(response, "check");
     const botResponse = {
       id: Date.now() + 1,
       sender: "bot",
       type: "response",
-      data: dummyApiResponse,
+      data: response,
     };
     setMessages((prev) => [...prev, botResponse]);
     setIsLoading(false);

@@ -1,117 +1,188 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { getUpcomingEvents } from "../../api/event/events";
 import { postToggleEventLike } from "../../api/interaction/event/like";
 
-import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard"; // 카드 컴포넌트 경로 가정
-import styled from "styled-components"; // 스타일 컴포넌트 사용 시
-import Button from "../../components/Button/Button";
+import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard";
+import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 
+// UpcomingEventsContainer, EventList, LoadingIndicator, EmptyStateMessage styled-components는 동일하게 유지됩니다.
+// ... (기존 styled-components 코드 생략)
 const UpcomingEventsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  height: 100%;
   background-color: white;
-  border-radius: 10px;
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+  @media (min-width: 769px) {
+    padding: 0;
+  }
+`;
+
+const EventList = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 2.5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  @media (min-width: 769px) {
+    padding-right: 5px;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
 `;
 
 const LoadingIndicator = styled.div`
   text-align: center;
-  padding: 8px 16px;
+  padding: 16px;
   color: ${Color.MC1};
   font-weight: 700;
-`;
-
-const ScrollableEventListContainer = styled.div`
-  max-height: 800px;
-  overflow-y: auto;
-
-  padding-right: 5px;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-  }
-  @media (max-width: 769px) {
-    max-height: 400px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 `;
 
 const EmptyStateMessage = styled.div`
   text-align: center;
-  padding: 2rem 1rem;
-  min-height: 100px;
+  padding: 32px 16px;
+  min-height: 150px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: ${Color.MC1};
-  font-weight: 700;
+  font-weight: 500;
+  height: 100%;
 `;
+
+// 한 번에 불러올 아이템 수
+const ITEMS_PER_PAGE = 7;
 
 function UpcomingEventsSection() {
   const [upcomingEventsField, setUpcomingEventsField] = useState([]);
-  const [limit, setLimit] = useState(3); // 초기 limit 값
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const isOpen = true;
+  const [fetchLimitTracker, setFetchLimitTracker] = useState(ITEMS_PER_PAGE); // 초기값은 첫 페이지 아이템 수
+  const isOpen = true; // 예시 값
 
-  const fetchEventsByLimit = useCallback(
-    async (currentLimit, isLoadMore = false) => {
-      if (isLoading) return;
+  const observer = useRef();
+  const eventListRef = useRef(null); // 스크롤 컨테이너 ref
+
+  const fetchEvents = useCallback(
+    async (isInitialLoad = false) => {
+      if (isLoading) return; // 로딩 중이면 중복 호출 방지
+      if (!isInitialLoad && !hasMore) return; // 더 이상 데이터가 없으면 호출 방지
 
       setIsLoading(true);
+
+      // offset 계산: 첫 로드면 0, 아니면 현재까지 로드된 아이템 수
+      const offset = isInitialLoad ? 0 : upcomingEventsField.length;
+
       const payload = {
         categoryId: JSON.parse(localStorage.getItem("categoryId")) || [],
-        offset: 0,
-        limit: currentLimit,
+        offset: offset,
+        limit: ITEMS_PER_PAGE, // API 요청 시 항상 고정된 수의 아이템 요청
         isOpen: isOpen,
       };
 
       try {
-        console.log("API 요청 페이로드:", payload);
         const res = await getUpcomingEvents(payload);
-        console.log("API 응답:", res);
-
+        console.log(res);
         if (res && res.data && Array.isArray(res.data.eventList)) {
           const newEvents = res.data.eventList;
-          setUpcomingEventsField(res.data.eventList);
+          const totalCount = res.data.totalCount;
 
-          if (newEvents.length < 3) {
-            setHasMore(false);
-          } else {
-            setHasMore(true);
+          setUpcomingEventsField((prevEvents) =>
+            isInitialLoad ? newEvents : [...prevEvents, ...newEvents]
+          );
+
+          // 새 이벤트가 실제로 추가되었을 때만 fetchLimitTracker를 업데이트합니다.
+          if (newEvents.length > 0) {
+            // 이 상태는 '지금까지 성공적으로 요청된 총 아이템 수'를 나타내도록 합니다.
+            // 첫 로드 시: ITEMS_PER_PAGE (예: 7)
+            // 다음 로드 시: 이전 값 + ITEMS_PER_PAGE (예: 7 + 7 = 14)
+            setFetchLimitTracker((prevTracker) =>
+              isInitialLoad ? ITEMS_PER_PAGE : prevTracker + ITEMS_PER_PAGE
+            );
           }
+
+          // hasMore 상태 업데이트: 현재까지 불러온 아이템 수와 전체 아이템 수를 비교
+          const totalItemsLoaded = offset + newEvents.length;
+          setHasMore(totalItemsLoaded < totalCount);
         } else {
-          console.error("API 응답 형식이 올바르지 않습니다:", res);
+          // API 응답 형식이 다르거나 데이터가 없는 경우
           setHasMore(false);
         }
       } catch (error) {
-        console.error("이벤트 조회 중 오류 발생:", error);
-        setHasMore(false);
+        console.error("이벤트 조회 중 오류 발생 (다가오는 문화행사):", error);
+        setHasMore(false); // 에러 발생 시 더 이상 시도하지 않도록 설정
       } finally {
         setIsLoading(false);
       }
     },
-    [isLoading, isOpen, upcomingEventsField.length]
+
+    [isLoading, hasMore, isOpen, upcomingEventsField.length]
   );
+
+  // 초기 데이터 로드 (컴포넌트 마운트 시 또는 isOpen 같은 주요 필터 변경 시)
   useEffect(() => {
-    fetchEventsByLimit(3, false);
+    setUpcomingEventsField([]); // 필터 변경 시 기존 목록 초기화
+    setHasMore(true); // 다시 로드 시작이므로 hasMore 초기화
+    setFetchLimitTracker(ITEMS_PER_PAGE); // fetchLimitTracker도 초기화
+    fetchEvents(true); // isInitialLoad = true 로 첫 데이터 요청
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]); // isOpen 값이 변경될 때마다 초기 로드를 다시 실행
+
+  const handleLoadMore = useCallback(() => {
+    // isLoading, hasMore 상태는 fetchEvents 내부에서도 체크하지만,
+    // 여기서 한 번 더 체크하여 불필요한 함수 호출 자체를 줄일 수 있습니다.
+    if (!isLoading && hasMore) {
+      fetchEvents(false); // isInitialLoad = false 로 추가 데이터 요청
+    }
+  }, [isLoading, hasMore, fetchEvents]);
+
+  const lastEventElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasMore) {
+            handleLoadMore();
+          }
+        },
+        {
+          root: eventListRef.current, // 스크롤 감지 대상 컨테이너
+          rootMargin: "0px 0px 200px 0px",
+          threshold: 0.01,
+        }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore, handleLoadMore] // handleLoadMore가 의존성으로 추가됨
+  );
+
+  useEffect(() => {
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
   }, []);
 
-  const handleLoadMore = () => {
-    const newLimit = limit + 3;
-    setLimit(newLimit);
-    fetchEventsByLimit(newLimit, true);
-  };
-
-  // 좋아요 토글 핸들러
   const handleLikeToggle = async (eventId) => {
     const eventIndex = upcomingEventsField.findIndex(
       (event) => event.eventId === eventId
@@ -137,57 +208,67 @@ function UpcomingEventsSection() {
     );
 
     try {
-      // API 호출
       const res = await postToggleEventLike(eventId);
       if (res !== "SUCCESS") {
-        // 실패 시 롤백
-        console.error("Error occured during toggleLikeEvent, rolling back UI.");
         setUpcomingEventsField(originalEvents);
       }
     } catch (error) {
-      console.error(
-        "Error occured during toggleLikeEvent API call, rolling back UI.",
-        error
-      );
+      console.error("좋아요 토글 중 오류 발생:", error);
       setUpcomingEventsField(originalEvents);
     }
   };
 
   return (
     <UpcomingEventsContainer>
-      {upcomingEventsField.length > 0 && (
-        <ScrollableEventListContainer>
-          {upcomingEventsField.map((item) => (
-            <NoBorderLandscapeCard
-              key={item.eventId}
-              eventId={item.eventId}
-              image={item.imageUrl}
-              title={item.title}
-              endDate={item.endDate}
-              startDate={item.startDate}
-              location={item.location}
-              // category가 객체일 수 있으므로 Optional Chaining 사용
-              category={item.categoryId?.name || "분류 없음"}
-              gu={item.gu}
-              isLiked={item.isLiked}
-              likeCount={item.likeCount}
-              onLikeToggle={() => handleLikeToggle(item.eventId)}
-            />
-          ))}
-        </ScrollableEventListContainer>
-      )}
-      {isLoading && <LoadingIndicator>로딩 중...</LoadingIndicator>}
-
-      {/* 더보기 버튼 (로딩 중 아닐 때, 더 로드할 게 있을 때, 이벤트가 하나라도 있을 때) */}
-      {!isLoading && hasMore && upcomingEventsField.length > 0 && (
-        <Button variant={"text"} onClick={handleLoadMore} disabled={isLoading}>
-          더보기
-        </Button>
-      )}
-
-      {/* 이벤트가 없고 로딩 중도 아닐 때 빈 상태 메시지 */}
-      {!isLoading && upcomingEventsField.length === 0 && (
+      {upcomingEventsField.length === 0 && !isLoading && !hasMore ? (
         <EmptyStateMessage>다가오는 이벤트가 없습니다.</EmptyStateMessage>
+      ) : (
+        <EventList ref={eventListRef}>
+          {upcomingEventsField.map((item, index) => {
+            // 마지막 요소에 ref를 연결하여 IntersectionObserver가 감지하도록 설정
+            if (upcomingEventsField.length === index + 1) {
+              return (
+                <div ref={lastEventElementRef} key={item.eventId}>
+                  <NoBorderLandscapeCard
+                    eventId={item.eventId}
+                    image={item.imageUrl}
+                    title={item.title}
+                    endDate={item.endDate}
+                    startDate={item.startDate}
+                    location={item.location}
+                    category={item.categoryId?.name || "분류 없음"}
+                    gu={item.gu}
+                    isLiked={item.isLiked}
+                    likeCount={item.likeCount}
+                    onLikeToggle={() => handleLikeToggle(item.eventId)}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <NoBorderLandscapeCard
+                  key={item.eventId}
+                  eventId={item.eventId}
+                  image={item.imageUrl}
+                  title={item.title}
+                  endDate={item.endDate}
+                  startDate={item.startDate}
+                  location={item.location}
+                  category={item.categoryId?.name || "분류 없음"}
+                  gu={item.gu}
+                  isLiked={item.isLiked}
+                  likeCount={item.likeCount}
+                  onLikeToggle={() => handleLikeToggle(item.eventId)}
+                />
+              );
+            }
+          })}
+          {isLoading && (
+            <LoadingIndicator>
+              <span>로딩 중...</span>
+            </LoadingIndicator>
+          )}
+        </EventList>
       )}
     </UpcomingEventsContainer>
   );

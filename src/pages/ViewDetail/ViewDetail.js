@@ -56,7 +56,7 @@ const ViewDetail = ({ mapReady }) => {
   } = useReviewFetch(eventId);
 
   if (loading || !eventData) return <div>로딩 중...</div>;
-
+  console.log(eventData, "check from viewdetail");
   return (
     <MobileLayout>
       <Container>

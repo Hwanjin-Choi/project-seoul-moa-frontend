@@ -8,8 +8,16 @@ import { StyledEventCard, EventTitle, EventInfo } from "./styles"; // Import sty
 
 const EventCard = ({ event }) => {
   if (!event) return null;
+  const handleCardClick = () => {
+    const eventUrl = `/view-detail-page/${event.event_id}`;
+    if (eventUrl && eventUrl !== "#") {
+      window.open(eventUrl, "_blank", "noopener,noreferrer");
+    } else {
+      console.warn("Event URL is not defined or invalid.");
+    }
+  };
   return (
-    <StyledEventCard>
+    <StyledEventCard onClick={handleCardClick}>
       <EventTitle>{event.title}</EventTitle>
       <EventInfo>
         <FontAwesomeIcon icon={faMapMarkerAlt} />

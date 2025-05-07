@@ -276,11 +276,25 @@ export const StyledEventCard = styled.div`
   margin-bottom: 0.75rem;
   width: 100%;
   max-width: 350px; /* 데스크탑 최대 너비 */
+  transition:
+    transform 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out; /* 부드러운 전환 효과 */
+  cursor: pointer; /* 클릭 가능함을 나타내는 커서 */
+
+  &:hover {
+    transform: translateY(-5px); /* 위로 살짝 이동 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 강조 */
+  }
 
   /* 모바일 스타일 */
   @media (max-width: 768px) {
     padding: 0.75rem; /* 모바일 패딩 축소 */
     max-width: 100%; /* 모바일에서는 버블 너비에 맞춤 */
+
+    &:hover {
+      transform: none; /* 모바일에서는 떠오르는 효과 제거 (선택 사항) */
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* 모바일 기본 그림자 유지 (선택 사항) */
+    }
   }
 `;
 

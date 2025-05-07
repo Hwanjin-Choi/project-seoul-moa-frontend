@@ -72,6 +72,8 @@ const WeatherSection = ({ gu }) => {
       .catch(() => {});
   }, [gu]);
 
+  console.log(list, "check");
+
   return (
     <>
       <Typography variant="h6" style={{ textAlign: "center" }}>
