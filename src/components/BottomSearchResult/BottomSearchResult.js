@@ -61,7 +61,6 @@ const BottomSearchResult = ({
   // 이 컴포넌트 자체의 상태는 불필요
 
   const handleLikeToggle = async (event, eventId) => {
-    event.stopPropagation();
     const eventIndex = searchResult.findIndex(
       (event) => event.eventId === eventId
     );
