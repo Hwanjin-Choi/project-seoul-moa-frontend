@@ -1,0 +1,11 @@
+services:
+  seoul-moa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seoul-moa
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    env_file:
+      - .env.production
