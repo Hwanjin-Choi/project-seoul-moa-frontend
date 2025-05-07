@@ -214,7 +214,10 @@ const Mypage = () => {
             isOpen={state.isReviewModalOpen}
             setIsOpen={(value) => {
               state.setIsReviewModalOpen(value);
-              if (!value) refetchReviews();
+              if (!value) {
+                refetchReviews();
+                loadSchedules();
+              }
             }}
             modalTitle="나의 리뷰 모아보기"
             showHeader={true}
