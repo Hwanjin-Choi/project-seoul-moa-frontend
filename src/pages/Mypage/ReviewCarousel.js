@@ -4,6 +4,7 @@ import { Color } from "../../styles/colorsheet.js";
 import Button from "../../components/Button/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const CarouselWrapper = styled.div`
   display: flex;
@@ -37,6 +38,7 @@ const CarouselItem = styled.div`
   padding: 15px;
   gap: 10px;
   box-sizing: border-box;
+  height: 180px;
 `;
 
 const Thumb = styled.img`
@@ -54,6 +56,7 @@ const InfoBox = styled.div`
   justify-content: space-between;
   padding-right: 10px;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const Title = styled(Typography)`
@@ -80,51 +83,59 @@ const StyledIcon = styled(FontAwesomeIcon)`
   flex-shrink: 0;
 `;
 
-const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => (
-  <CarouselWrapper>
-    {reviewCreateData.map((event, idx) => (
-      <CarouselItem key={idx}>
-        <Thumb src={event.eventImageurl} />
-        <InfoBox>
-          <div>
-            <Typography
-              variant="h4"
-              color={Color.MC1}
-              style={{ margin: 5 }}
+const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => {
+  const navigate = useNavigate();
+
+  return (
+    <CarouselWrapper>
+      {reviewCreateData.map((event, idx) => (
+        <CarouselItem
+          key={idx}
+          
+        >
+          <Thumb src={event.eventImageurl} onClick={() => navigate(`/view-detail-page/${event.eventId}`)}
+          style={{ cursor: "pointer" }} />
+          <InfoBox>
+            <div>
+              <Typography
+                variant="h4"
+                color={Color.MC1}
+                style={{ margin: 5 }}
+              >
+                {event.calenderDay}
+              </Typography>
+              <Title variant="h3" style={{ margin: 5 }}>
+                {event.eventTitle}
+              </Title>
+
+              <InfoRow>
+                <StyledIcon icon={faCalendarAlt} />
+                <Typography variant="h6" color={Color.BC3}>
+                  {event.eventStartdate} ~ {event.eventEnddate}
+                </Typography>
+              </InfoRow>
+
+              <InfoRow>
+                <StyledIcon icon={faMapMarkerAlt} />
+                <Typography variant="h6" color={Color.BC3}>
+                  {event.eventLocation}
+                </Typography>
+              </InfoRow>
+            </div>
+
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => onReviewClick(event)}
             >
-              {event.calenderDay}
-            </Typography>
-            <Title variant="h3" style={{ margin: 5 }}>
-              {event.eventTitle}
-            </Title>
+              리뷰작성
+            </Button>
+          </InfoBox>
 
-            <InfoRow>
-              <StyledIcon icon={faCalendarAlt} />
-              <Typography variant="h6" color={Color.BC3}>
-              {event.eventStartdate} ~ {event.eventEnddate}
-              </Typography>
-            </InfoRow>
-
-            <InfoRow>
-              <StyledIcon icon={faMapMarkerAlt} />
-              <Typography variant="h6" color={Color.BC3}>
-                {event.eventLocation}
-              </Typography>
-            </InfoRow>
-          </div>
-
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() => onReviewClick(event)}
-          >
-            리뷰작성
-          </Button>
-        </InfoBox>
-
-      </CarouselItem>
-    ))}
-  </CarouselWrapper>
-);
+        </CarouselItem>
+      ))}
+    </CarouselWrapper>
+  )
+};
 
 export default ReviewCarousel;

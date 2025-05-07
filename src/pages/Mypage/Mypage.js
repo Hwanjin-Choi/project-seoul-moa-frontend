@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Banner from "../../assets/img/Mypage_View1.png";
 import MobileLayout from "../../components/Layout/MobileLayout";
@@ -16,7 +17,6 @@ import { ScheduleCarousel } from "./ScheduleCard.js";
 import ReserveEditModal from "./ReserveEditModal.js";
 import ReserveDeleteModal from "./ReserveDeleteModal .js";
 import EditCategoryModal from "./EditCategoryModal.js";
-import { EventData } from "./data";
 import useUserFetch from "../../api/UserFetch";
 import useMyReviewFetch from "../../hooks/useMyReviewFetch";
 import { fetchUserScheduleList } from "../../api/userScheduleList";
@@ -38,27 +38,9 @@ const Section = styled.div`
   }
 `;
 
-const splitEventDataByDate = (data) => {
-  const today = new Date();
-  const upcoming = [];
-  const past = [];
-
-  data.forEach((item) => {
-    const eventDate = new Date(item.calenderDay);
-    if (isNaN(eventDate)) return;
-
-    if (eventDate > today) {
-      upcoming.push(item);
-    } else {
-      past.push(item);
-    }
-  });
-
-  return { upcoming, past };
-};
-
 const Mypage = () => {
   const state = useMypage();
+  const navigate = useNavigate();
   const [scheduleList, setScheduleList] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [past, setPast] = useState([]);
@@ -67,8 +49,16 @@ const Mypage = () => {
   const { user, loading } = useUserFetch();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login-page");
+    }
+  }, [loading, user, navigate]);
+
   const {
     reviews: reviewList,
+    refetchReviews,
     fetchMoreReviews,
     hasMore,
     loading: reviewLoading,
@@ -98,13 +88,12 @@ const Mypage = () => {
 
   const handleEditSave = async (newDate) => {
     try {
-      const newDateISO = new Date(newDate).toISOString(); // 정확한 ISO 포맷
+      const newDateISO = new Date(newDate).toISOString();
       await updateUserSchedule({
         scheduleId: editItem.scheduleId,
         scheduleTime: newDateISO,
       });
 
-      // 상태 갱신
       setScheduleList((prev) =>
         prev.map((item) =>
           item.scheduleId === editItem.scheduleId
@@ -192,19 +181,23 @@ const Mypage = () => {
           </Section>
         )}
 
-        {past.length > 0 && (
+        {past.filter(s => !s.event.hasReview).length > 0 && (
           <Section>
             <Typography variant="h3">리뷰 작성하기</Typography>
             <ReviewCarousel
-              reviewCreateData={past.map(s => ({
-                ...s,
-                calenderDay: s.scheduleTime?.slice(0, 10),
-                eventTitle: s.event.title,
-                eventImageurl: s.event.imageUrl,
-                eventStartdate: s.event.startDate?.slice(0, 10),
-                eventEnddate: s.event.endDate?.slice(0, 10),
-                eventLocation: s.event.location,
-              }))}
+              reviewCreateData={past
+                .filter(s => !s.event.hasReview)
+                .map(s => ({
+                  ...s,
+                  eventId: s.event.eventId,
+                  calenderDay: s.scheduleTime?.slice(0, 10),
+                  eventTitle: s.event.title,
+                  eventImageurl: s.event.imageUrl,
+                  eventStartdate: s.event.startDate?.slice(0, 10),
+                  eventEnddate: s.event.endDate?.slice(0, 10),
+                  eventLocation: s.event.location,
+                }))
+              }
               onReviewClick={(item) => {
                 state.setSelectedCreateItem(item);
                 state.setCreateContent("");
@@ -219,7 +212,13 @@ const Mypage = () => {
             userName={user?.nickname || "회원"}
             reviewData={reviewList}
             isOpen={state.isReviewModalOpen}
-            setIsOpen={state.setIsReviewModalOpen}
+            setIsOpen={(value) => {
+              state.setIsReviewModalOpen(value);
+              if (!value) {
+                refetchReviews();
+                loadSchedules();
+              }
+            }}
             modalTitle="나의 리뷰 모아보기"
             showHeader={true}
             showEdit={true}
@@ -238,10 +237,11 @@ const Mypage = () => {
         <EditReviewModal {...state} />
         <CreateReviewModal
           {...state}
-          onSuccess={() => {
+          onReviewCreated={() => {
             state.setSelectedCreateItem(null);
             state.setCreateContent("");
-            fetchMoreReviews();
+            refetchReviews();
+            loadSchedules();
           }}
         />
       </Container>

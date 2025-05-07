@@ -11,6 +11,16 @@ const useUserFetch = () => {
         const res = await apiClient.get("/members/detail/me");
         if (res.data.status === "SUCCESS") {
           const data = res.data.data;
+
+          // categoryId 리스트 추출
+          const categoryIds = Array.isArray(data.memberCategories)
+            ? data.memberCategories.map(cat => cat.categoryId)
+            : [];
+
+          // localStorage에 저장
+          localStorage.setItem("categoryId", JSON.stringify(categoryIds));
+          localStorage.removeItem("memberCategoryIds");
+
           setUser({
             nickname: data.nickname,
             age: data.age,
