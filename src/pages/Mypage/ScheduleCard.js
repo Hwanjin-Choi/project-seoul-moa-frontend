@@ -145,10 +145,10 @@ const ScheduleCard = ({ item, onEditClick, onDeleteClick }) => {
 
       <ButtonSection>
         <StyledButton variant="primary" onClick={() => onEditClick?.(item)}>
-          예약 수정
+          일정 수정
         </StyledButton>
         <StyledButton variant="secondary" onClick={() => onDeleteClick?.(item)}>
-          예약 취소
+          일정 취소
         </StyledButton>
       </ButtonSection>
     </Card>

@@ -202,7 +202,10 @@ const Mypage = () => {
             userName={user?.nickname || "회원"}
             reviewData={reviewList}
             isOpen={state.isReviewModalOpen}
-            setIsOpen={state.setIsReviewModalOpen}
+            setIsOpen={(value) => {
+              state.setIsReviewModalOpen(value);
+              if (!value) refetchReviews();
+            }}
             modalTitle="나의 리뷰 모아보기"
             showHeader={true}
             showEdit={true}
