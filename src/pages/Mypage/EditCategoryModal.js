@@ -8,6 +8,8 @@ import CategoryButton from "../../components/CategoryButton/CategoryButton";
 
 import { fetchCategories } from "../../api/category"
 import { updateUserInterests } from "../../api/user";
+import { getIconForCategory } from "../../components/CategoryButton/categoryIcon";
+
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -101,16 +103,20 @@ const EditCategoryModal = ({ isOpen, onClose, selected, setSelected, userInfo })
       const selectedCategoryIds = categoryList
         .filter((cat) => selected.includes(cat.name))
         .map((cat) => cat.categoryId);
+  
       if (!userInfo) {
         alert("유저 정보를 찾을 수 없습니다.");
         return;
       }
+  
       if (selectedCategoryIds.length === 0) {
         alert("하나 이상의 관심사를 선택해주세요.");
         return;
       }
+  
       await updateUserInterests(userInfo, selectedCategoryIds);
-      alert("관심사가 저장되었습니다.");
+      localStorage.setItem("categoryId", JSON.stringify(selectedCategoryIds));
+    localStorage.removeItem("memberCategoryIds");
       onClose();
     } catch (err) {
       console.error("저장 중 오류:", err);
@@ -134,6 +140,7 @@ const EditCategoryModal = ({ isOpen, onClose, selected, setSelected, userInfo })
               <CategoryButton
                 key={field.categoryId}
                 category={field.name}
+                icon={getIconForCategory(field.categoryId)}
                 isClicked={selected.includes(field.name)}
                 onClick={() => toggleCategory(field.name)}
               />
