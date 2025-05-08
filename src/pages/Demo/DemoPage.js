@@ -18,6 +18,7 @@ const DemoPage = () => {
   const { carouselItems, error } = useFetchUpcomingEvents();
   const { userSchedules } = useFetchUserSchedules();
   const { hotEvents } = useFetchHotEvents();
+  const nickname = localStorage.getItem("nickname") || null;
 
   const handleMoreClick = () => {
     navigate("/my-page");
@@ -25,11 +26,22 @@ const DemoPage = () => {
 
   return (
     <MobileLayout>
+      <HeadlineWrapper>
+        <Typography variant="h2" style={{ fontWeight: "bold", lineHeight: 1.4 }}>
+          {nickname ? (
+            <>
+              <HighlightText>{nickname}</HighlightText>님이 좋아할만한 행사
+            </>
+          ) : (
+            "관심있을만한 행사"
+          )}
+        </Typography>
+      </HeadlineWrapper>
       <MainPostimg>
         {error ? <div style={{ color: "red" }}>{error}</div> : <AutoCarousel items={carouselItems} />}
       </MainPostimg>
       <Container>
-      <Section>
+        <Section>
           <TitleRow>
             <Typography variant="h3">다가오는 나의 일정</Typography>
             <MoreLink onClick={handleMoreClick}>더보기</MoreLink>
@@ -104,4 +116,18 @@ const MoreLink = styled.span`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const HeadlineWrapper = styled.div`
+  padding-top: 5px;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    padding: 20px 0 10px;
+  }
+`;
+
+const HighlightText = styled.span`
+  color: ${Color.MC1};
+  font-weight: 700;
 `;

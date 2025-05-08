@@ -30,6 +30,8 @@ export const useFetchUpcomingEvents = () => {
           enddate: event.endDate?.split("T")[0],
           title: event.title,
           eventId: event.eventId,
+          categoryName: event.categoryName,
+          gu: event.gu,
         }));
         setCarouselItems(events);
       } catch (err) {

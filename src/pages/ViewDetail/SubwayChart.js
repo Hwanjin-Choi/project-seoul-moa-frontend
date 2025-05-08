@@ -24,6 +24,24 @@ const Tag = styled.span`
   border-radius: 10px;
 `;
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        backgroundColor: "#fff",
+        padding: "5px 10px",
+        border: "1px solid #ccc",
+        borderRadius: "5px",
+        fontSize: "12px",
+      }}>
+        <p>{label}</p>
+        <p>예상 이용자 수 : {payload[0].value}명</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
   return (
     <>
@@ -44,11 +62,8 @@ const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
                 </text>
               )}
             />
-            <Tooltip />
-            <Bar
-              dataKey="count"
-              radius={[10, 10, 0, 0]}
-            >
+            <Tooltip content={<CustomTooltip />} />
+            <Bar dataKey="count" radius={[10, 10, 0, 0]}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
