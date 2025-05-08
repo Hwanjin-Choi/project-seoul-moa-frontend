@@ -7,7 +7,7 @@ import MobileLayout from "../../components/Layout/MobileLayout";
 import Button from "../../components/Button/Button";
 import AuthForm from "../../components/AuthForm/AuthForm";
 
-import { loginUser } from "../../api/login"; // 전하의 API 호출 함수
+import { loginUser } from "../../api/login";
 
 const LoginContainer = styled.div`
   display: flex;

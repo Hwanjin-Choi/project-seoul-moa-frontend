@@ -14,18 +14,18 @@ const DropdownContainer = styled.div`
 
 const Label = styled.label`
   display: block;
-  /* margin-bottom: 5px; */ /* DropdownContainer에서 align-items를 사용하므로 불필요할 수 있습니다 */
+
   font-weight: bold;
   font-size: 0.9rem;
-  width: 50px; /* ❗️ 고정 너비 설정 (예: 75px) - "카테고리"가 들어갈 충분한 너비 */
+  width: 50px;
   margin-right: 10px;
   white-space: nowrap;
-  flex-shrink: 0; /* ❗️ 라벨 너비 축소 방지 */
+  flex-shrink: 0;
 `;
 
 const FakeDropdownButton = styled.button`
-  flex-grow: 1; /* 남은 공간 차지 */
-  min-width: 0; /* ❗️ 내용이 길 때 버튼이 넘치는 것 방지 */
+  flex-grow: 1;
+  min-width: 0;
   padding: 10px 15px;
   border: 1px solid #adb5bd;
   border-radius: 25px;
@@ -64,8 +64,8 @@ const DropdownList = styled.ul`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 `;
 const DropdownItem = styled.li`
-  display: flex; // 아이콘과 텍스트 정렬을 위해 flex 사용
-  justify-content: space-between; // 텍스트와 체크 아이콘 분리
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 10px 15px;
   cursor: pointer;
@@ -106,7 +106,6 @@ const NoOptionsIndicator = styled(DropdownItem).attrs({
   className: "disabled",
 })``;
 
-// --- 공용 드롭다운 컴포넌트 ---
 function DynamicDropdown({
   label, // 라벨 텍스트
   options = [], // 드롭다운 옵션 목록 (배열)
@@ -136,7 +135,7 @@ function DynamicDropdown({
             );
             return foundOption ? getOptionLabel(foundOption) : null;
           })
-          .filter((label) => label !== null); // 혹시 못 찾은 경우(null)는 제외합니다.
+          .filter((label) => label !== null);
         if (selectedLabels.length > 0) {
           return selectedLabels.join(", ");
         } else {
@@ -221,10 +220,6 @@ function DynamicDropdown({
         ) // 선택된 '값'에 해당하는 '레이블' 찾기
       : placeholder;
 
-  // 옵션이 객체 배열인데 값으로 원시값(id 등)이 선택된 경우, 해당 객체를 찾아 레이블을 표시해야 함
-  // 좀 더 견고하게 하려면 selectedOption 자체가 객체이거나, 값으로 해당 객체를 찾을 수 있어야 함.
-  // 여기서는 selectedOption이 값(value)일 수 있다는 가정 하에 find를 사용함.
-
   return (
     <DropdownContainer ref={dropdownRef}>
       {label && <Label htmlFor={id}>{label}</Label>}
@@ -232,7 +227,6 @@ function DynamicDropdown({
         id={id}
         onClick={handleDropdownToggle}
         disabled={loading || !!error}
-        // 값 존재 여부 판단 로직 수정 (다중 선택 시 배열 길이 확인)
         hasValue={
           isMultiSelect
             ? Array.isArray(selectedOption) && selectedOption.length > 0

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import InfiniteScroll from "react-infinite-scroll-component"; // 라이브러리 임포트
+import InfiniteScroll from "react-infinite-scroll-component";
 import { postToggleEventLike } from "../../api/interaction/event/like";
 import { getSavedEvents } from "../../api/event/liked";
 import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBorderLandscapeCard";
 import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 
-// Styled-components (SavedEventsContainer, EventList, LoadingIndicator, EmptyStateMessage)는 기존과 동일
 const SavedEventsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -67,16 +66,17 @@ const EmptyStateMessage = styled.div`
   height: 100%;
 `;
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 10;
 
 const SavedEventsSection = () => {
   const [savedEventsField, setSavedEventsField] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [currentCategoryId, setCurrentCategoryId] = useState([]);
   const isOpen = true;
   const mountedRef = useRef(false);
+  const loadMoreItemsActionRef = useRef(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -88,19 +88,17 @@ const SavedEventsSection = () => {
     };
   }, []);
 
-  const fetchSavedEvents = useCallback(
-    async (isInitialLoad = false) => {
+  const fetchPageEvents = useCallback(
+    async (pageToFetch) => {
       if (!mountedRef.current) return;
-      if (isLoading && !isInitialLoad) return;
-      if (!isInitialLoad && !hasMore) return;
+      if (isLoading && currentPage === pageToFetch + 1 && pageToFetch !== 0)
+        return;
+      if (pageToFetch > 0 && !hasMore) return;
 
       setIsLoading(true);
-      const currentOffset = isInitialLoad ? 0 : savedEventsField.length;
-      console.log(currentOffset, "check from saved");
-
       const payload = {
         categoryId: currentCategoryId,
-        offset: currentOffset,
+        offset: pageToFetch,
         limit: ITEMS_PER_PAGE,
         isOpen: isOpen,
       };
@@ -111,25 +109,26 @@ const SavedEventsSection = () => {
 
         if (res && res.data && Array.isArray(res.data.eventList)) {
           const newEvents = res.data.eventList;
-          const totalCount = res.data.totalCount;
+          const totalPages = res.data.totalPages;
 
           setSavedEventsField((prevEvents) =>
-            isInitialLoad ? newEvents : [...prevEvents, ...newEvents]
+            pageToFetch === 0 ? newEvents : [...prevEvents, ...newEvents]
           );
 
-          const totalItemsLoaded = currentOffset + newEvents.length;
-          setHasMore(totalItemsLoaded < totalCount);
-          if (isInitialLoad) {
-            setPage(1);
-          } else if (newEvents.length > 0) {
-            // 새 이벤트가 있을 때만 페이지 증가
-            setPage((prevPage) => prevPage + 1);
+          const morePagesExistBasedOnResponse = pageToFetch < totalPages - 1;
+          setHasMore(morePagesExistBasedOnResponse);
+
+          if (newEvents.length > 0) {
+            setCurrentPage(pageToFetch + 1);
+          } else {
+            setHasMore(false);
           }
         } else {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("이벤트 조회 중 오류 발생 (저장된 문화행사):", error);
+        if (!mountedRef.current) return;
+        console.error("SavedEventsSection - 이벤트 조회 중 오류 발생:", error);
         setHasMore(false);
       } finally {
         if (mountedRef.current) {
@@ -137,48 +136,71 @@ const SavedEventsSection = () => {
         }
       }
     },
-    [isLoading, hasMore, isOpen, currentCategoryId, savedEventsField.length]
+    [
+      isOpen,
+      currentCategoryId,
+      setIsLoading,
+      setSavedEventsField,
+      setHasMore,
+      setCurrentPage,
+      getSavedEvents,
+      hasMore,
+      isLoading,
+      currentPage,
+    ]
   );
 
   useEffect(() => {
+    loadMoreItemsActionRef.current = () => {
+      if (!isLoading && hasMore && mountedRef.current) {
+        fetchPageEvents(currentPage);
+      }
+    };
+  }, [isLoading, hasMore, currentPage, fetchPageEvents]);
+
+  useEffect(() => {
+    if (!mountedRef.current) return;
     setSavedEventsField([]);
+    setCurrentPage(0);
     setHasMore(true);
-    setPage(0);
-    fetchSavedEvents(true);
+
+    const storedCategoryId =
+      JSON.parse(localStorage.getItem("categoryId")) || [];
+    if (
+      currentCategoryId.length > 0 ||
+      storedCategoryId.length > 0 ||
+      !localStorage.getItem("categoryId")
+    ) {
+      fetchPageEvents(0);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, currentCategoryId]);
 
   const handleLikeToggle = async (eventId) => {
-    // 좋아요 취소 시 목록에서 제거하는 로직은 유지
     const eventIndex = savedEventsField.findIndex(
       (event) => event.eventId === eventId
     );
     if (eventIndex === -1) return;
 
     const originalEvents = [...savedEventsField];
-    // UI에서 먼저 제거 (낙관적 업데이트)
     setSavedEventsField((prevEvents) =>
       prevEvents.filter((event) => event.eventId !== eventId)
     );
 
     try {
       const res = await postToggleEventLike(eventId);
+      if (!mountedRef.current) return;
       if (res !== "SUCCESS") {
-        // 실패 시 롤백
-        if (mountedRef.current) setSavedEventsField(originalEvents);
-        console.warn(
-          "Failed to unlike event on server (saved list), reverting UI."
-        );
+        setSavedEventsField(originalEvents);
+      } else {
+        setCurrentPage(0);
+        setHasMore(true);
+        fetchPageEvents(0);
       }
-      // 성공 시, totalCount가 변경될 수 있으므로 목록을 새로고침하거나 hasMore를 재계산 할 수 있습니다.
-      // 여기서는 간단히 UI 업데이트를 유지하고, 다음 스크롤 시 hasMore가 API 응답에 따라 결정되도록 합니다.
-      // 만약 목록에서 아이템이 제거된 후 즉시 hasMore 상태를 정확히 반영하고 싶다면,
-      // 여기서 fetchSavedEvents(true)를 호출하여 목록을 완전히 새로고침 할 수 있습니다.
-      // 또는, totalCount를 상태로 관리하고 직접 감소시키는 방법도 있습니다.
-      // 현재는 다음 fetch 시 hasMore가 업데이트되도록 둡니다.
     } catch (error) {
-      console.error("Error unliking event (saved list):", error);
-      if (mountedRef.current) setSavedEventsField(originalEvents);
+      if (!mountedRef.current) return;
+      console.error("SavedEventsSection - 좋아요 토글 중 오류 발생:", error);
+      setSavedEventsField(originalEvents);
     }
   };
 
@@ -192,7 +214,9 @@ const SavedEventsSection = () => {
         <EventList id={scrollableContainerId}>
           <InfiniteScroll
             dataLength={savedEventsField.length}
-            next={() => fetchSavedEvents(false)}
+            next={() =>
+              loadMoreItemsActionRef.current && loadMoreItemsActionRef.current()
+            }
             hasMore={hasMore}
             loader={
               <LoadingIndicator>
@@ -201,7 +225,7 @@ const SavedEventsSection = () => {
             }
             scrollableTarget={scrollableContainerId}
             endMessage={
-              savedEventsField.length > 0 ? (
+              savedEventsField.length > 0 && !hasMore ? (
                 <p
                   style={{
                     textAlign: "center",
@@ -209,7 +233,7 @@ const SavedEventsSection = () => {
                     color: Color.N2,
                   }}
                 >
-                  <b>모든 저장된 이벤트를 다 보셨습니다.</b>
+                  <b>모든 저장된 행사를 다 보셨습니다.</b>
                 </p>
               ) : null
             }
@@ -224,7 +248,7 @@ const SavedEventsSection = () => {
                 startDate={item.startDate}
                 location={item.location}
                 category={item.categoryId?.name || "분류 없음"}
-                gu={item.gu}
+                gu={item.location?.gu || ""}
                 isLiked={item.isLiked}
                 likeCount={item.likeCount}
                 onLikeToggle={() => handleLikeToggle(item.eventId)}

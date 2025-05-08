@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { MessageBubble, LoadingIndicator } from "./MessageBubble"; // Import MessageBubble and LoadingIndicator
+import { MessageBubble, LoadingIndicator } from "./MessageBubble";
 
 import { postEventRecommendationChatbot } from "../../api/ai/api";
 import {
@@ -10,7 +10,7 @@ import {
   InputWrapper,
   TextInput,
   SendButton,
-} from "./styles"; // Import styles
+} from "./styles";
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([
@@ -26,7 +26,6 @@ const ChatInterface = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -35,7 +34,6 @@ const ChatInterface = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Adjust textarea height
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
@@ -43,12 +41,10 @@ const ChatInterface = () => {
     }
   }, [inputValue]);
 
-  // Handle input change
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  // Handle message sending
   const handleSendMessage = useCallback(async () => {
     const trimmedInput = inputValue.trim();
     if (!trimmedInput || isLoading) return;
@@ -66,7 +62,7 @@ const ChatInterface = () => {
     const prompt = {
       prompt: trimmedInput,
       limit: 2,
-      member_id: Number(localStorage.getItem("userId")),
+      member_id: 0,
     };
     console.log(prompt);
     const response = await postEventRecommendationChatbot(prompt);
@@ -80,7 +76,7 @@ const ChatInterface = () => {
     setMessages((prev) => [...prev, botResponse]);
     setIsLoading(false);
 
-    setTimeout(() => inputRef.current?.focus(), 0); // Refocus input
+    setTimeout(() => inputRef.current?.focus(), 0);
   }, [inputValue, isLoading]);
 
   // Handle Enter key press
@@ -117,7 +113,6 @@ const ChatInterface = () => {
             aria-label="메시지 전송"
           >
             <FontAwesomeIcon icon={faPaperPlane} size="lg" />{" "}
-            {/* Use FA icon */}
           </SendButton>
         </InputWrapper>
       </InputArea>

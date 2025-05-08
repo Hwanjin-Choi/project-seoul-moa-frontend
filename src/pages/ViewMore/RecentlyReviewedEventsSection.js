@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import InfiniteScroll from "react-infinite-scroll-component"; // 라이브러리 임포트
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { getRecentlyReviewedEvents } from "../../api/event/recently/reviewed";
 import { postToggleEventLike } from "../../api/interaction/event/like";
 
@@ -7,7 +7,6 @@ import NoBorderLandscapeCard from "../../components/NoBorderLandscapeCard/NoBord
 import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 
-// Styled-components (ReviewedEventsContainer, ReviewList, LoadingIndicator, EmptyStateMessage)는 기존과 동일
 const ReviewedEventsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,6 +23,7 @@ const ReviewedEventsContainer = styled.div`
 const ReviewList = styled.div`
   flex-grow: 1;
   overflow-y: auto;
+
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -66,68 +66,102 @@ const EmptyStateMessage = styled.div`
   height: 100%;
 `;
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 10;
 
 const RecentlyReviewedEventsSection = () => {
   const [recentlyReviewedEventsField, setRecentlyReviewedEventsField] =
     useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const isOpen = true;
+  const mountedRef = useRef(false);
+  const loadMoreItemsActionRef = useRef(null);
 
-  const fetchRecentlyReviewedEvents = useCallback(
-    async (isInitialLoad = false) => {
-      if (isLoading && !isInitialLoad) return;
-      if (!isInitialLoad && !hasMore) return;
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  const fetchPageEvents = useCallback(
+    async (pageToFetch) => {
+      if (!mountedRef.current) return;
+      if (isLoading && currentPage === pageToFetch + 1 && pageToFetch !== 0)
+        return;
+      if (pageToFetch > 0 && !hasMore) return;
 
       setIsLoading(true);
-      const currentOffset = isInitialLoad
-        ? 0
-        : recentlyReviewedEventsField.length;
-
       const payload = {
-        offset: currentOffset,
+        offset: pageToFetch,
         limit: ITEMS_PER_PAGE,
         isOpen: isOpen,
       };
 
       try {
         const res = await getRecentlyReviewedEvents(payload);
-        console.log(res);
+        if (!mountedRef.current) return;
+
         if (res && res.data && Array.isArray(res.data.eventList)) {
           const newEvents = res.data.eventList;
-          const totalCount = res.data.totalCount;
+          const totalPages = res.data.totalPages;
 
           setRecentlyReviewedEventsField((prevEvents) =>
-            isInitialLoad ? newEvents : [...prevEvents, ...newEvents]
+            pageToFetch === 0 ? newEvents : [...prevEvents, ...newEvents]
           );
 
-          const totalItemsLoaded = currentOffset + newEvents.length;
-          setHasMore(totalItemsLoaded < totalCount);
-          if (isInitialLoad) {
-            setPage(1);
+          const morePagesExistBasedOnResponse = pageToFetch < totalPages - 1;
+          setHasMore(morePagesExistBasedOnResponse);
+
+          if (newEvents.length > 0) {
+            setCurrentPage(pageToFetch + 1);
           } else {
-            setPage((prevPage) => prevPage + 1);
+            setHasMore(false);
           }
         } else {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("이벤트 조회 중 오류 발생 (실시간 리뷰):", error);
+        if (!mountedRef.current) return;
+        console.error(
+          "RecentlyReviewedEventsSection - 이벤트 조회 중 오류 발생:",
+          error
+        );
         setHasMore(false);
       } finally {
-        setIsLoading(false);
+        if (mountedRef.current) {
+          setIsLoading(false);
+        }
       }
     },
-    [isLoading, hasMore, isOpen, recentlyReviewedEventsField.length]
+    [
+      isOpen,
+      setIsLoading,
+      setRecentlyReviewedEventsField,
+      setHasMore,
+      setCurrentPage,
+      getRecentlyReviewedEvents,
+      hasMore,
+      isLoading,
+      currentPage,
+    ]
   );
 
   useEffect(() => {
+    loadMoreItemsActionRef.current = () => {
+      if (!isLoading && hasMore && mountedRef.current) {
+        fetchPageEvents(currentPage);
+      }
+    };
+  }, [isLoading, hasMore, currentPage, fetchPageEvents]);
+
+  useEffect(() => {
+    if (!mountedRef.current) return;
     setRecentlyReviewedEventsField([]);
+    setCurrentPage(0);
     setHasMore(true);
-    setPage(0);
-    fetchRecentlyReviewedEvents(true);
+    fetchPageEvents(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
@@ -137,17 +171,14 @@ const RecentlyReviewedEventsSection = () => {
     );
     if (eventIndex === -1) return;
 
-    const currentEvent = recentlyReviewedEventsField[eventIndex];
-    const newLikedStatus = !currentEvent.isLiked;
     const originalEvents = [...recentlyReviewedEventsField];
-
     setRecentlyReviewedEventsField((prevEvents) =>
       prevEvents.map((event) =>
         event.eventId === eventId
           ? {
               ...event,
-              isLiked: newLikedStatus,
-              likeCount: newLikedStatus
+              isLiked: !event.isLiked,
+              likeCount: !event.isLiked
                 ? event.likeCount + 1
                 : Math.max(0, event.likeCount - 1),
             }
@@ -157,11 +188,16 @@ const RecentlyReviewedEventsSection = () => {
 
     try {
       const res = await postToggleEventLike(eventId);
+      if (!mountedRef.current) return;
       if (res !== "SUCCESS") {
         setRecentlyReviewedEventsField(originalEvents);
       }
     } catch (error) {
-      console.error("좋아요 토글 중 오류 발생 (실시간 리뷰):", error);
+      if (!mountedRef.current) return;
+      console.error(
+        "RecentlyReviewedEventsSection - 좋아요 토글 중 오류 발생:",
+        error
+      );
       setRecentlyReviewedEventsField(originalEvents);
     }
   };
@@ -178,7 +214,9 @@ const RecentlyReviewedEventsSection = () => {
         <ReviewList id={scrollableContainerId}>
           <InfiniteScroll
             dataLength={recentlyReviewedEventsField.length}
-            next={() => fetchRecentlyReviewedEvents(false)}
+            next={() =>
+              loadMoreItemsActionRef.current && loadMoreItemsActionRef.current()
+            }
             hasMore={hasMore}
             loader={
               <LoadingIndicator>
@@ -187,7 +225,7 @@ const RecentlyReviewedEventsSection = () => {
             }
             scrollableTarget={scrollableContainerId}
             endMessage={
-              recentlyReviewedEventsField.length > 0 ? (
+              recentlyReviewedEventsField.length > 0 && !hasMore ? (
                 <p
                   style={{
                     textAlign: "center",
@@ -195,7 +233,7 @@ const RecentlyReviewedEventsSection = () => {
                     color: Color.N2,
                   }}
                 >
-                  <b>모든 리뷰를 다 보셨습니다.</b>
+                  <b>최근 리뷰가 작성된 행사를 다 보셨습니다.</b>
                 </p>
               ) : null
             }
@@ -210,7 +248,7 @@ const RecentlyReviewedEventsSection = () => {
                 startDate={item.startDate}
                 location={item.location}
                 category={item.categoryId?.name || "분류 없음"}
-                gu={item.gu}
+                gu={item.location?.gu || ""}
                 isLiked={item.isLiked}
                 likeCount={item.likeCount}
                 onLikeToggle={() => handleLikeToggle(item.eventId)}

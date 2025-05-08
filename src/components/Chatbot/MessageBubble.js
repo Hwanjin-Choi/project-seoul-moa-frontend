@@ -55,21 +55,6 @@ export const MessageBubble = ({ message }) => {
               {message.data.data && message.data.data.length > 0 && (
                 <div>
                   {message.data.data.map((item, index) => (
-                    /* <NoBorderLandscapeCard
-                      key={item.event_id}
-                      eventId={item.event_id}
-                      image={item.imageUrl}
-                      title={item.title}
-                      endDate={item.end_date}
-                      startDate={item.start_date}
-                      location={item.location.name}
-                      // category가 객체일 수 있으므로 Optional Chaining 사용
-                      category={item.category || "분류 없음"}
-                      gu={item.location.gu}
-                      isLiked={item.isLiked}
-                      likeCount={item.likeCount}
-                      onLikeToggle={null}
-                    /> */
                     <EventCard key={item.event_id} event={item} />
                   ))}
                 </div>

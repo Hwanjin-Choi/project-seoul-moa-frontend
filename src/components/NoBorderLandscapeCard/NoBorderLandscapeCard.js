@@ -211,7 +211,6 @@ const NoBorderLandscapeCard = (props) => {
       {/* styled-components의 미디어쿼리로 대부분 처리하므로, JSX 구조는 최대한 유지 */}
       <ContentArea>
         <InfoRow>
-          <h2>{props.eventId}</h2>
           <DescriptionContainer>
             <EventInfoDisplay
               title={props.title}
