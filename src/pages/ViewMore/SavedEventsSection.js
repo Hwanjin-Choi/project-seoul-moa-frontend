@@ -105,6 +105,7 @@ const SavedEventsSection = () => {
 
       try {
         const res = await getSavedEvents(payload);
+        console.log(res, payload);
         if (!mountedRef.current) return;
 
         if (res && res.data && Array.isArray(res.data.eventList)) {
