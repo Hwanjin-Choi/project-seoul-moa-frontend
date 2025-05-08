@@ -45,9 +45,7 @@ const NavigationWrapper = styled.div`
 
 const MobileLayout = ({ children }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("isLoggedIn") === "true" ? true : false
-  );
+
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
@@ -55,17 +53,15 @@ const MobileLayout = ({ children }) => {
     <LayoutWrapper>
       <GlobalChatStyle />
       <BackHeader />
-      {isLoggedIn && (
-        <FabButton onClick={toggleChat} aria-label="챗봇 열기">
-          <FontAwesomeIcon icon={faCommentDots} size="lg" />
-        </FabButton>
-      )}
+      <FabButton onClick={toggleChat} aria-label="챗봇 열기">
+        <FontAwesomeIcon icon={faCommentDots} size="lg" />
+      </FabButton>
       {/* Chat Modal */}
       <Content>{children}</Content>
       <NavigationWrapper>
         <Navigation />
-      </NavigationWrapper>
-      {isLoggedIn && <ChatModal isOpen={isChatOpen} onClose={toggleChat} />}
+      </NavigationWrapper>{" "}
+      <ChatModal isOpen={isChatOpen} onClose={toggleChat} />
     </LayoutWrapper>
   );
 };

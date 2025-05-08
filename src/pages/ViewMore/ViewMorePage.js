@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import MobileLayout from "../../components/Layout/MobileLayout";
-// Typography는 현재 이 파일에서 직접 사용되지 않으므로 주석 처리 또는 필요시 사용
-// import Typography from "../../components/Typography/Typography";
 import UpcomingEventsSection from "./UpcomingEventsSection";
 import RecentlyReviewedEventsSection from "./RecentlyReviewedEventsSection";
 import { Color } from "../../styles/colorsheet";
 import SavedEventsSection from "./SavedEventsSection";
 
-// ViewMorePageContainer: 페이지 전체를 감싸는 컨테이너
-// MobileLayout의 콘텐츠 영역을 채우도록 설정됩니다.
 const ViewMorePageContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -61,8 +57,6 @@ const TabButton = styled.button`
   }
 `;
 
-// TabContentContainer: 활성화된 탭의 콘텐츠를 보여주는 컨테이너
-// 탭 버튼 영역을 제외한 나머지 세로 공간을 모두 차지하도록 설정합니다.
 const TabContentContainer = styled.div`
   flex-grow: 1; // 사용 가능한 모든 세로 공간을 차지
   display: flex; // 자식 컴포넌트(활성 섹션)가 높이 100%를 효과적으로 사용하도록 설정
@@ -71,7 +65,7 @@ const TabContentContainer = styled.div`
 `;
 
 const ViewMorePage = () => {
-  const [activeTab, setActiveTab] = useState("upcoming"); // 현재 활성화된 탭 상태 ('upcoming' 또는 'reviews')
+  const [activeTab, setActiveTab] = useState("upcoming");
 
   return (
     <MobileLayout>

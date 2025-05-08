@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Icons } from "../../assets/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faListAlt } from "@fortawesome/free-solid-svg-icons";
 import { Color } from "../../styles/colorsheet";
 
 const NavContainer = styled.nav`
@@ -43,7 +44,8 @@ const NavItem = styled.div`
   svg {
     width: 20px;
     height: 20px;
-    fill: currentColor;
+    margin-bottom: 2px; // 아이콘과 텍스트 사이 간격 추가
+    fill: currentColor; // FontAwesomeIcon 사용 시 fill 대신 color로 적용될 수 있습니다.
   }
 `;
 
@@ -71,6 +73,15 @@ const Navigation = () => {
       >
         <FontAwesomeIcon icon={Icons.map} />
         <span>지도</span>
+      </NavItem>
+      <NavItem
+        active={currentPath === "/view-more-page"}
+        onClick={() => {
+          navigate("/view-more-page");
+        }}
+      >
+        <FontAwesomeIcon icon={faListAlt} />
+        <span>더보기</span>
       </NavItem>
       <NavItem
         active={currentPath === "/my-page"}

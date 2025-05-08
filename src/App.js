@@ -14,7 +14,7 @@ import ViewDetail from "./pages/ViewDetail/ViewDetail.js";
 import RegistrationPage from "./pages/Registration/RegistrationPage";
 import ViewMorePage from "./pages/ViewMore/ViewMorePage";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import PrivateRedirectionModal from "./components/PrivateRoute/PrivateRedirectionModal"; // 전하의 모달 컴포넌트
+import PrivateRedirectionModal from "./components/PrivateRoute/PrivateRedirectionModal";
 import "./App.css";
 
 function AppInternal() {

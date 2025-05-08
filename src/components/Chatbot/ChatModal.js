@@ -1,14 +1,14 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots, faTimes } from "@fortawesome/free-solid-svg-icons";
-import ChatInterface from "./ChatInterface"; // Import ChatInterface
+import ChatInterface from "./ChatInterface";
 import {
   ModalOverlay,
   ModalContainer,
   ModalHeader,
   ModalTitle,
   CloseButton,
-} from "./styles"; // Import styles
+} from "./styles";
 
 const ChatModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;

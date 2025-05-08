@@ -258,7 +258,7 @@ const BackHeader = () => {
   return (
     <BackHeaderContainer isDefaultPage={isDefaultPage}>
       {isDefaultPage ? (
-        <HeaderContent onClick={() => navigate("/view-more-page")}>
+        <HeaderContent onClick={() => navigate("/")}>
           <Logo src={logo} alt="logo" />
         </HeaderContent>
       ) : (
