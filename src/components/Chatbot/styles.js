@@ -1,6 +1,5 @@
 import styled, { keyframes, createGlobalStyle } from "styled-components";
 
-// --- Global Styles ---
 export const GlobalChatStyle = createGlobalStyle`
   .chat-message-list::-webkit-scrollbar {
     width: 6px;
@@ -18,7 +17,6 @@ export const GlobalChatStyle = createGlobalStyle`
   }
 `;
 
-// --- Animations ---
 export const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -29,9 +27,6 @@ export const scaleIn = keyframes`
   to { opacity: 1; transform: scale(1); }
 `;
 
-// --- Styled Components ---
-
-// Floating Action Button
 export const FabButton = styled.button`
   position: fixed;
   bottom: 80px; /* 모바일에서 약간 위로 */
@@ -63,7 +58,6 @@ export const FabButton = styled.button`
   }
 `;
 
-// Modal Overlay
 export const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -82,7 +76,6 @@ export const ModalOverlay = styled.div`
   }
 `;
 
-// Modal Container
 export const ModalContainer = styled.div`
   background-color: #ffffff;
   border-radius: 12px;
@@ -115,7 +108,6 @@ export const ModalContainer = styled.div`
   } */
 `;
 
-// Modal Header
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -168,7 +160,6 @@ export const CloseButton = styled.button`
   }
 `;
 
-// Message List Area
 export const MessageListArea = styled.div`
   flex-grow: 1;
   overflow-y: auto;
@@ -183,7 +174,6 @@ export const MessageListArea = styled.div`
   }
 `;
 
-// Message Bubble Wrapper
 export const BubbleWrapper = styled.div`
   display: flex;
   margin-bottom: 1rem; /* 데스크탑 간격 */
@@ -195,7 +185,6 @@ export const BubbleWrapper = styled.div`
   }
 `;
 
-// Message Content Container (Icon + Bubble)
 export const MessageContentContainer = styled.div`
   display: flex;
   align-items: flex-end;
@@ -208,7 +197,6 @@ export const MessageContentContainer = styled.div`
   }
 `;
 
-// Avatar Icon
 export const AvatarIcon = styled.div`
   flex-shrink: 0;
   width: 36px; /* 데스크탑 아이콘 크기 */
@@ -247,7 +235,6 @@ export const ChatbotIcon = styled.div`
   }
 `;
 
-// Message Bubble Styling
 export const Bubble = styled.div`
   background-color: ${(props) => (props.$isUser ? "#dbeafe" : "#ede9fe")};
   color: #1f2937;
@@ -266,7 +253,6 @@ export const Bubble = styled.div`
   }
 `;
 
-// Event Card Styling
 export const StyledEventCard = styled.div`
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
@@ -334,7 +320,6 @@ export const EventInfo = styled.div`
   }
 `;
 
-// Chat Input Area
 export const InputArea = styled.div`
   border-top: 1px solid #e5e7eb;
   padding: 1rem 1.5rem; /* 데스크탑 패딩 */
@@ -412,7 +397,6 @@ export const SendButton = styled.button`
   }
 `;
 
-// Loading Indicator (Using Font Awesome Spinner)
 export const LoadingSpinnerWrapper = styled.div`
   display: flex;
   align-items: center;

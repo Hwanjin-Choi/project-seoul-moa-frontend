@@ -89,10 +89,7 @@ const ReviewCarousel = ({ reviewCreateData, onReviewClick }) => {
   return (
     <CarouselWrapper>
       {reviewCreateData.map((event, idx) => (
-        <CarouselItem
-          key={idx}
-          
-        >
+        <CarouselItem key={idx}>
           <Thumb src={event.eventImageurl} onClick={() => navigate(`/view-detail-page/${event.eventId}`)}
           style={{ cursor: "pointer" }} />
           <InfoBox>

@@ -55,55 +55,58 @@ const ViewDetail = ({ mapReady }) => {
     loading: reviewLoading,
   } = useReviewFetch(eventId);
 
-  if (loading || !eventData) return <div>로딩 중...</div>;
-  console.log(eventData, "check from viewdetail");
   return (
     <MobileLayout>
-      <Container>
-        <DetailHeader data={eventData} />
+      {loading || !eventData ? (
+        <></>
+      ) : (
+        <>
+          <Container>
+            <DetailHeader data={eventData} />
 
-        <EventDescriptionSection description={eventData.eventDescription} />
+            <EventDescriptionSection description={eventData.eventDescription} />
 
-        <ReadReviewSection
-          reviewData={reviews}
-          isOpen={isReviewModalOpen}
-          setIsOpen={setIsReviewModalOpen}
-          fetchMore={fetchMoreReviews}
-          hasMore={hasMore}
-          loading={reviewLoading}
-        />
+            <ReadReviewSection
+              reviewData={reviews}
+              isOpen={isReviewModalOpen}
+              setIsOpen={setIsReviewModalOpen}
+              fetchMore={fetchMoreReviews}
+              hasMore={hasMore}
+              loading={reviewLoading}
+            />
 
-        <MapSection
-          mapReady={mapReady}
-          mapData={{
-            latitude: eventData.latitude,
-            longitude: eventData.longitude,
-          }}
-          mapLocation={eventData}
-        />
+            <MapSection
+              mapReady={mapReady}
+              mapData={{
+                latitude: eventData.latitude,
+                longitude: eventData.longitude,
+              }}
+              mapLocation={eventData}
+            />
 
-        <SubwayChart
-          data={subwayChartWithColor}
-          currentHour={currentHour}
-          subwayName={eventData?.nearestStation?.name}
-          subwayLine={eventData?.nearestStation?.line}
-          state={state}
-        />
+            <SubwayChart
+              data={subwayChartWithColor}
+              currentHour={currentHour}
+              subwayName={eventData?.nearestStation?.name}
+              subwayLine={eventData?.nearestStation?.line}
+              state={state}
+            />
 
-        <WeatherSection gu={eventData.gu} />
+            <WeatherSection gu={eventData.gu} />
 
-        <BottomButton onClick={() => setIsReserveOpen(true)}>
-          일정 추가
-        </BottomButton>
-      </Container>
-
-      {isReserveOpen && (
-        <ReserveModal
-          onClose={() => setIsReserveOpen(false)}
-          date={currentDay}
-          data={eventData}
-          eventId={eventId}
-        />
+            <BottomButton onClick={() => setIsReserveOpen(true)}>
+              일정 추가
+            </BottomButton>
+          </Container>
+          {isReserveOpen && (
+            <ReserveModal
+              onClose={() => setIsReserveOpen(false)}
+              date={currentDay}
+              data={eventData}
+              eventId={eventId}
+            />
+          )}
+        </>
       )}
     </MobileLayout>
   );

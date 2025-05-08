@@ -11,21 +11,18 @@ import {
   endOfDay,
 } from "date-fns";
 import { ko } from "date-fns/locale";
-// 아이콘 종류 변경 (예시: 관심 수에 하트 아이콘 사용)
 import { FiMapPin, FiCalendar, FiFileText, FiHeart } from "react-icons/fi";
-
-// --- Styled Components 정의 ---
 
 const Wrapper = styled.div`
   font-family: sans-serif;
-  line-height: 1.5; /* 모바일에서 줄 간격 약간 조정 */
+  line-height: 1.5;
   color: #333;
 `;
 
 const InfoRow = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 4px; /* 모바일에서 행 간격 약간 줄임 */
+  margin-bottom: 4px;
 
   &:last-child {
     margin-bottom: 0;
@@ -83,11 +80,7 @@ const InfoText = styled.span`
   }
 `;
 
-// --- Helper 함수 및 컴포넌트 로직 (변경 없음) ---
 const getEventStatus = (startDate, endDate) => {
-  // ... (기존 로직) ...
-  // StatusBadge 관련 로직이 없으므로 getEventStatus 함수는 현재 미사용 상태입니다.
-  // 필요시 StatusBadge 컴포넌트와 함께 복원할 수 있습니다.
   const now = new Date();
   const start = startOfDay(startDate);
   const end = endOfDay(endDate);
@@ -110,7 +103,6 @@ const EventInfoDisplay = ({
 }) => {
   let parsedStartDate, parsedEndDate;
   let dateString = "날짜 정보 없음";
-  // let status = null; // 현재 상태 배지 미사용
 
   try {
     parsedStartDate = parseISO(startDate);
@@ -133,24 +125,20 @@ const EventInfoDisplay = ({
       });
       dateString = `${formattedStartDate} ~ ${formattedEndDate}`;
     }
-
-    // status = getEventStatus(parsedStartDate, parsedEndDate); // 현재 미사용
   } catch (error) {
     console.error("날짜 처리 중 오류 발생:", error);
   }
 
   return (
     <Wrapper>
-      {/* 제목 행 */}
       <InfoRow>
         <IconWrapper>
           <FiFileText />
         </IconWrapper>
-        {/* 제목 InfoText는 CSS 선택자로 스타일 자동 적용됨 */}
+
         <InfoText>{title || "제목 없음"}</InfoText>
       </InfoRow>
 
-      {/* 장소 행 */}
       <InfoRow>
         <IconWrapper>
           <FiMapPin />
@@ -158,20 +146,15 @@ const EventInfoDisplay = ({
         <InfoText>{location || "장소 정보 없음"}</InfoText>
       </InfoRow>
 
-      {/* 날짜 행 */}
       <InfoRow>
         <IconWrapper>
           <FiCalendar />
         </IconWrapper>
         <InfoText>{dateString}</InfoText>
-        {/* 상태 배지가 필요하다면 여기에 추가 */}
-        {/* {status && <StatusBadge color={status.color}>{status.text}</StatusBadge>} */}
       </InfoRow>
 
-      {/* 관심 수 행 */}
       <InfoRow>
         <IconWrapper>
-          {/* 하트 아이콘으로 변경 */}
           <FiHeart />
         </IconWrapper>
         <InfoText>{likeCount}명이 관심있어 합니다</InfoText>
@@ -180,16 +163,14 @@ const EventInfoDisplay = ({
   );
 };
 
-// --- PropTypes 정의 (변경 없음) ---
 EventInfoDisplay.propTypes = {
-  title: PropTypes.string, // title 추가
+  title: PropTypes.string,
   location: PropTypes.string,
   startDate: PropTypes.string,
   endDate: PropTypes.string,
-  likeCount: PropTypes.number, // likeCount 추가
+  likeCount: PropTypes.number,
 };
 
-// 기본 Props 값 설정 (필수 아닌 값들)
 EventInfoDisplay.defaultProps = {
   title: "제목 없음",
   location: "장소 정보 없음",

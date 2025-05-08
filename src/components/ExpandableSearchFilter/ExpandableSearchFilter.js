@@ -248,8 +248,7 @@ const ExpandableSearchFilter = ({
     const newOffset = 0;
     handleSearchParams((prevState) => ({
       ...prevState,
-      offset: newOffset, // 미리 계산한 값으로 업데이트 예약
-      // limit: prevState.limit, // limit은 변경되지 않으므로 생략해도 무방할 수 있습니다.
+      offset: newOffset,
     }));
     const payload = {
       categoryId: searchParams.categoryId,
@@ -292,7 +291,8 @@ const ExpandableSearchFilter = ({
             }));
           }}
           onKeyDown={handleKeyDown}
-          /*           onFocus={handleAlwaysToggle}
+          onFocus={handleAlwaysToggle}
+          /*           
           onBlur={handleToggleClick} */
         />
         <SearchButton type="button" onClick={handleSearch} aria-label="검색">

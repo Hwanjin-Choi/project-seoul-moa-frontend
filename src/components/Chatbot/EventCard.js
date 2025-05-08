@@ -4,7 +4,7 @@ import {
   faMapMarkerAlt,
   faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { StyledEventCard, EventTitle, EventInfo } from "./styles"; // Import styles
+import { StyledEventCard, EventTitle, EventInfo } from "./styles";
 
 const EventCard = ({ event }) => {
   if (!event) return null;
@@ -22,7 +22,7 @@ const EventCard = ({ event }) => {
       <EventInfo>
         <FontAwesomeIcon icon={faMapMarkerAlt} />
         <span>
-          {event.location?.name} ({event.location?.gu})
+          {event.location?.name} {event.location?.gu ? event.location.gu : null}
         </span>
       </EventInfo>
       <EventInfo>
