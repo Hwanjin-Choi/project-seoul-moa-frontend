@@ -100,7 +100,7 @@ function UpcomingEventsSection() {
         limit: ITEMS_PER_PAGE, // 고정된 아이템 수 사용
         isOpen: isOpen,
       };
-
+      console.log(payload);
       try {
         const res = await getUpcomingEvents(payload);
         if (!mountedRef.current) return;
@@ -155,6 +155,8 @@ function UpcomingEventsSection() {
     loadMoreItemsActionRef.current = () => {
       if (!isLoading && hasMore && mountedRef.current) {
         fetchPageEvents(currentPage);
+      } else {
+        console.log(isLoading, hasMore, mountedRef);
       }
     };
   }, [isLoading, hasMore, currentPage, fetchPageEvents]);
@@ -165,15 +167,8 @@ function UpcomingEventsSection() {
     setCurrentPage(0);
     setHasMore(true);
 
-    const storedCategoryId =
-      JSON.parse(localStorage.getItem("categoryId")) || [];
-    if (
-      currentCategoryId.length > 0 ||
-      storedCategoryId.length > 0 ||
-      !localStorage.getItem("categoryId")
-    ) {
-      fetchPageEvents(0);
-    }
+    fetchPageEvents(0);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, currentCategoryId]);
 
