@@ -1,4 +1,11 @@
-import { BarChart, Bar, XAxis, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import styled from "styled-components";
 import Typography from "../../components/Typography/Typography";
 import { Color } from "../../styles/colorsheet";
@@ -25,6 +32,7 @@ const Tag = styled.span`
 `;
 
 const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
+  console.log(data, "sub");
   return (
     <>
       <ChartBox>
@@ -45,10 +53,7 @@ const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
               )}
             />
             <Tooltip />
-            <Bar
-              dataKey="count"
-              radius={[10, 10, 0, 0]}
-            >
+            <Bar dataKey="count" radius={[10, 10, 0, 0]}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
@@ -57,8 +62,12 @@ const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
         </ResponsiveContainer>
       </ChartBox>
 
-      <Typography variant="h6" style={{ textAlign: "center", marginBottom: 10 }}>
-        {currentHour}시의 {subwayName}({subwayLine})은 <Tag>{state}</Tag> 단계입니다
+      <Typography
+        variant="h6"
+        style={{ textAlign: "center", marginBottom: 10 }}
+      >
+        {currentHour}시의 {subwayName}({subwayLine})은 <Tag>{state}</Tag>{" "}
+        단계입니다
       </Typography>
     </>
   );

@@ -45,7 +45,7 @@ const Map = ({ mapReady }) => {
 
   const mapContainer = useRef(null);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (!navigator.geolocation) {
       setError("브라우저 위치 정보 오류");
       return;
@@ -53,6 +53,7 @@ const Map = ({ mapReady }) => {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.log("hihi");
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
       },
@@ -73,7 +74,28 @@ const Map = ({ mapReady }) => {
         }
       }
     );
-  }, []);
+  }, []); */
+
+  const getSuccess = (position) => {
+    setLatitude(position.coords.latitude);
+    setLongitude(position.coords.longitude);
+  };
+
+  const getError = () => {
+    console.log("geolocation api error");
+  };
+
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000, // 5 seconds
+    maximumAge: 60000, // 1 minute
+  };
+
+  window.navigator.geolocation.getCurrentPosition(
+    getSuccess,
+    getError,
+    options
+  );
 
   useEffect(() => {
     if (window.kakao && window.kakao.maps && mapContainer.current) {
@@ -91,8 +113,6 @@ const Map = ({ mapReady }) => {
   const toggleAlwaysExpandResult = () => {
     setIsFilterExpanded(true);
   };
-
-  const [filterForm, setFilterForm] = useState(false);
 
   return (
     <MobileLayout>

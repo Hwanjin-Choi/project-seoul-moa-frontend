@@ -20,7 +20,10 @@ import EditCategoryModal from "./EditCategoryModal.js";
 import useUserFetch from "../../api/UserFetch";
 import useMyReviewFetch from "../../hooks/useMyReviewFetch";
 import { fetchUserScheduleList } from "../../api/userScheduleList";
-import { updateUserSchedule, deleteUserSchedule } from "../../api/userScheduleUpdate";
+import {
+  updateUserSchedule,
+  deleteUserSchedule,
+} from "../../api/userScheduleUpdate";
 
 const BannerImg = styled.img`
   width: 100%;
@@ -62,8 +65,8 @@ const Mypage = () => {
     try {
       const result = await fetchUserScheduleList();
       setScheduleList(result);
-      setUpcoming(result.filter(s => !s.pastScheduled));
-      setPast(result.filter(s => s.pastScheduled));
+      setUpcoming(result.filter((s) => !s.pastScheduled));
+      setPast(result.filter((s) => s.pastScheduled));
     } catch (e) {
       console.error("일정 불러오기 실패:", e);
     }
@@ -100,7 +103,7 @@ const Mypage = () => {
       alert("예약 수정 실패");
       console.error(err);
     }
-  }
+  };
 
   const handleDelete = async () => {
     try {
@@ -120,125 +123,128 @@ const Mypage = () => {
     deleteReview(targetReview.reviewId);
   };
 
-  if (loading) return <div>로딩 중...</div>;
-
   return (
     <MobileLayout>
-      <BannerImg src={Banner} />
-      <Container>
-        <Section>
-          <InterestSection
-            userName={user?.nickname || "회원"}
-            categoryName={selectedCategories}
-            isClicked={isEditCategoryOpen}
-            onEditClick={() => setIsEditCategoryOpen(true)}
-          />
-        </Section>
+      {loading ? (
+        <p></p>
+      ) : (
+        <>
+          <BannerImg src={Banner} />
+          <Container>
+            <Section>
+              <InterestSection
+                userName={user?.nickname || "회원"}
+                categoryName={selectedCategories}
+                isClicked={isEditCategoryOpen}
+                onEditClick={() => setIsEditCategoryOpen(true)}
+              />
+            </Section>
 
-        <EditCategoryModal
-          isOpen={isEditCategoryOpen}
-          onClose={() => setIsEditCategoryOpen(false)}
-          selected={selectedCategories}
-          setSelected={setSelectedCategories}
-          userInfo={user}
-        />
+            <EditCategoryModal
+              isOpen={isEditCategoryOpen}
+              onClose={() => setIsEditCategoryOpen(false)}
+              selected={selectedCategories}
+              setSelected={setSelectedCategories}
+              userInfo={user}
+            />
 
-        {upcoming.length > 0 && (
-          <Section>
-            <Typography variant="h3">다가오는 일정</Typography>
-            <ScheduleCarousel
-              data={upcoming.map(s => ({
-                ...s,
-                calenderDay: s.scheduleTime?.slice(0, 10),
-                eventId: s.event.eventId,
-                eventTitle: s.event.title,
-                eventStartdate: s.event.startDate?.slice(0, 10),
-                eventEnddate: s.event.endDate?.slice(0, 10),
-                eventLocation: s.event.location,
-                eventImageurl: s.event.imageUrl,
-              }))}
-              onEditClick={setEditItem}
-              onDeleteClick={setDeleteItem}
-            />
-            <ReserveEditModal
-              isOpen={!!editItem}
-              onClose={() => setEditItem(null)}
-              onSave={handleEditSave}
-              item={editItem}
-            />
-            <ReserveDeleteModal
-              isOpen={!!deleteItem}
-              onClose={() => setDeleteItem(null)}
-              onDelete={handleDelete}
-              item={deleteItem}
-            />
-          </Section>
-        )}
+            {upcoming.length > 0 && (
+              <Section>
+                <Typography variant="h3">다가오는 일정</Typography>
+                <ScheduleCarousel
+                  data={upcoming.map((s) => ({
+                    ...s,
+                    calenderDay: s.scheduleTime?.slice(0, 10),
+                    eventId: s.event.eventId,
+                    eventTitle: s.event.title,
+                    eventStartdate: s.event.startDate?.slice(0, 10),
+                    eventEnddate: s.event.endDate?.slice(0, 10),
+                    eventLocation: s.event.location,
+                    eventImageurl: s.event.imageUrl,
+                  }))}
+                  onEditClick={setEditItem}
+                  onDeleteClick={setDeleteItem}
+                />
+                <ReserveEditModal
+                  isOpen={!!editItem}
+                  onClose={() => setEditItem(null)}
+                  onSave={handleEditSave}
+                  item={editItem}
+                />
+                <ReserveDeleteModal
+                  isOpen={!!deleteItem}
+                  onClose={() => setDeleteItem(null)}
+                  onDelete={handleDelete}
+                  item={deleteItem}
+                />
+              </Section>
+            )}
 
-        {past.filter(s => !s.event.hasReview).length > 0 && (
-          <Section>
-            <Typography variant="h3">리뷰 작성하기</Typography>
-            <ReviewCarousel
-              reviewCreateData={past
-                .filter(s => !s.event.hasReview)
-                .map(s => ({
-                  ...s,
-                  eventId: s.event.eventId,
-                  calenderDay: s.scheduleTime?.slice(0, 10),
-                  eventTitle: s.event.title,
-                  eventImageurl: s.event.imageUrl,
-                  eventStartdate: s.event.startDate?.slice(0, 10),
-                  eventEnddate: s.event.endDate?.slice(0, 10),
-                  eventLocation: s.event.location,
-                }))
-              }
-              onReviewClick={(item) => {
-                state.setSelectedCreateItem(item);
+            {past.filter((s) => !s.event.hasReview).length > 0 && (
+              <Section>
+                <Typography variant="h3">리뷰 작성하기</Typography>
+                <ReviewCarousel
+                  reviewCreateData={past
+                    .filter((s) => !s.event.hasReview)
+                    .map((s) => ({
+                      ...s,
+                      eventId: s.event.eventId,
+                      calenderDay: s.scheduleTime?.slice(0, 10),
+                      eventTitle: s.event.title,
+                      eventImageurl: s.event.imageUrl,
+                      eventStartdate: s.event.startDate?.slice(0, 10),
+                      eventEnddate: s.event.endDate?.slice(0, 10),
+                      eventLocation: s.event.location,
+                    }))}
+                  onReviewClick={(item) => {
+                    state.setSelectedCreateItem(item);
+                    state.setCreateContent("");
+                    state.setIsCreateModalOpen(true);
+                  }}
+                />
+              </Section>
+            )}
+
+            <Section>
+              <ReviewSection
+                userName={user?.nickname || "회원"}
+                reviewData={reviewList}
+                isOpen={state.isReviewModalOpen}
+                setIsOpen={(value) => {
+                  state.setIsReviewModalOpen(value);
+                  if (!value) {
+                    refetchReviews();
+                    loadSchedules();
+                  }
+                }}
+                modalTitle="나의 리뷰 모아보기"
+                showHeader={true}
+                showEdit={true}
+                onEditClick={(review) => {
+                  state.setSelectedReview(review);
+                  state.setEditedContent(review.reviewContent);
+                  state.setIsEditModalOpen(true);
+                }}
+                onDeleteClick={handleDeleteReview}
+                fetchMore={fetchMoreReviews}
+                hasMore={hasMore}
+                loading={reviewLoading}
+              />
+            </Section>
+
+            <EditReviewModal {...state} />
+            <CreateReviewModal
+              {...state}
+              onReviewCreated={() => {
+                state.setSelectedCreateItem(null);
                 state.setCreateContent("");
-                state.setIsCreateModalOpen(true);
-              }}
-            />
-          </Section>
-        )}
-
-        <Section>
-          <ReviewSection
-            userName={user?.nickname || "회원"}
-            reviewData={reviewList}
-            isOpen={state.isReviewModalOpen}
-            setIsOpen={(value) => {
-              state.setIsReviewModalOpen(value);
-              if (!value) {
                 refetchReviews();
                 loadSchedules();
-              }
-            }}
-            modalTitle="나의 리뷰 모아보기"
-            showHeader={true}
-            showEdit={true}
-            onEditClick={(review) => {
-              state.setSelectedReview(review);
-              state.setEditedContent(review.reviewContent);
-              state.setIsEditModalOpen(true);
-            }}
-            onDeleteClick={handleDeleteReview}
-            fetchMore={fetchMoreReviews}
-            hasMore={hasMore}
-            loading={reviewLoading}
-          />
-        </Section>
-
-        <EditReviewModal {...state} />
-        <CreateReviewModal
-          {...state}
-          onReviewCreated={() => {
-            state.setSelectedCreateItem(null);
-            state.setCreateContent("");
-            refetchReviews();
-            loadSchedules();
-          }}
-        />
-      </Container>
+              }}
+            />
+          </Container>{" "}
+        </>
+      )}
     </MobileLayout>
   );
 };

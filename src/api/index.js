@@ -40,7 +40,7 @@ apiClient.interceptors.response.use(
 
         const currentPath = window.location.pathname + window.location.search;
 
-        window.location.href = `/login-page?show_session_expired_modal=true&redirectUrl=${encodeURIComponent(currentPath)}`;
+        /* window.location.href = `/login-page?show_session_expired_modal=true&redirectUrl=${encodeURIComponent(currentPath)}`; */
         //
       } else if (status === 403) {
         console.warn(

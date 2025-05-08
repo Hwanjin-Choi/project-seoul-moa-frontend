@@ -15,8 +15,13 @@ import { useFetchHotEvents } from "../../hooks/useFetchHotEvents";
 
 const DemoPage = () => {
   const navigate = useNavigate();
+  const isLoggedIn =
+    localStorage.getItem("isLoggedIn") === "true" ? true : false;
+
   const { carouselItems, error } = useFetchUpcomingEvents();
-  const { userSchedules } = useFetchUserSchedules();
+  const { userSchedules: fetchedSchedules } = useFetchUserSchedules();
+
+  const userSchedules = isLoggedIn ? fetchedSchedules : [];
   const { hotEvents } = useFetchHotEvents();
 
   const handleMoreClick = () => {
@@ -26,26 +31,32 @@ const DemoPage = () => {
   return (
     <MobileLayout>
       <MainPostimg>
-        {error ? <div style={{ color: "red" }}>{error}</div> : <AutoCarousel items={carouselItems} />}
+        {error ? (
+          <div style={{ color: "red" }}>{error}</div>
+        ) : (
+          <AutoCarousel items={carouselItems} />
+        )}
       </MainPostimg>
       <Container>
-      <Section>
-          <TitleRow>
-            <Typography variant="h3">다가오는 나의 일정</Typography>
-            <MoreLink onClick={handleMoreClick}>더보기</MoreLink>
-          </TitleRow>
+        {isLoggedIn && (
+          <Section>
+            <TitleRow>
+              <Typography variant="h3">다가오는 나의 일정</Typography>
+              <MoreLink onClick={handleMoreClick}>더보기</MoreLink>
+            </TitleRow>
 
-          {userSchedules.length > 0 ? (
-            <SchedulePreviewCarousel items={userSchedules} />
-          ) : (
-            <Typography variant="body1">예정된 일정이 없습니다.</Typography>
-          )}
-        </Section>
+            {userSchedules.length > 0 ? (
+              <SchedulePreviewCarousel items={userSchedules} />
+            ) : (
+              <Typography variant="body1">예정된 일정이 없습니다.</Typography>
+            )}
+          </Section>
+        )}
 
         <Section>
           <Typography variant="h3">Hot 문화행사</Typography>
           <CardGrid>
-            {hotEvents.map(item => (
+            {hotEvents.map((item) => (
               <HotEventCard key={item.eventId} item={item} />
             ))}
           </CardGrid>
