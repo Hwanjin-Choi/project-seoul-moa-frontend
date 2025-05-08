@@ -164,17 +164,10 @@ const SavedEventsSection = () => {
     setCurrentPage(0);
     setHasMore(true);
 
-    const storedCategoryId =
-      JSON.parse(localStorage.getItem("categoryId")) || [];
-    if (
-      currentCategoryId.length > 0 ||
-      storedCategoryId.length > 0 ||
-      !localStorage.getItem("categoryId")
-    ) {
-      fetchPageEvents(0);
-    }
+    fetchPageEvents(0);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, currentCategoryId]);
+  }, []);
 
   const handleLikeToggle = async (eventId) => {
     const eventIndex = savedEventsField.findIndex(

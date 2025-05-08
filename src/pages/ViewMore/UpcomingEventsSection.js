@@ -170,7 +170,7 @@ function UpcomingEventsSection() {
     fetchPageEvents(0);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, currentCategoryId]);
+  }, []);
 
   const handleLikeToggle = async (eventId) => {
     const eventIndex = upcomingEventsField.findIndex(
