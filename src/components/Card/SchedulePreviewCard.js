@@ -97,40 +97,40 @@ const StyledIcon = styled(FontAwesomeIcon)`
   flex-shrink: 0;
 `;
 
-const SchedulePreviewCard  = ({ item }) => {
+const SchedulePreviewCard = ({ item }) => {
   const navigate = useNavigate();
   if (!item) return null;
   const handleCardClick = () => {
-    navigate("/my-page");
+    navigate(`/view-detail-page/${item.eventId}`);
   };
 
 
   return (
     <Card onClick={handleCardClick} style={{ cursor: "pointer" }}>
       <InfoSection>
-      <InfoBox>
-        <DateRow>
-          <Typography variant="h3" color={Color.MC1} style={{ fontWeight: "bold" }}>
-            {item.calenderDay}
-          </Typography>
-          <DdayBadge startDate={item.eventStartdate} endDate={item.eventEnddate} />
-        </DateRow>
-        <Title variant="h3" style={{ fontWeight: 700 }}>
-          {item.eventTitle}
-        </Title>
-        <InfoRow>
-          <StyledIcon icon={faCalendarAlt} />
-          <Typography variant="h6" color={Color.BC3}>
-            {item.eventStartdate} ~ {item.eventEnddate}
-          </Typography>
-        </InfoRow>
-        <InfoRow>
-          <StyledIcon icon={faMapMarkerAlt} />
-          <Typography variant="h6" color={Color.BC3}>
-            {item.eventLocation}
-          </Typography>
-        </InfoRow>
-      </InfoBox>
+        <InfoBox>
+          <DateRow>
+            <Typography variant="h3" color={Color.MC1} style={{ fontWeight: "bold" }}>
+              {item.calenderDay}
+            </Typography>
+            <DdayBadge startDate={item.eventStartdate} endDate={item.eventEnddate} />
+          </DateRow>
+          <Title variant="h3" style={{ fontWeight: 700 }}>
+            {item.eventTitle}
+          </Title>
+          <InfoRow>
+            <StyledIcon icon={faCalendarAlt} />
+            <Typography variant="h6" color={Color.BC3}>
+              {item.eventStartdate} ~ {item.eventEnddate}
+            </Typography>
+          </InfoRow>
+          <InfoRow>
+            <StyledIcon icon={faMapMarkerAlt} />
+            <Typography variant="h6" color={Color.BC3}>
+              {item.eventLocation}
+            </Typography>
+          </InfoRow>
+        </InfoBox>
         <Poster src={item.eventImageurl} alt={item.eventTitle} />
       </InfoSection>
     </Card>

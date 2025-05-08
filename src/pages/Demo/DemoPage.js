@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+
 import Container from "../../components/Layout/Container";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import Typography from "../../components/Typography/Typography";
+import { Color } from "../../styles/colorsheet";
 import SchedulePreviewCarousel from "../../components/Card/SchedulePreviewCard";
 import AutoCarousel from "./AutoCarousel";
 import HotEventCard from "../../components/Card/HotEventCard";
@@ -11,9 +14,14 @@ import { useFetchUserSchedules } from "../../hooks/useFetchUserSchedules";
 import { useFetchHotEvents } from "../../hooks/useFetchHotEvents";
 
 const DemoPage = () => {
+  const navigate = useNavigate();
   const { carouselItems, error } = useFetchUpcomingEvents();
   const { userSchedules } = useFetchUserSchedules();
   const { hotEvents } = useFetchHotEvents();
+
+  const handleMoreClick = () => {
+    navigate("/my-page");
+  };
 
   return (
     <MobileLayout>
@@ -21,8 +29,12 @@ const DemoPage = () => {
         {error ? <div style={{ color: "red" }}>{error}</div> : <AutoCarousel items={carouselItems} />}
       </MainPostimg>
       <Container>
-        <Section>
-          <Typography variant="h3">다가오는 나의 일정</Typography>
+      <Section>
+          <TitleRow>
+            <Typography variant="h3">다가오는 나의 일정</Typography>
+            <MoreLink onClick={handleMoreClick}>더보기</MoreLink>
+          </TitleRow>
+
           {userSchedules.length > 0 ? (
             <SchedulePreviewCarousel items={userSchedules} />
           ) : (
@@ -75,5 +87,21 @@ const CardGrid = styled.div`
 
   @media (min-width: 1024px) {
     gap: 20px;
+  }
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const MoreLink = styled.span`
+  color: ${Color.MC1};
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
   }
 `;

@@ -150,6 +150,7 @@ const Mypage = () => {
               data={upcoming.map(s => ({
                 ...s,
                 calenderDay: s.scheduleTime?.slice(0, 10),
+                eventId: s.event.eventId,
                 eventTitle: s.event.title,
                 eventStartdate: s.event.startDate?.slice(0, 10),
                 eventEnddate: s.event.endDate?.slice(0, 10),

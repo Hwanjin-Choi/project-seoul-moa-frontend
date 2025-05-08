@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button/Button";
 import DdayBadge from "../../components/Badge/DdayBadge";
+import { useNavigate } from "react-router-dom";
 
 const CarouselWrapper = styled.div`
   display: flex;
@@ -76,15 +77,6 @@ const DateRow = styled.div`
   gap: 10px;
 `;
 
-const DdayTag = styled.span`
-  background-color: ${Color.MC1};
-  color: white;
-  padding: 2px 10px;
-  font-size: 12px;
-  border-radius: 9999px;
-  font-weight: 600;
-`;
-
 const InfoRow = styled.div`
   display: flex;
   align-items: center;
@@ -109,15 +101,15 @@ const StyledButton = styled(Button)`
 `;
 
 const ScheduleCard = ({ item, onEditClick, onDeleteClick }) => {
+  const navigate = useNavigate();
   if (!item) return null;
-
-  const today = new Date();
-  const targetDate = new Date(item.calenderDay);
-  const dday = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+  const handleInfoClick = () => {
+    navigate(`/view-detail-page/${item.eventId}`);
+  };
 
   return (
     <Card>
-      <InfoSection>
+      <InfoSection onClick={handleInfoClick}>
         <InfoBox>
           <DateRow>
             <Typography variant="h4" color={Color.MC1} style={{ fontWeight: "bold" }}>

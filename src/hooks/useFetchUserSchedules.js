@@ -9,9 +9,11 @@ export const useFetchUserSchedules = () => {
       try {
         const scheduleData = await fetchUserScheduleList();
         const futureSchedules = scheduleData.filter(item => !item.pastScheduled);
+        console.log("🎯 scheduleData:", scheduleData);
 
         const formatted = futureSchedules.map(item => ({
           calenderDay: item.scheduleTime?.slice(0, 10),
+          eventId: item.event.eventId,
           eventTitle: item.event.title,
           eventStartdate: item.event.startDate?.split("T")[0],
           eventEnddate: item.event.endDate?.split("T")[0],
