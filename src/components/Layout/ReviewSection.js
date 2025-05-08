@@ -7,6 +7,7 @@ import { Color } from "../../styles/colorsheet";
 import ReviewCard from "../Card/ReviewCard";
 import EditReviewModal from "../../pages/Mypage/EditReviewModal";
 import { deleteUserReview } from "../../api/userReviewDelete";
+import { useNavigate } from "react-router-dom";
 
 const FlexDiv = styled.div`
   display: flex;
@@ -110,6 +111,7 @@ const ReviewSection = ({
     loading,
     refetchReviews,
 }) => {
+    const navigate = useNavigate();
     const hasData = Array.isArray(reviewData) && reviewData.length > 0;
     const firstReview = hasData ? reviewData[0] : null;
     const [reviews, setReviews] = useState([]);
@@ -200,14 +202,18 @@ const ReviewSection = ({
                                         <SwipeContainer key={idx}>
                                             <SwipeContent
                                                 isSwiped={isSwiped}
-                                                onTouchStart={(e) =>
-                                                    (e.currentTarget.startX = e.touches[0].clientX)
-                                                }
+                                                onTouchStart={(e) => (e.currentTarget.startX = e.touches[0].clientX)}
                                                 onTouchEnd={(e) => {
-                                                    const delta =
-                                                        e.changedTouches[0].clientX - e.currentTarget.startX;
+                                                    const delta = e.changedTouches[0].clientX - e.currentTarget.startX;
                                                     if (delta < -50) setSwipedIndex(idx);
                                                     else setSwipedIndex(null);
+                                                }}
+                                                onClick={() => {
+                                                    if (review?.eventId) {
+                                                        navigate(`/view-detail-page/${review.eventId}`);
+                                                    } else {
+                                                        console.warn("❗ eventId가 없습니다:", review);
+                                                    }
                                                 }}
                                             >
                                                 <ReviewCard

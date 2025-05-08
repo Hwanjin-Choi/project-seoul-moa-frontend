@@ -5,6 +5,7 @@ import IconButton from "../IconButton/IconButton";
 
 import EventInfoDisplay from "../EventInfoDisplay/EventInfoDisplay";
 import { useNavigate } from "react-router-dom";
+import DdayBadge from "../Badge/DdayBadge";
 
 // NoBorderLandscapeCardContainer: 카드 전체 컨테이너
 const NoBorderLandscapeCardContainer = styled.div`
@@ -153,33 +154,8 @@ const StyledTag = styled(Tag)`
   // 모바일에서 태그 스타일을 조정하려면 여기에 추가
 `;
 
-// calculateDday: D-day 계산 함수 (변경 없음)
-const calculateDday = (startDateStr) => {
-  if (!startDateStr) return "";
-  try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const startDate = new Date(startDateStr);
-    startDate.setHours(0, 0, 0, 0);
-    const diffTime = startDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays > 0) {
-      return `D-${diffDays}`;
-    } else if (diffDays === 0) {
-      return "D-Day";
-    } else {
-      return "종료";
-    }
-  } catch (error) {
-    console.error("D-day 계산 오류:", error);
-    return "";
-  }
-};
-
 // NoBorderLandscapeCard: 메인 카드 컴포넌트
 const NoBorderLandscapeCard = (props) => {
-  const dDayString = calculateDday(props.startDate);
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -199,11 +175,9 @@ const NoBorderLandscapeCard = (props) => {
   return (
     <NoBorderLandscapeCardContainer onClick={handleClick}>
       <ImageContainer>
-        {dDayString && (
-          <BadgeContainer>
-            <Dday>{dDayString}</Dday>
-          </BadgeContainer>
-        )}
+        <BadgeContainer>
+          <DdayBadge startDate={props.startDate} endDate={props.endDate} />
+        </BadgeContainer>
         <Image src={props.image} alt={props.title || "Card image"} />
       </ImageContainer>
 
