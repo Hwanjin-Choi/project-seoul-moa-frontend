@@ -55,40 +55,44 @@ const SubwayChart = ({ data, currentHour, subwayName, subwayLine, state }) => {
   console.log(data, "sub");
   return (
     <>
-      <ChartBox>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
-            <XAxis
-              dataKey="time"
-              tick={({ x, y, payload }) => (
-                <text
-                  x={x}
-                  y={y + 12}
-                  textAnchor="middle"
-                  fontSize="10"
-                  fill={Color.BC3}
-                >
-                  {payload.value}
-                </text>
-              )}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="count" radius={[10, 10, 0, 0]}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartBox>
+      {data && data.length > 0 && (
+        <>
+          <ChartBox>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data}>
+                <XAxis
+                  dataKey="time"
+                  tick={({ x, y, payload }) => (
+                    <text
+                      x={x}
+                      y={y + 12}
+                      textAnchor="middle"
+                      fontSize="10"
+                      fill={Color.BC3}
+                    >
+                      {payload.value}
+                    </text>
+                  )}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="count" radius={[10, 10, 0, 0]}>
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartBox>
 
-      <Typography
-        variant="h6"
-        style={{ textAlign: "center", marginBottom: 10 }}
-      >
-        {currentHour}시의 {subwayName}({subwayLine})은 <Tag>{state}</Tag>{" "}
-        단계입니다
-      </Typography>
+          <Typography
+            variant="h6"
+            style={{ textAlign: "center", marginBottom: 10 }}
+          >
+            {currentHour}시의 {subwayName}({subwayLine})은 <Tag>{state}</Tag>{" "}
+            단계입니다
+          </Typography>
+        </>
+      )}
     </>
   );
 };

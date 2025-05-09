@@ -69,7 +69,7 @@ const loginFields = [
     name: "username",
     label: "아이디",
     type: "text",
-    placeholder: "이메일을 입력하세요",
+    placeholder: "아이디를 입력하세요",
     required: true,
   },
   {
