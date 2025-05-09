@@ -6,27 +6,16 @@ import Container from "../../components/Layout/Container";
 import MobileLayout from "../../components/Layout/MobileLayout";
 import Typography from "../../components/Typography/Typography";
 import { Color } from "../../styles/colorsheet";
-import SchedulePreviewCarousel from "../../components/Card/SchedulePreviewCard";
 import AutoCarousel from "./AutoCarousel";
 import HotEventCard from "../../components/Card/HotEventCard";
 import { useFetchUpcomingEvents } from "../../hooks/useFetchUpcomingEvents";
-import { useFetchUserSchedules } from "../../hooks/useFetchUserSchedules";
 import { useFetchHotEvents } from "../../hooks/useFetchHotEvents";
+import UserScheduleSection from "./UserScheduleSection";
 
 const DemoPage = () => {
-  const navigate = useNavigate();
-  const isLoggedIn =
-    localStorage.getItem("isLoggedIn") === "true" ? true : false;
-
   const { carouselItems, error } = useFetchUpcomingEvents();
-  const { userSchedules: fetchedSchedules } = useFetchUserSchedules();
 
-  const userSchedules = isLoggedIn ? fetchedSchedules : [];
   const { hotEvents } = useFetchHotEvents();
-
-  const handleMoreClick = () => {
-    navigate("/my-page");
-  };
 
   return (
     <MobileLayout>
@@ -38,21 +27,7 @@ const DemoPage = () => {
         )}
       </MainPostimg>
       <Container>
-        {isLoggedIn && (
-          <Section>
-            <TitleRow>
-              <Typography variant="h3">다가오는 나의 일정</Typography>
-              <MoreLink onClick={handleMoreClick}>더보기</MoreLink>
-            </TitleRow>
-
-            {userSchedules.length > 0 ? (
-              <SchedulePreviewCarousel items={userSchedules} />
-            ) : (
-              <Typography variant="body1">예정된 일정이 없습니다.</Typography>
-            )}
-          </Section>
-        )}
-
+        <UserScheduleSection />
         <Section>
           <Typography variant="h3">Hot 문화행사</Typography>
           <CardGrid>

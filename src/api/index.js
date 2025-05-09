@@ -40,8 +40,9 @@ apiClient.interceptors.response.use(
 
         const currentPath = window.location.pathname + window.location.search;
 
-        /* window.location.href = `/login-page?show_session_expired_modal=true&redirectUrl=${encodeURIComponent(currentPath)}`; */
-        //
+        localStorage.setItem("show_session_expired_modal", true);
+        localStorage.setItem("currentPath", currentPath);
+        window.location.href = "/expired-session-page";
       } else if (status === 403) {
         console.warn(
           `403 Forbidden 에러 감지 (URL: ${config.url}). 리소스 접근 권한 없음.`

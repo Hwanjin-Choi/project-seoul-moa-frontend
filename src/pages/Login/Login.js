@@ -109,87 +109,12 @@ const Login = () => {
       setSuccess("로그인 성공!");
       setFormKey((prevKey) => prevKey + 1);
 
-      // 로그인 성공 후 리디렉션 로직
-      let redirectUrlFromQuery = null;
-      const params = new URLSearchParams(location.search);
-      redirectUrlFromQuery = params.get("redirectUrl");
-      console.log("URL 쿼리에서 가져온 redirectUrl:", redirectUrlFromQuery);
-
-      let finalRedirectUrl = null;
-
-      if (redirectUrlFromQuery) {
-        finalRedirectUrl = decodeURIComponent(redirectUrlFromQuery);
-        console.log("쿼리에서 초기에 디코딩된 redirectUrl:", finalRedirectUrl);
-
-        const loginPagePathPattern = "/login-page";
-        const redirectUrlParamString = "redirectUrl=";
-        let searchStringForExtraction = finalRedirectUrl;
-
-        if (
-          (searchStringForExtraction.startsWith(loginPagePathPattern) ||
-            searchStringForExtraction.startsWith("/login")) &&
-          searchStringForExtraction.includes(redirectUrlParamString)
-        ) {
-          const parts = searchStringForExtraction.split(redirectUrlParamString);
-          if (parts.length > 1) {
-            let extractedPath = parts[1].split("&")[0];
-            if (extractedPath.startsWith("/")) {
-              console.log(
-                "중첩된 redirectUrl 감지, 실제 경로 추출 시도:",
-                extractedPath
-              );
-              finalRedirectUrl = extractedPath; // 정제된 URL로 업데이트
-            } else {
-              console.warn(
-                "중첩된 redirectUrl에서 추출된 경로가 유효하지 않음 ('/'로 시작 안함):",
-                extractedPath
-              );
-            }
-          }
-        }
-      } else if (location.pathname.includes("redirectUrl=")) {
-        const pathParts = location.pathname.split("redirectUrl=");
-        if (pathParts.length > 1) {
-          const potentialUrl = pathParts[1].split("&")[0];
-          if (potentialUrl) {
-            finalRedirectUrl = decodeURIComponent(potentialUrl);
-            console.log(
-              "경로(pathname)에서 redirectUrl 추출 및 디코딩:",
-              finalRedirectUrl
-            );
-          }
-        }
-      }
-
-      console.log("리디렉션 URL (정제 후 최종):", finalRedirectUrl);
-
-      if (finalRedirectUrl) {
-        try {
-          if (
-            finalRedirectUrl.startsWith("/") &&
-            !finalRedirectUrl.startsWith("/login-page") &&
-            !finalRedirectUrl.startsWith("/login")
-          ) {
-            navigate(finalRedirectUrl, { replace: true });
-          } else {
-            console.warn(
-              "유효하지 않거나 안전하지 않은 redirectUrl 형식 (최종):",
-              finalRedirectUrl,
-              "기본 페이지로 이동합니다."
-            );
-            navigate("/view-more-page", { replace: true });
-          }
-        } catch (e) {
-          console.error(
-            "redirectUrl 처리 중 예외 발생:",
-            e,
-            "기본 페이지로 이동합니다."
-          );
-          navigate("/view-more-page", { replace: true });
-        }
+      const redirectUrl = localStorage.getItem("currentPath");
+      if (redirectUrl && redirectUrl.length > 0) {
+        navigate(redirectUrl);
+        localStorage.removeItem("currentPath");
       } else {
-        console.log("redirectUrl을 결정할 수 없음, 기본 페이지로 이동합니다.");
-        navigate("/view-more-page", { replace: true });
+        navigate("/view-more-page");
       }
     } catch (err) {
       console.error("로그인 중 오류 발생:", err);

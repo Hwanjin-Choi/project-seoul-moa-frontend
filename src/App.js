@@ -14,14 +14,11 @@ import ViewDetail from "./pages/ViewDetail/ViewDetail.js";
 import RegistrationPage from "./pages/Registration/RegistrationPage";
 import ViewMorePage from "./pages/ViewMore/ViewMorePage";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import PrivateRedirectionModal from "./components/PrivateRoute/PrivateRedirectionModal";
 import "./App.css";
+import ExpiredPage from "./pages/Expired/ExpiredPage";
 
 function AppInternal() {
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -45,34 +42,9 @@ function AppInternal() {
       }
     };
   }, []);
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get("show_session_expired_modal") === "true") {
-      setIsModalOpen(true);
-    }
-  }, [location.search]);
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    const params = new URLSearchParams(location.search);
-    params.delete("show_session_expired_modal");
-    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
-  };
-
-  const handleConfirmAndRedirectToLogin = () => {
-    setIsModalOpen(false);
-    const params = new URLSearchParams(location.search);
-    params.delete("show_session_expired_modal");
-  };
 
   return (
     <>
-      <PrivateRedirectionModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmAndRedirectToLogin}
-        message={"세션이 만료되었습니다 \n 다시 로그인 해주세요"}
-      />
       <Routes>
         {/* 공개 라우트 */}
         <Route path="/login-page" element={<LoginPage />} />
@@ -85,6 +57,8 @@ function AppInternal() {
           element={<ViewDetail mapReady={mapLoaded} />}
         />
         <Route path="/view-more-page" element={<ViewMorePage />} />
+        <Route path="/expired-session-page" element={<ExpiredPage />} />
+
         {/* 보호된 라우트 */}
         <Route
           path="/my-page"
