@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Color } from "../../styles/colorsheet";
 import Typography from "../../components/Typography/Typography";
 import { useNavigate } from "react-router-dom";
+import CategoryChip from "../../components/CategoryChip/CategoryChip";
 
 const CarouselWrapper = styled.div`
   overflow-x: auto;
@@ -35,6 +36,12 @@ const Slide = styled.div`
     flex: 0 0 45%;
     padding: 30px;
   };
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const InfoBox = styled.div`
@@ -63,7 +70,26 @@ const GradientOverlay = styled.div`
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 70%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 1), transparent 90%);
+`;
+
+const ChipRow = styled.div`
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  @media (min-width: 768px) {
+    gap: 8px;
+    margin-top: 12px;
+  }
+`;
+
+const StyledChipText = styled(Typography)`
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
 `;
 
 const AutoCarousel = ({ items }) => {
@@ -114,8 +140,8 @@ const AutoCarousel = ({ items }) => {
             <GradientOverlay />
 
             <InfoBox style={{ position: "relative", zIndex: 1 }}>
-              <Typography variant="h6" color={Color.BC5}>{item.location}</Typography>
-              <Typography variant="h6" color={Color.BC5}>
+              <Typography variant="h6" color="white">{item.location}</Typography>
+              <Typography variant="h6" color="white">
                 {item.startdate} - {item.enddate}
               </Typography>
               <Typography
@@ -129,6 +155,10 @@ const AutoCarousel = ({ items }) => {
               >
                 {item.title}
               </Typography>
+              <ChipRow>
+  <StyledChipText variant="h6">{item.categoryName}</StyledChipText>
+  <StyledChipText variant="h6">{item.gu}</StyledChipText>
+</ChipRow>
             </InfoBox>
           </Slide>
         ))}

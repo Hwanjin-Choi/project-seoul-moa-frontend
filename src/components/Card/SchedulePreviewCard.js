@@ -36,6 +36,12 @@ const Card = styled.div`
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const InfoSection = styled.div`

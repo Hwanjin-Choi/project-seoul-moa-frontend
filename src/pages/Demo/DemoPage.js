@@ -14,11 +14,25 @@ import UserScheduleSection from "./UserScheduleSection";
 
 const DemoPage = () => {
   const { carouselItems, error } = useFetchUpcomingEvents();
-
   const { hotEvents } = useFetchHotEvents();
+  const nickname = localStorage.getItem("nickname") || null;
 
   return (
     <MobileLayout>
+      <HeadlineWrapper>
+        <Typography
+          variant="h2"
+          style={{ fontWeight: "bold", lineHeight: 1.4 }}
+        >
+          {nickname ? (
+            <>
+              <HighlightText>{nickname}</HighlightText>님이 좋아할만한 행사
+            </>
+          ) : (
+            "관심있을만한 행사"
+          )}
+        </Typography>
+      </HeadlineWrapper>
       <MainPostimg>
         {error ? (
           <div style={{ color: "red" }}>{error}</div>
@@ -90,4 +104,18 @@ const MoreLink = styled.span`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const HeadlineWrapper = styled.div`
+  padding-top: 5px;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    padding: 20px 0 10px;
+  }
+`;
+
+const HighlightText = styled.span`
+  color: ${Color.MC1};
+  font-weight: 700;
 `;

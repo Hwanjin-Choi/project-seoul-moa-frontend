@@ -38,7 +38,6 @@ const CarouselItem = styled.div`
   padding: 15px;
   gap: 10px;
   box-sizing: border-box;
-  height: 180px;
 `;
 
 const Thumb = styled.img`
