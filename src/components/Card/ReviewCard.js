@@ -3,7 +3,8 @@ import Typography from "../Typography/Typography";
 import { Color } from "../../styles/colorsheet";
 
 const ReviewListBox = styled.div`
-  background-color: ${({ modal }) => (modal ? Color.MC5 : "rgba(255, 255, 255, 0.7)")};
+  background-color: ${({ modal }) =>
+    modal ? Color.MC5 : "rgba(255, 255, 255, 0.7)"};
   border-radius: 10px;
   padding: 15px;
   margin-top: 10px;
@@ -11,6 +12,14 @@ const ReviewListBox = styled.div`
   align-items: flex-start;
   width: 100%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out; // Smooth transition for hover
+
+  &:hover {
+    transform: translateY(-3px); // Lifts the box slightly
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); // Enhances shadow for a "pop" effect
+  }
 `;
 
 const ReviewText = styled.div`
@@ -31,14 +40,20 @@ const ReviewImage = styled.img`
   margin-left: 10px;
 `;
 
-const ReviewCard = ({ calendarDay, eventTitle, reviewContent, imageUrl, modal = false }) => {
+const ReviewCard = ({
+  calendarDay,
+  eventTitle,
+  reviewContent,
+  imageUrl,
+  modal = false,
+}) => {
   return (
     <ReviewListBox modal={modal}>
       <ReviewText>
         <Typography
           variant="h4"
           color={Color.MC1}
-          style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+          style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
         >
           {calendarDay}
         </Typography>
@@ -46,13 +61,13 @@ const ReviewCard = ({ calendarDay, eventTitle, reviewContent, imageUrl, modal = 
           variant="h5"
           style={{
             color: Color.BC2,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            display: '-webkit-box',
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            display: "-webkit-box",
             WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
           {eventTitle}
@@ -61,12 +76,12 @@ const ReviewCard = ({ calendarDay, eventTitle, reviewContent, imageUrl, modal = 
           variant="h6"
           color={Color.BC3}
           style={{
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            display: '-webkit-box',
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            display: "-webkit-box",
             WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {reviewContent}

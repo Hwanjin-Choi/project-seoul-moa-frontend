@@ -30,7 +30,6 @@ apiClient.interceptors.response.use(
           `401 Unauthorized 에러 감지 (URL: ${config.url}). 세션 만료 또는 인증 실패.`
         );
         localStorage.removeItem("userData");
-        localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("username");
         localStorage.removeItem("nickname");
         localStorage.removeItem("userId");

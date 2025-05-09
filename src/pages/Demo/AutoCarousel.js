@@ -28,15 +28,18 @@ const Slide = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  cursor: pointer;
   @media (min-width: 768px) {
     flex: 0 0 50%;
     padding: 20px;
-  };
+  }
   @media (min-width: 1024px) {
     flex: 0 0 45%;
     padding: 30px;
-  };
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     transform: scale(1.03);
@@ -133,14 +136,16 @@ const AutoCarousel = ({ items }) => {
                   height: "100%",
                   objectFit: "cover",
                   zIndex: 0,
-                  borderRadius: "inherit"
+                  borderRadius: "inherit",
                 }}
               />
             )}
             <GradientOverlay />
 
             <InfoBox style={{ position: "relative", zIndex: 1 }}>
-              <Typography variant="h6" color="white">{item.location}</Typography>
+              <Typography variant="h6" color="white">
+                {item.location}
+              </Typography>
               <Typography variant="h6" color="white">
                 {item.startdate} - {item.enddate}
               </Typography>
@@ -156,9 +161,11 @@ const AutoCarousel = ({ items }) => {
                 {item.title}
               </Typography>
               <ChipRow>
-  <StyledChipText variant="h6">{item.categoryName}</StyledChipText>
-  <StyledChipText variant="h6">{item.gu}</StyledChipText>
-</ChipRow>
+                <StyledChipText variant="h6">
+                  {item.categoryName}
+                </StyledChipText>
+                <StyledChipText variant="h6">{item.gu}</StyledChipText>
+              </ChipRow>
             </InfoBox>
           </Slide>
         ))}
