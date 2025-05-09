@@ -15,6 +15,8 @@ import { fetchWeatherForecast } from "../../api/weather";
 const List = styled.div`
   display: flex;
   margin-top: 15px;
+  overflow-x: scroll;
+  overflow-y: hidden;
 `;
 const Item = styled.div`
   flex: 0 0 calc(100% / 6);
@@ -80,7 +82,7 @@ const WeatherSection = ({ gu }) => {
     if (!gu) return;
     fetchWeatherForecast(gu)
       .then((data) => setList(data))
-      .catch(() => { });
+      .catch(() => {});
   }, [gu]);
 
   console.log(list, "check");
@@ -102,10 +104,16 @@ const WeatherSection = ({ gu }) => {
               <IconWrapper>
                 <IconComponent />
               </IconWrapper>
-              <Typography variant="h6" color={Color.BC3} style={{ marginBottom: 5 }}>
+              <Typography
+                variant="h6"
+                color={Color.BC3}
+                style={{ marginBottom: 5 }}
+              >
                 {hourStr}
               </Typography>
-              <Typography variant="h6" color={Color.BC2}>{o.weatherStatus}</Typography>
+              <Typography variant="h6" color={Color.BC2}>
+                {o.weatherStatus}
+              </Typography>
               <Typography variant="h6" color={Color.BC2}>
                 {o.temperture}°
               </Typography>
