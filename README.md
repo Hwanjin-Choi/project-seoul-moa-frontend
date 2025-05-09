@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# 서울모아 (Seoul Moa)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📜 프로젝트 설명
 
-## Available Scripts
+서울모아는 개인 맞춤형 문화생활 큐레이션 및 통합 플래닝 플랫폼입니다. 사용자의 선호도에 맞는 문화 행사를 추천하고, 공공데이터를 활용하여 실시간 지하철 혼잡도 및 날씨 정보, AI 기반 행사 정보를 제공합니다. 또한, 챗봇을 통한 행사 정보 검색 및 추천, 개인 일정 관리(관심 행사 저장, 스케줄링, 리뷰) 기능을 통합하여 데이터 기반의 스마트한 문화생활 계획 및 실행을 지원합니다.
 
-In the project directory, you can run:
+## 🎯 개발 배경 및 동기
 
-### `npm start`
+- 시민과 관광객들이 서울시의 다양한 문화·예술·행사 정보를 쉽고 재미있게 확인하는 데 어려움이 있었습니다.
+- 기존 서비스에서는 행사 정보와 함께 교통, 날씨 등 실제 참여를 위한 복합적인 정보가 부족했습니다.
+- 개인의 문화생활을 능동적으로 계획하고 관리할 수 있는 통합적인 도구의 필요성이 증대되었습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+이러한 문제점을 해결하고, 시민과 방문객의 행사 참여율을 높이며 서울시 행사 운영의 효율성과 만족도를 향상시키고자 본 플랫폼을 개발하게 되었습니다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ✨ 주요 기능
 
-### `npm test`
+- **맞춤형 행사 추천**: 사용자의 관심 카테고리 설정에 따른 개인화된 행사 정보를 제공합니다.
+- **실시간 정보 제공**:
+  - **대중교통 혼잡도 분석**: 서울시 열린데이터광장의 빅데이터를 기반으로 행사장 인근 지하철역의 시간대별 예상 이용량을 예측 및 분석하여 혼잡도 정보를 시각화하여 제공합니다.
+  - **단기 기상 예보**: 행사 장소가 속한 지역의 현재부터 6시간 이후까지의 날씨 정보를 제공합니다.
+- **AI 기반 서비스**:
+  - **AI 요약 정보**: 행사의 상세 정보를 AI가 요약하여 핵심 내용을 빠르게 파악할 수 있도록 돕습니다.
+  - **AI 챗봇 '서울모아 도우미'**: 사용자의 질의에 대해 실시간으로 응답하고, 특정 역, 카테고리, 행정구역 기반으로 연관된 행사를 검색하여 추천합니다.
+- **검색 및 필터링**:
+  - 키워드(행사 제목) 검색, 지역구 및 관심 카테고리별 필터링 기능을 제공합니다.
+  - 지도 기능을 통해 특정 지역 주변의 행사를 시각적으로 확인하고 선택할 수 있습니다.
+- **행사 상세 페이지**:
+  - AI 기반 요약 정보, 최신 사용자 리뷰, 카카오맵 API를 활용한 행사장 및 인근 대중교통(지하철역) 위치 정보, 대중교통 혼잡도, 단기 기상 예보 등 통합 정보를 제공합니다.
+- **마이페이지**:
+  - **관심 이벤트 저장 ('좋아요')**: 관심 있는 행사를 저장하고 관리할 수 있습니다.
+  - **개인 일정 관리**: 추가한 행사 일정을 캐러셀 UI로 제공하며, 모달을 통해 수정 및 삭제가 가능합니다.
+  - **리뷰 작성 및 관리**: 참여 완료한 행사에 대한 리뷰를 작성하고 공유하며, 작성한 모든 리뷰를 통합적으로 조회, 수정, 삭제할 수 있습니다.
+- **사용자 상호작용**: 관심 이벤트 저장('좋아요'), 개인 일정 추가(모달), 리뷰 작성 및 관리 기능을 제공합니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ 기술 스택
 
-### `npm run build`
+- **프론트엔드**: React, Styled-components
+- **백엔드**: Java Spring Boot, PostgreSQL, FastAPI
+- **데이터**: OpenAI, Langchain, scikit-learn, Airflow
+- **DevOps**: Jenkins, Docker, Git, Cloudflare
+- **API**: 카카오 로컬 API, 서울 열린데이터 광장 (서울시 문화행사 정보, 서울시 지하철호선별 역별 시간대별 승하차 인원 정보, 서울시 지하철호선별 역별 승하차 인원 정보), 공공데이터 포털 (기상청 단기예보 조회서비스)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📊 활용 공공데이터
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **서울 열린데이터 광장**
+  - 서울시 문화행사 정보 (URL: [https://data.seoul.go.kr/dataList/OA-15486/S/1/datasetView.do](https://data.seoul.go.kr/dataList/OA-15486/S/1/datasetView.do))
+  - 서울시 지하철 호선별 역별 시간대별 승하차 인원 정보 (URL: [https://data.seoul.go.kr/dataList/OA-12252/S/1/datasetView.do](https://data.seoul.go.kr/dataList/OA-12252/S/1/datasetView.do))
+  - 서울시 지하철호선별 역별 승하차 인원 정보 (URL: [https://data.seoul.go.kr/dataList/OA-12914/S/1/datasetView.do](https://data.seoul.go.kr/dataList/OA-12914/S/1/datasetView.do))
+- **공공데이터 포털**
+  - 기상청 단기예보 ((구)\_동네예보) 조회서비스 (URL: [https://www.data.go.kr/data/15084084/openapi.do](https://www.data.go.kr/data/15084084/openapi.do))
